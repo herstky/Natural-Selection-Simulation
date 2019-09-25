@@ -144,7 +144,7 @@ qreal Creature::dVelocity()
 
 qreal Creature::dTime()
 {
-    return QTime::currentTime().msecsTo(prevTime) * 1000;
+    return QTime::currentTime().msecsTo(prevTime) / 1000;
 }
 
 qreal Creature::acceleration()
