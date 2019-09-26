@@ -19,13 +19,14 @@ Creature::Creature(QQuickItem* parent)
       replicationChance(0),
       mutationChance(0),
       deathChance(0),
-      mass(0.001),
+      mass(.001),
       density(WATER_DENSITY),
       energyLevel(100),
       energyCapacity(100)
 {
     setWidth(SCALE_FACTOR * diameter());
     setHeight(SCALE_FACTOR * diameter());
+	setZ(1);
     setOpacity(.4);
     qreal x = QRandomGenerator::global()->bounded(parent->width() - width());
     qreal y = QRandomGenerator::global()->bounded(parent->height() - height());
@@ -45,7 +46,7 @@ Creature::Creature(QQuickItem* parent, QPointF position)
       replicationChance(0),
       mutationChance(0),
       deathChance(0),
-      mass(0.001),
+      mass(100),
       density(WATER_DENSITY),
       energyLevel(100),
       energyCapacity(100)
@@ -95,11 +96,11 @@ void Creature::move(Simulation& simulation)
 
 void Creature::simulate(Simulation& simulation)
 {
-//    if (QRandomGenerator::global()->bounded(100) < replicationChance)
+//    if (QRandomGenerator::global()->bounded(100.0) < replicationChance)
 //    {
 //        replicate(simulation);
 //    }
-//    if (QRandomGenerator::global()->bounded(100) < deathChance)
+//    if (QRandomGenerator::global()->bounded(100.0) < deathChance)
 //    {
 //        die(simulation);
 //    }

@@ -13,7 +13,7 @@ Food::Food(QQuickItem* parent)
 	  creationChance(10),
 	  color(Qt::green),
 	  energyContent(10),
-	  mass(.1),
+	  mass(.04),
 	  density(1500),
 	  aspectRatio(1.5), 
 	  depth(1)
@@ -54,8 +54,7 @@ void Food::paint(QPainter* painter)
 	painter->setBrush(brush);
 	painter->setPen(Qt::NoPen);
 	painter->setRenderHint(QPainter::HighQualityAntialiasing);
-	//painter->drawRect(contentsBoundingRect());
-	painter->drawRoundedRect(contentsBoundingRect(), 3, 3);
+	painter->drawRoundedRect(contentsBoundingRect(), 2, 2);
 }
 
 qreal Food::volume()

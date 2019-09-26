@@ -9,17 +9,18 @@
 #include "blue.h"
 #include "food.h"
 
-Simulation::Simulation(QQuickItem* board)
-    : board(board),
+Simulation::Simulation(QQuickItem* parent)
+    : container(parent),
       TICK_DURATION(50),
       TICKS_PER_STEP(1),
       ticksRemaining(TICKS_PER_STEP)
 {
+	board = new Board(container, 1, 30, 60);
     Red::count = 0;
     Green::count = 0;
     Blue::count = 0;
 
-    outputCounts(board);
+    outputCounts();
 
     QTimer* timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(run()));
@@ -72,12 +73,12 @@ void Simulation::run()
             std::cout << "An exception was caught with message '" << e.what() << "'\n";
         }
     }
-    outputCounts(board);
+    outputCounts();
 }
 
-void Simulation::outputCounts(QQuickItem *board)
+void Simulation::outputCounts()
 {
-    QQuickItem* parent = static_cast<QQuickItem*>(board->parentItem()->findChild<QObject*>("textRow"));
+    QQuickItem* parent = static_cast<QQuickItem*>(container->findChild<QObject*>("textRow"));
     QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
     redLabel->setProperty("text", "Red: " + QString::number(Red::count));
     QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));

@@ -27,9 +27,9 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     engine.load(url);
 
-    QQuickItem* board = engine.rootObjects().first()->findChild<QQuickItem*>("board");
+    QQuickItem* container = engine.rootObjects().first()->findChild<QQuickItem*>("container");
 
-    Simulation sim(board);
+    Simulation sim(container);
 
     return app.exec();
 }

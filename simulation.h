@@ -8,19 +8,22 @@
 #include <vector>
 
 #include "creature.h"
+#include "board.h"
 
 class Simulation : QObject
 {
     Q_OBJECT
 public:
-    Simulation(QQuickItem* board = 0);
+    Simulation(QQuickItem* parent = nullptr);
     ~Simulation();
-    QQuickItem* board;
+	QQuickItem* container;
+    Board* board;
 
 public slots:
     void run();
+
 private:
-    void outputCounts(QQuickItem* board);
+    void outputCounts();
     const int TICK_DURATION;
     const int TICKS_PER_STEP;
     int ticksRemaining;

@@ -13,12 +13,11 @@ Page {
     property alias board: board
     property alias page: page
 
-
-
     Rectangle {
-        id: rectangle
+        id: container
         color: "#ffffff"
         anchors.fill: parent
+        objectName: "container"
 
         Row {
             id: row
@@ -70,8 +69,6 @@ Page {
                 font.pixelSize: 18
                 objectName: "blueCountText"
             }
-
-
         }
 
         Rectangle {
@@ -81,32 +78,17 @@ Page {
             width: 600
             height: 400
             color: "#2e8b57"
-            border.width: 1
+            border.width: 0
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             objectName: "board"
         }
-
-
-
-
     }
-
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-/*##^## Designer {
+/*##^##
+Designer {
     D{i:1;anchors_height:200;anchors_width:200;anchors_x:49;anchors_y:89}
 }
- ##^##*/
+##^##*/
+
