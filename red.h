@@ -1,5 +1,4 @@
-#ifndef RED_H
-#define RED_H
+#pragma once
 
 #include "creature.h"
 
@@ -13,4 +12,3 @@ public:
     void replicate(Simulation& simulation) override;
 };
 
-#endif // RED_H

@@ -1,14 +1,14 @@
-#include <QPainter>
-
-#include <iostream>
-
 #include "creature.h"
+
+#include <QPainter>
+#include <QtMath>
+#include <QRandomGenerator>
+
 #include "simulation.h"
 #include "constants.h"
-#include <QtMath>
 
 Creature::Creature(QQuickItem* parent)
-    : QQuickPaintedItem(parent),
+    : Entity(parent),
       velocity(3),
       prevVelocity(velocity),
       prevTime(QTime::currentTime()),
@@ -34,7 +34,7 @@ Creature::Creature(QQuickItem* parent)
 }
 
 Creature::Creature(QQuickItem* parent, QPointF position)
-    : QQuickPaintedItem(parent),
+    : Entity(parent),
       velocity(3),
       prevVelocity(velocity),
       prevTime(QTime::currentTime()),
@@ -115,16 +115,16 @@ void Creature::die(Simulation& simulation)
 {
     deleteLater();
 
-    int i = 0;
-    for (auto item : simulation.creatures)
-    {
-        if (item == this)
-        {
-            simulation.creatures.erase(simulation.creatures.begin() + i);
-            break;
-        }
-        i++;
-    }
+    //int i = 0;
+    //for (auto item : simulation.creatures)
+    //{
+    //    if (item == this)
+    //    {
+    //        simulation.creatures.erase(simulation.creatures.begin() + i);
+    //        break;
+    //    }
+    //    i++;
+    //}
 }
 
 qreal Creature::volume()
@@ -144,7 +144,7 @@ qreal Creature::dVelocity()
 
 qreal Creature::dTime()
 {
-    return QTime::currentTime().msecsTo(prevTime) / 1000;
+    return QTime::currentTime().msecsTo(prevTime) / 1000.0;
 }
 
 qreal Creature::acceleration()
@@ -152,10 +152,16 @@ qreal Creature::acceleration()
     return dVelocity() / dTime();
 }
 
+qreal Creature::getCreationChance()
+{
+	return creationChance;
+}
+
 void Creature::expendEnergy(Simulation& simulation)
 {
-    qreal drag = 1 / 2 * SPHERE_WATER_DRAG_COEFFICIENT * WATER_DENSITY * M_PI * pow((diameter() / 2), 2) * pow(velocity, 2);
-    qreal force = mass * acceleration() + drag;
+    qreal drag = 1.0 / 2.0 * SPHERE_WATER_DRAG_COEFFICIENT * WATER_DENSITY * M_PI * pow((diameter() / 2), 2) * pow(velocity, 2);
+
+	qreal force = mass * acceleration() + drag;
     qreal work = force * dDistance;
 
     energyLevel -= work;

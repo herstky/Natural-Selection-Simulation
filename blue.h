@@ -1,5 +1,4 @@
-#ifndef BLUE_H
-#define BLUE_H
+#pragma once
 
 #include "creature.h"
 
@@ -12,5 +11,3 @@ public:
     static int count;
     void replicate(Simulation& simulation) override;
 };
-
-#endif // BLUE_H

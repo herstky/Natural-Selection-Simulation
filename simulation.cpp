@@ -3,9 +3,11 @@
 
 #include <iostream>
 
+#include "entity.h"
 #include "red.h"
 #include "green.h"
 #include "blue.h"
+#include "food.h"
 
 Simulation::Simulation(QQuickItem* board)
     : board(board),
@@ -32,28 +34,35 @@ void Simulation::run()
     {
         try
         {
-            static_cast<Creature*>(item)->move(*this);
+            static_cast<Entity*>(item)->move(*this);
         }
         catch (const std::exception& e)
         {
             std::cout << "An exception was caught with message '" << e.what() << "'\n";
         }
     }
+
     if (ticksRemaining)
     {
         ticksRemaining--;
         return;
     }
-    if (QRandomGenerator::global()->bounded(100) < Red(board).creationChance)
+    if (QRandomGenerator::global()->bounded(100) < Red(board).getCreationChance())
     {
         Red* red = new Red(board);
-        creatures.push_back(red);
+        //creatures.push_back(red);
     }
+	if (QRandomGenerator::global()->bounded(100) < Food(board).getCreationChance())
+	{
+		Food* food = new Food(board);
+		//creatures.push_back(food);
+	}
+
     for (auto item : board->childItems())
     {
         try
         {
-            static_cast<Creature*>(item)->simulate(*this);
+            static_cast<Entity*>(item)->simulate(*this);
         }
         catch (const std::exception& e)
         {

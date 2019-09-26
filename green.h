@@ -1,5 +1,4 @@
-#ifndef GREEN_H
-#define GREEN_H
+#pragma once
 
 #include "creature.h"
 
@@ -13,4 +12,3 @@ public:
     void replicate(Simulation& simulation) override;
 };
 
-#endif // GREEN_H

@@ -1,2 +1,11 @@
 *.pro
 *.user
+*.vcxproj
+*.vcxproj.filters
+*.stash
+*.sln
+
+/debug
+/release
+/win32
+/.vs

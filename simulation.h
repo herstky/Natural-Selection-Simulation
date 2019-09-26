@@ -1,5 +1,4 @@
-#ifndef SIMULATION_H
-#define SIMULATION_H
+#pragma once
 
 #include <QQuickItem>
 #include <QTimer>
@@ -17,7 +16,7 @@ public:
     Simulation(QQuickItem* board = 0);
     ~Simulation();
     QQuickItem* board;
-    std::vector<Creature*> creatures;
+    std::vector<QQuickPaintedItem*> creatures;
 
 public slots:
     void run();
@@ -27,5 +26,3 @@ private:
     const int TICKS_PER_STEP;
     int ticksRemaining;
 };
-
-#endif // SIMULATION_H
