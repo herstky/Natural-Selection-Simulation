@@ -8,6 +8,6 @@ public:
     Blue(QQuickItem* parent = nullptr);
     Blue(QQuickItem* parent, QPointF position);
     ~Blue() override;
-    static int count;
+    static unsigned int count;
     void replicate(Simulation& simulation) override;
 };

@@ -15,8 +15,8 @@ public:
 	void paint(QPainter* painter);
 
 	qreal volume();
-	qreal height();
-	qreal width();
+	qreal calculateHeight();
+	qreal calculateWidth();
 
 	qreal getCreationChance();
 
@@ -31,5 +31,8 @@ protected:
 
 	void simulate(Simulation& simulation);
 	void move(Simulation& simulation);
+
+private:
+	static unsigned int count;
 };
 

@@ -16,7 +16,6 @@ public:
     Simulation(QQuickItem* board = 0);
     ~Simulation();
     QQuickItem* board;
-    std::vector<QQuickPaintedItem*> creatures;
 
 public slots:
     void run();

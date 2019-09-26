@@ -3,7 +3,7 @@
 #include "simulation.h"
 #include "blue.h"
 
-int Green::count = 0;
+unsigned int Green::count = 0;
 
 Green::Green(QQuickItem* parent)
     : Creature(parent)
@@ -37,11 +37,9 @@ void Green::replicate(Simulation& simulation)
     if (QRandomGenerator::global()->bounded(100) < mutationChance)
     {
         Blue* blue = new Blue(simulation.board, position());
-        simulation.creatures.push_back(blue);
     }
     else
     {
         Green* green = new Green(simulation.board, position());
-        simulation.creatures.push_back(green);
     }
 }

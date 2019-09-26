@@ -8,7 +8,7 @@ public:
     Red(QQuickItem* parent = nullptr);
     Red(QQuickItem* parent, QPointF position);
     ~Red() override;
-    static int count;
+    static unsigned int count;
     void replicate(Simulation& simulation) override;
 };
 

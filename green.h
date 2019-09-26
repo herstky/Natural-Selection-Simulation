@@ -8,7 +8,7 @@ public:
     Green(QQuickItem* parent = nullptr);
     Green(QQuickItem* parent, QPointF position);
     ~Green() override;
-    static int count;
+    static unsigned int count;
     void replicate(Simulation& simulation) override;
 };
 

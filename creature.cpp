@@ -108,23 +108,11 @@ void Creature::simulate(Simulation& simulation)
 void Creature::replicate(Simulation& simulation)
 {
     Creature* creature = new Creature(simulation.board);
-    simulation.creatures.push_back(creature);
 }
 
 void Creature::die(Simulation& simulation)
 {
     deleteLater();
-
-    //int i = 0;
-    //for (auto item : simulation.creatures)
-    //{
-    //    if (item == this)
-    //    {
-    //        simulation.creatures.erase(simulation.creatures.begin() + i);
-    //        break;
-    //    }
-    //    i++;
-    //}
 }
 
 qreal Creature::volume()
@@ -164,12 +152,12 @@ void Creature::expendEnergy(Simulation& simulation)
 	qreal force = mass * acceleration() + drag;
     qreal work = force * dDistance;
 
+	prevTime = QTime::currentTime();
+	prevVelocity = velocity;
+
     energyLevel -= work;
     if (energyLevel <= 0)
     {
         die(simulation);
     }
-
-    prevTime = QTime::currentTime();
-    prevVelocity = velocity;
 }

@@ -6,28 +6,31 @@
 
 #include "constants.h"
 
+unsigned int Food::count = 0;
+
 Food::Food(QQuickItem* parent)
 	: Entity(parent),
 	  creationChance(10),
-	  color(Qt::black),
+	  color(Qt::green),
 	  energyContent(10),
-	  mass(0.1),
+	  mass(.1),
 	  density(1500),
-	  aspectRatio(1), 
+	  aspectRatio(1.5), 
 	  depth(1)
 {
-	setHeight(SCALE_FACTOR * height());
-	setWidth(SCALE_FACTOR * width());
+	setHeight(SCALE_FACTOR * calculateHeight());
+	setWidth(SCALE_FACTOR * calculateWidth());
 	qreal x = QRandomGenerator::global()->bounded(parent->width() - width());
 	qreal y = QRandomGenerator::global()->bounded(parent->height() - height());
 	setPosition(QPointF(x, y));
 	setFlag(QQuickItem::ItemHasContents);
+	count++;
 }
 
 Food::Food(QQuickItem* parent, QPointF position)
 	: Entity(parent),
 	creationChance(10),
-	color(Qt::black),
+	color(Qt::green),
 	energyContent(10),
 	mass(0.1),
 	density(1500),
@@ -36,13 +39,14 @@ Food::Food(QQuickItem* parent, QPointF position)
 {
 	setHeight(SCALE_FACTOR * height());
 	setWidth(SCALE_FACTOR * width());
-	qreal x = QRandomGenerator::global()->bounded(parent->width() - width());
-	qreal y = QRandomGenerator::global()->bounded(parent->height() - height());
-	setPosition(QPointF(x, y));
+	setPosition(position);
 	setFlag(QQuickItem::ItemHasContents);
 }
 
-Food::~Food() {}
+Food::~Food() 
+{
+	count--;
+}
 
 void Food::paint(QPainter* painter)
 {
@@ -50,7 +54,8 @@ void Food::paint(QPainter* painter)
 	painter->setBrush(brush);
 	painter->setPen(Qt::NoPen);
 	painter->setRenderHint(QPainter::HighQualityAntialiasing);
-	painter->drawRect(contentsBoundingRect());
+	//painter->drawRect(contentsBoundingRect());
+	painter->drawRoundedRect(contentsBoundingRect(), 3, 3);
 }
 
 qreal Food::volume()
@@ -58,14 +63,14 @@ qreal Food::volume()
 	return mass / density;
 }
 
-qreal Food::height()
+qreal Food::calculateHeight()
 {
 	return std::sqrt(volume() / (aspectRatio * depth));
 }
 
-qreal Food::width()
+qreal Food::calculateWidth()
 {
-	return aspectRatio * height();
+	return aspectRatio * calculateHeight();
 }
 
 qreal Food::getCreationChance()

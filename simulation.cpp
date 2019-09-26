@@ -47,15 +47,18 @@ void Simulation::run()
         ticksRemaining--;
         return;
     }
+	else
+	{
+		ticksRemaining = TICKS_PER_STEP;
+	}
+
     if (QRandomGenerator::global()->bounded(100) < Red(board).getCreationChance())
     {
         Red* red = new Red(board);
-        //creatures.push_back(red);
     }
 	if (QRandomGenerator::global()->bounded(100) < Food(board).getCreationChance())
 	{
 		Food* food = new Food(board);
-		//creatures.push_back(food);
 	}
 
     for (auto item : board->childItems())
@@ -69,7 +72,6 @@ void Simulation::run()
             std::cout << "An exception was caught with message '" << e.what() << "'\n";
         }
     }
-    ticksRemaining = TICKS_PER_STEP;
     outputCounts(board);
 }
 
