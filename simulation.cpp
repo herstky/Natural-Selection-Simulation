@@ -9,20 +9,21 @@
 #include "blue.h"
 #include "food.h"
 
+
+
 Simulation::Simulation(QQuickItem* parent)
     : container(parent),
+	  board(Board(*parent->findChild<QQuickItem*>("board"))), // getting destroyed when exiting constructor?
       TICK_DURATION(50),
       TICKS_PER_STEP(1),
       ticksRemaining(TICKS_PER_STEP)
 {
-	board = static_cast<Board*>(container->findChild<QQuickItem*>("board"));
-
     Red::count = 0;
     Green::count = 0;
     Blue::count = 0;
 
     outputCounts();
-
+	QList<QQuickItem*> foobar = board.view.childItems();
     QTimer* timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(run()));
     timer->start(TICK_DURATION);
@@ -32,7 +33,13 @@ Simulation::~Simulation() {}
 
 void Simulation::run()
 {
-    for (auto item : board->childItems())
+	QQuickItem* foo = container->findChild<QQuickItem*>("board");
+	
+	QList<QQuickItem*> foobar = foo->childItems();
+
+	QList<QQuickItem*> bar = board.view.childItems();
+
+    for (const auto const item : board.view.childItems())
     {
         try
         {
@@ -54,16 +61,16 @@ void Simulation::run()
 		ticksRemaining = TICKS_PER_STEP;
 	}
 
-    if (QRandomGenerator::global()->bounded(100) < Red(board).getCreationChance())
+    if (QRandomGenerator::global()->bounded(100) < Red(&board.view).getCreationChance())
     {
-        Red* red = new Red(board);
+        Red* red = new Red(&board.view);
     }
-	if (QRandomGenerator::global()->bounded(100) < Food(board).getCreationChance())
+	if (QRandomGenerator::global()->bounded(100) < Food(&board.view).getCreationChance())
 	{
-		Food* food = new Food(board);
+		Food* food = new Food(&board.view);
 	}
 
-    for (auto item : board->childItems())
+    for (auto item : board.view.childItems())
     {
         try
         {

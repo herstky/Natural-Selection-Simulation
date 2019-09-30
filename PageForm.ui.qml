@@ -14,81 +14,95 @@ Page {
     property alias board: board
     property alias page: page
 
-    Column {
+
+    Rectangle {
         id: container
-        x: 200
-        y: 0
-        width: 600
-        spacing: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-        anchors.top: parent.top
-        anchors.topMargin: 0
-        anchors.horizontalCenter: parent.horizontalCenter
+        color: "#ffffff"
+        anchors.fill: parent
         objectName: "container"
 
-        Row {
-            id: row
-            y: 50
-            height: 50
-            anchors.bottom: board.top
+        Column {
+            id: column
+            x: 143
+            y: -61
+
+            width: 600
+            anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            anchors.left: parent.left
-            anchors.leftMargin: 0
-            transformOrigin: Item.Top
-            objectName: "textRow"
+            anchors.top: parent.top
+            anchors.topMargin: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            objectName: "column"
 
-            Label {
-                id: element2
-                width: 100
-                height: 36
-                text: qsTr("Text")
-                font.pixelSize: 18
-                anchors.bottom: parent.bottom
-                verticalAlignment: Text.AlignBottom
+            Row {
+                id: row
+                y: 50
+                height: 50
+                anchors.bottom: board.top
                 anchors.bottomMargin: 0
-                objectName: "redCountText"
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.left: parent.left
+                anchors.leftMargin: 0
+                transformOrigin: Item.Top
+                objectName: "textRow"
+
+                Label {
+                    id: element2
+                    width: 100
+                    height: 36
+                    text: qsTr("Text")
+                    font.pixelSize: 18
+                    anchors.bottom: parent.bottom
+                    verticalAlignment: Text.AlignBottom
+                    anchors.bottomMargin: 0
+                    objectName: "redCountText"
+                }
+
+                Label {
+                    id: element1
+                    width: 100
+                    height: 36
+                    text: qsTr("Text")
+                    font.pixelSize: 18
+                    anchors.bottom: parent.bottom
+                    verticalAlignment: Text.AlignBottom
+                    anchors.bottomMargin: 0
+                    objectName: "greenCountText"
+                }
+
+                Label {
+                    id: element
+                    width: 100
+                    height: 36
+                    text: qsTr("Text")
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 0
+                    verticalAlignment: Text.AlignBottom
+                    font.pixelSize: 18
+                    objectName: "blueCountText"
+                }
             }
 
-            Label {
-                id: element1
-                width: 100
-                height: 36
-                text: qsTr("Text")
-                font.pixelSize: 18
-                anchors.bottom: parent.bottom
-                verticalAlignment: Text.AlignBottom
-                anchors.bottomMargin: 0
-                objectName: "greenCountText"
+            Rectangle {
+                id: board
+                height: 400
+                color: "#2e8b57"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.left: parent.left
+                anchors.leftMargin: 0
+                border.width: 0
+                objectName: "board"
             }
-
-            Label {
-                id: element
-                width: 100
-                height: 36
-                text: qsTr("Text")
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
-                verticalAlignment: Text.AlignBottom
-                font.pixelSize: 18
-                objectName: "blueCountText"
-            }
-        }
-
-        Rectangle {
-            id: board
-            height: 400
-            color: "#2e8b57"
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            anchors.left: parent.left
-            anchors.leftMargin: 0
-            border.width: 0
-            objectName: "board"
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:2;anchors_height:50;anchors_y:50}
+}
+##^##*/
 

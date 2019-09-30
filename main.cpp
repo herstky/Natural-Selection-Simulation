@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
     QQuickItem* container = engine.rootObjects().first()->findChild<QQuickItem*>("container");
 
-    Simulation sim(container);
+    Simulation sim(container->findChild<QQuickItem*>("column"));
 
     return app.exec();
 }

@@ -17,14 +17,15 @@ public:
     Simulation(QQuickItem* parent = nullptr);
     ~Simulation();
 	QQuickItem* container;
-    Board* board;
+    const Board& board;
 
 public slots:
     void run();
 
 private:
-    void outputCounts();
     const int TICK_DURATION;
     const int TICKS_PER_STEP;
     int ticksRemaining;
+
+	void outputCounts();
 };
