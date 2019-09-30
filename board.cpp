@@ -9,8 +9,9 @@ Board::Board(QQuickItem* parent)
 	  rows(30),
 	  columns(60)
 {
-	setHeight(SCALE_FACTOR * cellSize * rows);
-	setWidth(SCALE_FACTOR * cellSize * columns);
+	setHeight(300.0);
+	setWidth(300.0);
+	setPosition(QPointF(10, 10));
 	setFlag(QQuickItem::ItemHasContents);
 }
 
@@ -23,8 +24,8 @@ Board::Board(QQuickItem* parent, qreal cellSize, int rows, int columns)
 {
 	setHeight(SCALE_FACTOR * cellSize * rows);
 	setWidth(SCALE_FACTOR * cellSize * columns);
-	setHeight(1);
-	setWidth(1);
+
+	setPosition(QPointF(parent->width() / 2.0 - width() / 2.0, parent->height() / 2.0 -height() / 2.0));
 	setFlag(QQuickItem::ItemHasContents);
 }
 
