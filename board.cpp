@@ -25,7 +25,18 @@ Board::Board(QQuickItem* parent, qreal cellSize, int rows, int columns)
 	setHeight(SCALE_FACTOR * cellSize * rows);
 	setWidth(SCALE_FACTOR * cellSize * columns);
 
-	setPosition(QPointF(parent->width() / 2.0 - width() / 2.0, parent->height() / 2.0 -height() / 2.0));
+	setPosition(QPointF(parent->width() / 2.0 - width() / 2.0, parent->height() / 2.0 - height() / 2.0));
+	setFlag(QQuickItem::ItemHasContents);
+}
+
+Board::Board(const Board& other) 
+	: color(other.color),
+	  cellSize(1),
+	  rows(int(other.height / (SCALE_FACTOR * cellSize))),
+	  columns(int(other.width / (SCALE_FACTOR * cellSize)))
+{
+	setHeight(SCALE_FACTOR * cellSize * rows);
+	setWidth(SCALE_FACTOR * cellSize * columns);
 	setFlag(QQuickItem::ItemHasContents);
 }
 

@@ -15,7 +15,8 @@ Simulation::Simulation(QQuickItem* parent)
       TICKS_PER_STEP(1),
       ticksRemaining(TICKS_PER_STEP)
 {
-	board = new Board(container, 0.01, 30, 60);
+	board = container->findChild<Board*>("board");
+	//board = new Board(boardContainer, 0.01, 15, 30);
     Red::count = 0;
     Green::count = 0;
     Blue::count = 0;

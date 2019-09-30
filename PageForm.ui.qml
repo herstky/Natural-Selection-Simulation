@@ -5,6 +5,7 @@ Page {
     id: page
     width: 1000
     height: 600
+    property alias container: container
     property alias element2: element2
     property alias element1: element1
     property alias element: element
@@ -13,25 +14,30 @@ Page {
     property alias board: board
     property alias page: page
 
-    Rectangle {
+    Column {
         id: container
-        color: "#ffffff"
-        anchors.fill: parent
+        x: 200
+        y: 0
+        width: 600
+        spacing: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.top: parent.top
+        anchors.topMargin: 0
+        anchors.horizontalCenter: parent.horizontalCenter
         objectName: "container"
 
         Row {
             id: row
-            x: 200
-            y: 0
-            anchors.right: board.right
+            y: 50
+            height: 50
+            anchors.bottom: board.top
+            anchors.bottomMargin: 0
+            anchors.right: parent.right
             anchors.rightMargin: 0
-            anchors.bottom: board.bottom
-            anchors.bottomMargin: 400
-            transformOrigin: Item.Top
-            anchors.left: board.left
+            anchors.left: parent.left
             anchors.leftMargin: 0
-            anchors.top: parent.top
-            anchors.topMargin: 0
+            transformOrigin: Item.Top
             objectName: "textRow"
 
             Label {
@@ -73,22 +79,16 @@ Page {
 
         Rectangle {
             id: board
-            x: 200
-            y: 100
-            width: 600
             height: 400
             color: "#2e8b57"
-            border.width: 0
-            anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.left: parent.left
+            anchors.leftMargin: 0
+            border.width: 0
             objectName: "board"
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:1;anchors_height:200;anchors_width:200;anchors_x:49;anchors_y:89}
-}
-##^##*/
 
