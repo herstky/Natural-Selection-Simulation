@@ -2,6 +2,7 @@
 
 #include <QQuickPaintedItem>
 #include <QPainter>
+#include <QQuickItem>
 
 class Board :
 	public QQuickPaintedItem
@@ -10,7 +11,6 @@ class Board :
 public:
 	Board(QQuickItem* parent = nullptr);
 	Board(QQuickItem* parent, qreal cellSize, int rows, int columns);
-	Board(const Board& other);
 	~Board();
 
 	void paint(QPainter* painter);
