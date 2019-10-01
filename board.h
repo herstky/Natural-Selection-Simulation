@@ -5,10 +5,10 @@
 class Board
 {
 public:
-	Board(QQuickItem& view);
+	Board(QQuickItem* view);
 	~Board();
 
-	QQuickItem& view;
+	QQuickItem* view;
 
 private:
 	qreal cellSize;

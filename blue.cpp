@@ -36,11 +36,11 @@ void Blue::replicate(Simulation& simulation)
 {
     if (QRandomGenerator::global()->bounded(100.0) < mutationChance)
     {
-        Green* green = new Green(&simulation.board.view, position());
+        Green* green = new Green(simulation.board.view, position());
     }
     else
     {
-        Blue* blue = new Blue(&simulation.board.view, position());
+        Blue* blue = new Blue(simulation.board.view, position());
     }
 }
 

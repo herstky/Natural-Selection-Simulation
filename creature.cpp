@@ -108,7 +108,7 @@ void Creature::simulate(Simulation& simulation)
 
 void Creature::replicate(Simulation& simulation)
 {
-    Creature* creature = new Creature(&simulation.board.view);
+    Creature* creature = new Creature(simulation.board.view);
 }
 
 void Creature::die(Simulation& simulation)
