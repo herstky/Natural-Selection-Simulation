@@ -15,8 +15,5 @@ Board::Board(QQuickItem* view)
 	view->setFlag(QQuickItem::ItemHasContents);
 }
 
-Board::~Board() 
-{
-	std::cout << "Board destructor called" << std::endl;
-}
+Board::~Board() {}
 

@@ -23,7 +23,7 @@ Simulation::Simulation(QQuickItem* parent)
     Blue::count = 0;
 
     outputCounts();
-	QList<QQuickItem*> foobar = board.view->childItems();
+	QQuickItem* foobar = board.view;
     QTimer* timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(run()));
     timer->start(TICK_DURATION);
