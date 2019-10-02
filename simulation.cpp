@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include "view.h"
 #include "entity.h"
 #include "red.h"
 #include "green.h"
@@ -12,8 +13,7 @@
 
 
 Simulation::Simulation(QQuickItem* parent)
-    : container(parent),
-	  board(parent->findChild<QQuickItem*>("board")),
+    : container(*parent),
       TICK_DURATION(50),
       TICKS_PER_STEP(1),
       ticksRemaining(TICKS_PER_STEP)
@@ -23,7 +23,6 @@ Simulation::Simulation(QQuickItem* parent)
     Blue::count = 0;
 
     outputCounts();
-	QQuickItem* foobar = board.view;
     QTimer* timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(run()));
     timer->start(TICK_DURATION);
@@ -31,13 +30,20 @@ Simulation::Simulation(QQuickItem* parent)
 
 Simulation::~Simulation() {}
 
+QQuickItem* Simulation::board() const
+{
+	return container.findChild<QQuickItem*>("board");
+}
+
 void Simulation::run()
 {
-    for (auto item : board.view->childItems())
+    for (auto item : board()->childItems())
     {
         try
         {
-            static_cast<Entity*>(item)->move(*this);
+			View* view = static_cast<View*>(item);
+			Entity* entity = static_cast<Entity*>(&view->model);
+			entity->move(*this);
         }
         catch (const std::exception& e)
         {
@@ -55,20 +61,22 @@ void Simulation::run()
 		ticksRemaining = TICKS_PER_STEP;
 	}
 
-    if (QRandomGenerator::global()->bounded(100) < Red(board.view).getCreationChance())
+    if (QRandomGenerator::global()->bounded(100) < Red(board()).getCreationChance())
     {
-        Red* red = new Red(board.view);
+        Red* red = new Red(board());
     }
-	if (QRandomGenerator::global()->bounded(100) < Food(board.view).getCreationChance())
+	if (QRandomGenerator::global()->bounded(100) < Food(board()).getCreationChance())
 	{
-		Food* food = new Food(board.view);
+		Food* food = new Food(board());
 	}
 
-    for (auto item : board.view->childItems())
+    for (auto item : board()->childItems())
     {
         try
         {
-            static_cast<Entity*>(item)->simulate(*this);
+			View* view = static_cast<View*>(item);
+			Entity* entity = static_cast<Entity*>(&view->model);
+			entity->simulate(*this);
         }
         catch (const std::exception& e)
         {
@@ -80,7 +88,7 @@ void Simulation::run()
 
 void Simulation::outputCounts()
 {
-    QQuickItem* parent = static_cast<QQuickItem*>(container->findChild<QObject*>("textRow"));
+    QQuickItem* parent = static_cast<QQuickItem*>(container.findChild<QObject*>("textRow"));
     QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
     redLabel->setProperty("text", "Red: " + QString::number(Red::count));
     QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
@@ -88,3 +96,4 @@ void Simulation::outputCounts()
     QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
     blueLabel->setProperty("text", "Blue: " + QString::number(Blue::count));
 }
+

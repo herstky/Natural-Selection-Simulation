@@ -7,11 +7,11 @@ class Simulation;
 class Entity : public Model
 {
 public:
-	Entity();
+	Entity(const Simulation& simulation);
+	Entity(const Simulation& simulation, const QPointF& position);
 	~Entity();
 	
-protected:
-	virtual void simulate(Simulation& simulation) = 0;
-	virtual void move(Simulation& simulation) = 0;
+	virtual void simulate(const Simulation& simulation) = 0;
+	virtual void move(const Simulation& simulation) = 0;
 };
 

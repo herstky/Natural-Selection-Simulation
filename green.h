@@ -1,12 +1,12 @@
 #pragma once
 
-#include "creature.h"
+#include "organism.h"
 
-class Green : public Creature
+class Green : public Organism
 {
 public:
-    Green(QQuickItem* parent = nullptr);
-    Green(QQuickItem* parent, QPointF position);
+    Green(const Simulation& simulation);
+    Green(const Simulation& simulation, const QPointF& position);
     ~Green() override;
     static unsigned int count;
     void replicate(Simulation& simulation) override;

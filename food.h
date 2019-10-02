@@ -6,10 +6,9 @@ class Simulation;
 
 class Food : public Entity
 {
-	Q_OBJECT
 public:
-	Food(QQuickItem* parent = nullptr);
-	Food(QQuickItem* parent, QPointF position);
+	Food(const Simulation& simulation);
+	Food(const Simulation& simulation, const QPointF& position);
 	~Food();
 
 	void paint(QPainter* painter);
@@ -20,6 +19,9 @@ public:
 
 	qreal getCreationChance();
 
+	void simulate(const Simulation& simulation) override;
+	void move(const Simulation& simulation) override;
+
 protected:
 	qreal creationChance;
 	QColor color;
@@ -28,9 +30,6 @@ protected:
 	qreal density;
 	qreal aspectRatio;
 	qreal depth;
-
-	void simulate(Simulation& simulation);
-	void move(Simulation& simulation);
 
 private:
 	static unsigned int count;

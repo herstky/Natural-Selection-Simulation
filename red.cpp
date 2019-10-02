@@ -5,8 +5,8 @@
 
 unsigned int Red::count = 0;
 
-Red::Red(QQuickItem* parent)
-    : Creature(parent)
+Red::Red(const Simulation& simulation)
+    : Organism(simulation)
 {
     color = Qt::red;
     creationChance = 50;
@@ -16,8 +16,8 @@ Red::Red(QQuickItem* parent)
     count++;
 }
 
-Red::Red(QQuickItem* parent, QPointF position)
-    : Creature(parent, position)
+Red::Red(const Simulation& simulation, const QPointF& position)
+    : Organism(simulation, position)
 {
     color = Qt::red;
     creationChance = 50;
@@ -32,7 +32,7 @@ Red::~Red()
     count--;
 }
 
-void Red::replicate(Simulation& simulation)
+void Red::replicate(const Simulation& simulation)
 {
     if (QRandomGenerator::global()->bounded(100.0) < mutationChance)
     {

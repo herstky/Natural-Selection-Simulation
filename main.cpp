@@ -10,7 +10,7 @@
 #include <iostream>
 
 #include "simulation.h"
-#include "creature.h"
+#include "organism.h"
 
 
 int main(int argc, char *argv[])

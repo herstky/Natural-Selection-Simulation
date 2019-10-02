@@ -4,17 +4,16 @@
 
 class Model;
 
-class View : QQuickPaintedItem
+class View : public QQuickPaintedItem
 {
 	Q_OBJECT;
 public:
-	View(QQuickItem* parent = nullptr);
 	View(QQuickItem* parent, Model& model);
 	~View();
 
 	void paint(QPainter* painter);
 
-	const Model& model;
+	Model& model;
 
 };
 

@@ -1,17 +1,22 @@
 #pragma once
 
-#include "entity.h"
-
 #include <QtGlobal>
+#include <QColor>
+
+class Simulation;
 
 class Model
 {
 public:
-	Model();
+	enum Status { alive, dead };
+
+	Model(const Simulation& simulation);
+	Model(const Simulation& simulation, const QPointF& position);
 	~Model();
 
 	enum Shape { ellipse, rectangle, roundedRectangle };
 	
+	Status status;
 	QColor color;
 	Shape shape;
 	qreal height;

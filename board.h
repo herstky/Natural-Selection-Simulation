@@ -8,9 +8,6 @@ public:
 	Board();
 	~Board();
 
-	int height();
-	int width();
-
 private:
 	qreal cellSize;
 	int rows;

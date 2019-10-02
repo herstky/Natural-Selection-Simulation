@@ -1,4 +1,4 @@
-#include "creature.h"
+#include "organism.h"
 
 #include <QtMath>
 #include <QRandomGenerator>
@@ -7,7 +7,7 @@
 #include "constants.h"
 
 Organism::Organism(const Simulation& simulation)
-    : Entity(),
+    : Entity(simulation),
       velocity(3),
       prevVelocity(velocity),
       prevTime(QTime::currentTime()),
@@ -20,14 +20,10 @@ Organism::Organism(const Simulation& simulation)
       mass(.001),
       density(WATER_DENSITY),
       energyLevel(100),
-      energyCapacity(100)
-{
-    x = QRandomGenerator::global()->bounded(simulation.board()->width() - width);
-    y = QRandomGenerator::global()->bounded(simulation.board()->height() - height);
-}
+      energyCapacity(100) {}
 
 Organism::Organism(const Simulation& simulation, const QPointF& position)
-    : Entity(position),
+    : Entity(simulation, position),
       velocity(3),
       prevVelocity(velocity),
       prevTime(QTime::currentTime()),
@@ -48,8 +44,6 @@ void Organism::move(const Simulation& simulation)
 {
     qreal dx = velocity * cos(direction);
     qreal dy = velocity * sin(direction);
-
-
 
     if (x + dx + width > simulation.board.width()
         || x + dx < 0)
@@ -86,12 +80,12 @@ void Organism::simulate(const Simulation& simulation)
 
 void Organism::replicate(const Simulation& simulation)
 {
-    Organism* creature = new Organism(simulation.board.view);
+    Organism* organism = new Organism(simulation.board.view);
 }
 
 void Organism::die(const Simulation& simulation)
 {
-    deleteLater();
+	status = dead;
 }
 
 qreal Organism::volume()

@@ -7,17 +7,18 @@
 
 #include <vector>
 
-#include "creature.h"
+#include "organism.h"
 #include "board.h"
 
 class Simulation : QObject
 {
     Q_OBJECT
 public:
-    Simulation(QQuickItem* parent = nullptr);
+    Simulation(QQuickItem* parent);
     ~Simulation();
-	QQuickItem* container;
-    const Board& board;
+	QQuickItem& container;
+
+	QQuickItem* board() const;
 
 public slots:
     void run();

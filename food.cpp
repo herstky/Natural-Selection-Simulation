@@ -8,8 +8,8 @@
 
 unsigned int Food::count = 0;
 
-Food::Food(QQuickItem* parent)
-	: Entity(parent),
+Food::Food(const Simulation& simulation)
+	: Entity(simulation),
 	  creationChance(10),
 	  color(Qt::green),
 	  energyContent(10),
@@ -18,17 +18,11 @@ Food::Food(QQuickItem* parent)
 	  aspectRatio(1.5), 
 	  depth(1)
 {
-	setHeight(SCALE_FACTOR * calculateHeight());
-	setWidth(SCALE_FACTOR * calculateWidth());
-	qreal x = QRandomGenerator::global()->bounded(parent->width() - width());
-	qreal y = QRandomGenerator::global()->bounded(parent->height() - height());
-	setPosition(QPointF(x, y));
-	setFlag(QQuickItem::ItemHasContents);
 	count++;
 }
 
-Food::Food(QQuickItem* parent, QPointF position)
-	: Entity(parent),
+Food::Food(const Simulation& simulation, const QPointF& position)
+	: Entity(simulation, position),
 	creationChance(10),
 	color(Qt::green),
 	energyContent(10),
@@ -37,24 +31,12 @@ Food::Food(QQuickItem* parent, QPointF position)
 	aspectRatio(1),
 	depth(1)
 {
-	setHeight(SCALE_FACTOR * height());
-	setWidth(SCALE_FACTOR * width());
-	setPosition(position);
-	setFlag(QQuickItem::ItemHasContents);
+	count++;
 }
 
 Food::~Food() 
 {
 	count--;
-}
-
-void Food::paint(QPainter* painter)
-{
-	QBrush brush(color);
-	painter->setBrush(brush);
-	painter->setPen(Qt::NoPen);
-	painter->setRenderHint(QPainter::HighQualityAntialiasing);
-	painter->drawRoundedRect(contentsBoundingRect(), 2, 2);
 }
 
 qreal Food::volume()
@@ -77,6 +59,6 @@ qreal Food::getCreationChance()
 	return creationChance;
 }
 
-void Food::simulate(Simulation& simulation) {}
+void Food::simulate(const Simulation& simulation) {}
 
-void Food::move(Simulation& simulation) {}
+void Food::move(const Simulation& simulation) {}

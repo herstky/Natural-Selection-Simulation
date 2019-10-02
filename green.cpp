@@ -5,8 +5,8 @@
 
 unsigned int Green::count = 0;
 
-Green::Green(QQuickItem* parent)
-    : Creature(parent)
+Green::Green(const Simulation& simulation)
+    : Organism(simulation)
 {
     color = Qt::green;
     creationChance = 0;
@@ -16,8 +16,8 @@ Green::Green(QQuickItem* parent)
     count++;
 }
 
-Green::Green(QQuickItem* parent, QPointF position)
-    : Creature(parent, position)
+Green::Green(const Simulation& simulation, const QPointF& position)
+    : Organism(simulation, position)
 {
     color = Qt::green;
     creationChance = 0;
