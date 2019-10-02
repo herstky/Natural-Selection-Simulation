@@ -13,7 +13,7 @@ public:
 
 	void paint(QPainter* painter);
 
-	Model model;
+	Model* model;
 
 };
 
