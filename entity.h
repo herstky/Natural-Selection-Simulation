@@ -1,27 +1,17 @@
 #pragma once
 
-#include <QQuickPaintedItem>
+#include "model.h"
 
 class Simulation;
-class Model;
 
-class Entity : public QQuickPaintedItem
+class Entity : public Model
 {
-	Q_OBJECT
 public:
-	Entity(QQuickItem* parent = nullptr);
+	Entity();
 	~Entity();
 	
-	Model* model;
-
-	void paint(QPainter* painter);
-
 protected:
-	friend class Simulation;
-	QColor color;
-
-	virtual void simulate(Simulation& simulation);
-	virtual void move(Simulation& simulation);
-
+	virtual void simulate(Simulation& simulation) = 0;
+	virtual void move(Simulation& simulation) = 0;
 };
 

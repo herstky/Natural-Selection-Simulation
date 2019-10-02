@@ -9,13 +9,10 @@ class Simulation;
 
 class Creature : public Entity 
 {
-    Q_OBJECT
 public:
-    Creature(QQuickItem* parent = nullptr);
-    Creature(QQuickItem* parent, QPointF position);
+    Creature();
+    Creature(QPointF position);
     ~Creature();
-
-    void paint(QPainter* painter);
 
     qreal volume();
     qreal diameter();

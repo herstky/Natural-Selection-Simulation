@@ -2,6 +2,8 @@
 
 #include "entity.h"
 
+#include <QtGlobal>
+
 class Model
 {
 public:

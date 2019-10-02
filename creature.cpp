@@ -1,14 +1,13 @@
 #include "creature.h"
 
-#include <QPainter>
 #include <QtMath>
 #include <QRandomGenerator>
 
 #include "simulation.h"
 #include "constants.h"
 
-Creature::Creature(QQuickItem* parent)
-    : Entity(parent),
+Creature::Creature()
+    : Entity(),
       velocity(3),
       prevVelocity(velocity),
       prevTime(QTime::currentTime()),
@@ -34,8 +33,8 @@ Creature::Creature(QQuickItem* parent)
     setFlag(QQuickItem::ItemHasContents);
 }
 
-Creature::Creature(QQuickItem* parent, QPointF position)
-    : Entity(parent),
+Creature::Creature(QPointF position)
+    : Entity(),
       velocity(3),
       prevVelocity(velocity),
       prevTime(QTime::currentTime()),
@@ -60,21 +59,12 @@ Creature::Creature(QQuickItem* parent, QPointF position)
 
 Creature::~Creature() {}
 
-void Creature::paint(QPainter* painter)
-{
-    QBrush brush(color);
-    painter->setBrush(brush);
-    painter->setPen(Qt::NoPen);
-    painter->setRenderHint(QPainter::HighQualityAntialiasing);
-    painter->drawEllipse(contentsBoundingRect());
-}
-
 void Creature::move(Simulation& simulation)
 {
     qreal dx = velocity * cos(direction);
     qreal dy = velocity * sin(direction);
 
-    if (x() + dx + width() > static_cast<QQuickItem*>(parent())->width()
+    if (x + dx + width > simulation.board.width()
         || x() + dx < 0)
     {
         direction = M_PI - direction;

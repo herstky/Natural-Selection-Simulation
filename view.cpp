@@ -5,20 +5,21 @@
 #include "model.h"
 
 View::View(QQuickItem* parent = nullptr)
-{
+	: QQuickPaintedItem(parent), model(Model()) {}
 
-}
+View::View(QQuickItem* parent, Model& model)
+	: QQuickPaintedItem(parent), model(model) {}
 
 View::~View() {}
 
 void View::paint(QPainter* painter)
 {
-	QBrush brush(model->color);
+	QBrush brush(model.color);
 	painter->setBrush(brush);
 	painter->setPen(Qt::NoPen);
 	painter->setRenderHint(QPainter::HighQualityAntialiasing);
 	
-	switch (model->shape)
+	switch (model.shape)
 	{
 	case Model::ellipse:
 		painter->drawEllipse(contentsBoundingRect());
@@ -29,5 +30,4 @@ void View::paint(QPainter* painter)
 	default:
 		painter->drawRect(contentsBoundingRect());
 	}
-
 }
