@@ -44,14 +44,28 @@ qreal Food::volume()
 	return mass / density;
 }
 
+qreal Food::volume(qreal _mass)
+{
+	return _mass / density;
+}
+
 qreal Food::calculateHeight()
 {
 	return std::sqrt(volume() / (aspectRatio * depth));
 }
 
+qreal Food::calculateHeight(qreal _volume)
+{
+	return std::sqrt(_volume / (aspectRatio * depth));
+}
 qreal Food::calculateWidth()
 {
 	return aspectRatio * calculateHeight();
+}
+
+qreal Food::calculateWidth(qreal _volume)
+{
+	return aspectRatio * calculateHeight(_volume);
 }
 
 qreal Food::getCreationChance()

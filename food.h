@@ -12,8 +12,11 @@ public:
 	~Food();
 
 	qreal volume();
+	qreal volume(qreal _mass);
 	qreal calculateHeight();
+	qreal calculateHeight(qreal _volume);
 	qreal calculateWidth();
+	qreal calculateWidth(qreal _volume);
 
 	qreal getCreationChance();
 

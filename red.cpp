@@ -39,10 +39,10 @@ void Red::replicate(const Simulation& simulation)
 {
     if (QRandomGenerator::global()->bounded(100.0) < mutationChance)
     {
-        new Green(simulation, QPointF(x, y));
+        new Green(simulation, QPointF(x(), y()));
     }
     else
     {
-        new Red(simulation, QPointF(x, y));
+        new Red(simulation, QPointF(x(), y()));
     }
 }

@@ -37,11 +37,11 @@ void Blue::replicate(const Simulation& simulation)
 {
     if (QRandomGenerator::global()->bounded(100.0) < mutationChance)
     {
-        new Green(simulation, QPointF(x, y));
+        new Green(simulation, QPointF(x(), y()));
     }
     else
     {
-        new Blue(simulation, QPointF(x, y));
+        new Blue(simulation, QPointF(x(), y()));
     }
 }
 

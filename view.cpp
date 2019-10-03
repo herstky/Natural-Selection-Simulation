@@ -18,8 +18,8 @@ View::~View()
 
 void View::init()
 {
-	setHeight(SCALE_FACTOR * model.height);
-	setWidth(SCALE_FACTOR * model.width);
+	setHeight(SCALE_FACTOR * model.height());
+	setWidth(SCALE_FACTOR * model.width());
 	setZ(SCALE_FACTOR * 1);
 	setOpacity(0.4);
 	setFlag(QQuickItem::ItemHasContents);
@@ -33,7 +33,7 @@ void View::paint(QPainter* painter)
 		return;
 	}
 	
-	setPosition(QPointF(model.x, model.y));
+	setPosition(QPointF(model.x(), model.y()));
 
 	QBrush brush(model.color);
 	painter->setBrush(brush);

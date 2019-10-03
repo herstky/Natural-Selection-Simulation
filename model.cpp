@@ -7,26 +7,67 @@ Model::Model(const Simulation& simulation)
 	: status(Model::Status::alive),
 	  color(Qt::black),
 	  shape(Model::Shape::rectangle),
-	  height(1),
-	  width(1),
-	  x(QRandomGenerator::global()->bounded(simulation.board()->width() - width)), // position is being set with initial height and width of 1
-	  y(QRandomGenerator::global()->bounded(simulation.board()->height() - height)),
-	  view(nullptr) {}
+	  view(nullptr),
+	  mHeight(1),
+	  mWidth(1),
+      mX(0),
+      mY(0) {}
 
 Model::Model(const Simulation& simulation, const QPointF& position) 
 	: status(Model::Status::alive),
 	  color(Qt::black),
 	  shape(Model::Shape::rectangle),
-	  height(1),
-	  width(1),
-	  x(position.x()),
-	  y(position.y()),
-	  view(nullptr) {}
+	  view(nullptr),
+	  mHeight(1),
+	  mWidth(1),
+	  mX(position.x()),
+	  mY(position.y()) {}
 
 Model::~Model() {}
+
+qreal Model::height()
+{
+	return mHeight;
+}
+
+void Model::setHeight(qreal height)
+{
+	mHeight = height;
+}
+
+qreal Model::width()
+{
+	return mWidth;
+}
+
+void Model::setWidth(qreal width)
+{
+	mWidth = width;
+}
+
+qreal Model::x()
+{
+	return mX;
+}
+
+void Model::setX(qreal x)
+{
+	mX = x;
+}
+
+qreal Model::y()
+{
+	return mY;
+}
+
+void Model::setY(qreal y)
+{
+	mY = y;
+}
 
 void Model::initView(const Simulation& simulation)
 {
 	view = new View(simulation.board(), *this);
 	view->init();
 }
+

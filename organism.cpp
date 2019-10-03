@@ -18,13 +18,13 @@ Organism::Organism(const Simulation& simulation)
       replicationChance(0),
       mutationChance(0),
       deathChance(0),
-      mass(.001),
+      mass(mass),
       density(WATER_DENSITY),
       energyLevel(100),
-      energyCapacity(100) 
+      energyCapacity(100),
+	  mX(QRandomGenerator::global()->bounded(simulation.board()->width() - width())),
+	  mY(QRandomGenerator::global()->bounded(simulation.board()->height() - height()))
 {
-	height = diameter();
-	width = diameter();
 	initView(simulation);
 }
 
@@ -38,13 +38,13 @@ Organism::Organism(const Simulation& simulation, const QPointF& position)
       replicationChance(0),
       mutationChance(0),
       deathChance(0),
-      mass(100),
+      mass(mass),
       density(WATER_DENSITY),
       energyLevel(100),
-      energyCapacity(100) 
+      energyCapacity(100),
+	  mX(position.x()),
+	  mY(position.y())
 {
-	height = diameter();
-	width = diameter();
 	initView(simulation);
 }
 
@@ -60,11 +60,11 @@ void Organism::move(const Simulation& simulation)
     qreal dx = velocity * cos(direction);
     qreal dy = velocity * sin(direction);
 
-    if (x + dx + width > simulation.board()->width() || x + dx < 0)
+    if (x() + dx + width() > simulation.board()->width() || x() + dx < 0)
     {
         direction = M_PI - direction;
     }
-    if (y + dy + height > simulation.board()->height() || y + dy < 0)
+    if (y() + dy + height() > simulation.board()->height() || y() + dy < 0)
     {
         direction = 2 * M_PI - direction;
     }
@@ -75,8 +75,8 @@ void Organism::move(const Simulation& simulation)
 
     expendEnergy(simulation);
 
-	x += dx;
-	y += dy;
+	setX(x() + dx);
+	setY(y() + dy);
 }
 
 void Organism::simulate(const Simulation& simulation)
@@ -98,7 +98,7 @@ void Organism::simulate(const Simulation& simulation)
 
 void Organism::replicate(const Simulation& simulation)
 {
-    Organism* organism = new Organism(simulation.board(), QPointF(x, y));
+    Organism* organism = new Organism(simulation.board(), QPointF(x(), y()));
 }
 
 void Organism::die(const Simulation& simulation)
@@ -130,6 +130,40 @@ qreal Organism::acceleration()
 {
     return dVelocity() / dTime();
 }
+
+qreal Organism::x()
+{
+	return mX;
+}
+
+void Organism::setX(qreal x) 
+{
+	mX = x;
+}
+
+qreal Organism::y()
+{
+	return mY;
+}
+
+void Organism::setY(qreal y) 
+{
+	mY = y;
+}
+
+qreal Organism::height() 
+{
+	return diameter();
+}
+
+void Organism::setHeight(qreal height) {}
+
+qreal Organism::width()
+{
+	return diameter();
+}
+
+void Organism::setWidth(qreal width) {}
 
 void Organism::expendEnergy(const Simulation& simulation)
 {

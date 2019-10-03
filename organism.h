@@ -35,10 +35,23 @@ protected:
 	qreal energyLevel;
 	qreal energyCapacity;
 
+	qreal x() override;
+	void setX(qreal x) override;
+	qreal y() override;
+	void setY(qreal y) override;
+	qreal height() override;
+	void setHeight(qreal height) override;
+	qreal width() override;
+	void setWidth(qreal width) override;
+
     void expendEnergy(const Simulation& simulation);
 	void move(const Simulation& simulation) override;
 	void simulate(const Simulation& simulation) override;
 	virtual void replicate(const Simulation& simulation);
 	virtual void die(const Simulation& simulation);
+
+protected:
+	qreal mX;
+	qreal mY;
 };
 
