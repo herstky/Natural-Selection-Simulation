@@ -5,18 +5,18 @@
 
 class Simulation;
 
+class View;
+
 class Model
 {
 public:
-	enum Status { alive, dead };
+	enum class Status { alive, dead };
+	enum class Shape { ellipse, rectangle, roundedRectangle };
 
-	Model();
 	Model(const Simulation& simulation);
 	Model(const Simulation& simulation, const QPointF& position);
 	~Model();
 
-	enum Shape { ellipse, rectangle, roundedRectangle };
-	
 	Status status;
 	QColor color;
 	Shape shape;
@@ -24,6 +24,8 @@ public:
 	qreal width;
 	qreal x;
 	qreal y;
+	View* view;
 
+	void initView(const Simulation& simulation);
 };
 

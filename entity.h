@@ -11,7 +11,7 @@ public:
 	Entity(const Simulation& simulation, const QPointF& position);
 	~Entity();
 	
-	virtual void simulate(const Simulation& simulation) = 0;
-	virtual void move(const Simulation& simulation) = 0;
+	virtual void simulate(const Simulation& simulation);
+	virtual void move(const Simulation& simulation);
 };
 

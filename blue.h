@@ -8,6 +8,9 @@ public:
     Blue(const Simulation& simulation);
     Blue(const Simulation& simulation, const QPointF& position);
     ~Blue();
-    static unsigned int count;
+    
+	static unsigned int count;
+	static qreal creationChance;
+
     void replicate(const Simulation& simulation) override;
 };

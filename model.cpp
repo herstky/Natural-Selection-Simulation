@@ -3,37 +3,30 @@
 #include "simulation.h"
 #include "view.h"
 
-Model::Model()
-	: status(alive),
-	  color(Qt::black),
-	  shape(rectangle),
-	  height(0),
-	  width(0),
-	  x(0),
-	  y(0) {}
-
 Model::Model(const Simulation& simulation)
-	: status(alive),
+	: status(Model::Status::alive),
 	  color(Qt::black),
-	  shape(rectangle),
-	  height(0),
-	  width(0),
-	  x(QRandomGenerator::global()->bounded(simulation.board()->width() - width)),
-	  y(QRandomGenerator::global()->bounded(simulation.board()->width() - width)) 
-{
-	new View(simulation.board(), *this);
-}
+	  shape(Model::Shape::rectangle),
+	  height(1),
+	  width(1),
+	  x(QRandomGenerator::global()->bounded(simulation.board()->width() - width)), // position is being set with initial height and width of 1
+	  y(QRandomGenerator::global()->bounded(simulation.board()->height() - height)),
+	  view(nullptr) {}
 
 Model::Model(const Simulation& simulation, const QPointF& position) 
-	: status(alive),
+	: status(Model::Status::alive),
 	  color(Qt::black),
-	  shape(rectangle),
-	  height(0),
-	  width(0),
+	  shape(Model::Shape::rectangle),
+	  height(1),
+	  width(1),
 	  x(position.x()),
-	  y(position.y()) 
-{
-	new View(simulation.board(), *this);
-}
+	  y(position.y()),
+	  view(nullptr) {}
 
 Model::~Model() {}
+
+void Model::initView(const Simulation& simulation)
+{
+	view = new View(simulation.board(), *this);
+	view->init();
+}

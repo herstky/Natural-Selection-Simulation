@@ -6,6 +6,8 @@
 #include "simulation.h"
 #include "constants.h"
 
+#include "view.h"
+
 Organism::Organism(const Simulation& simulation)
     : Entity(simulation),
       velocity(3),
@@ -13,14 +15,18 @@ Organism::Organism(const Simulation& simulation)
       prevTime(QTime::currentTime()),
       dDistance(0),
       direction(QRandomGenerator::global()->bounded(2 * M_PI)),
-      creationChance(0),
       replicationChance(0),
       mutationChance(0),
       deathChance(0),
       mass(.001),
       density(WATER_DENSITY),
       energyLevel(100),
-      energyCapacity(100) {}
+      energyCapacity(100) 
+{
+	height = diameter();
+	width = diameter();
+	initView(simulation);
+}
 
 Organism::Organism(const Simulation& simulation, const QPointF& position)
     : Entity(simulation, position),
@@ -29,19 +35,28 @@ Organism::Organism(const Simulation& simulation, const QPointF& position)
       prevTime(QTime::currentTime()),
       dDistance(0),
       direction(QRandomGenerator::global()->bounded(2 * M_PI)),
-      creationChance(0),
       replicationChance(0),
       mutationChance(0),
       deathChance(0),
       mass(100),
       density(WATER_DENSITY),
       energyLevel(100),
-      energyCapacity(100) {}
+      energyCapacity(100) 
+{
+	height = diameter();
+	width = diameter();
+	initView(simulation);
+}
 
 Organism::~Organism() {}
 
 void Organism::move(const Simulation& simulation)
 {
+	if (status == Model::Status::dead)
+	{
+		return;
+	}
+
     qreal dx = velocity * cos(direction);
     qreal dy = velocity * sin(direction);
 
@@ -66,6 +81,11 @@ void Organism::move(const Simulation& simulation)
 
 void Organism::simulate(const Simulation& simulation)
 {
+	if (status == Model::Status::dead)
+	{
+		return;
+	}
+
 //    if (QRandomGenerator::global()->bounded(100.0) < replicationChance)
 //    {
 //        replicate(simulation);
@@ -83,7 +103,7 @@ void Organism::replicate(const Simulation& simulation)
 
 void Organism::die(const Simulation& simulation)
 {
-	status = dead;
+	status = Model::Status::dead;
 }
 
 qreal Organism::volume()
@@ -109,11 +129,6 @@ qreal Organism::dTime()
 qreal Organism::acceleration()
 {
     return dVelocity() / dTime();
-}
-
-qreal Organism::getCreationChance()
-{
-	return creationChance;
 }
 
 void Organism::expendEnergy(const Simulation& simulation)

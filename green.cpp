@@ -4,13 +4,13 @@
 #include "blue.h"
 
 unsigned int Green::count = 0;
+qreal creationChance = 0;
 
 Green::Green(const Simulation& simulation)
     : Organism(simulation)
 {
-	shape = ellipse;
+	shape = Model::Shape::ellipse;
     color = Qt::green;
-    creationChance = 0;
     replicationChance = 8;
     mutationChance = 5;
     deathChance = 8;
@@ -20,9 +20,8 @@ Green::Green(const Simulation& simulation)
 Green::Green(const Simulation& simulation, const QPointF& position)
     : Organism(simulation, position)
 {
-	shape = ellipse;
+	shape = Model::Shape::ellipse;
     color = Qt::green;
-    creationChance = 0;
     replicationChance = 10;
     mutationChance = 5;
     deathChance = 12;
@@ -38,10 +37,10 @@ void Green::replicate(const Simulation& simulation)
 {
     if (QRandomGenerator::global()->bounded(100.0) < mutationChance)
     {
-        Blue* blue = new Blue(simulation, QPointF(x, y));
+        new Blue(simulation, QPointF(x, y));
     }
     else
     {
-        Green* green = new Green(simulation, QPointF(x, y));
+        new Green(simulation, QPointF(x, y));
     }
 }

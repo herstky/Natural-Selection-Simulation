@@ -8,6 +8,16 @@
 View::View(QQuickItem* parent, Model& model)
 	: QQuickPaintedItem(parent), model(model) 
 {
+	init();
+}
+
+View::~View() 
+{
+	//delete &model;
+}
+
+void View::init()
+{
 	setHeight(SCALE_FACTOR * model.height);
 	setWidth(SCALE_FACTOR * model.width);
 	setZ(SCALE_FACTOR * 1);
@@ -15,10 +25,14 @@ View::View(QQuickItem* parent, Model& model)
 	setFlag(QQuickItem::ItemHasContents);
 }
 
-View::~View() {}
-
 void View::paint(QPainter* painter)
 {
+	if (model.status == Model::Status::dead)
+	{
+		deleteLater();
+		return;
+	}
+	
 	setPosition(QPointF(model.x, model.y));
 
 	QBrush brush(model.color);
@@ -28,12 +42,15 @@ void View::paint(QPainter* painter)
 	
 	switch (model.shape)
 	{
-	case Model::ellipse:
+	case Model::Shape::ellipse:
 		painter->drawEllipse(contentsBoundingRect());
-	case Model::rectangle:
+		break;
+	case Model::Shape::rectangle:
 		painter->drawRect(contentsBoundingRect());
-	case Model::roundedRectangle:
+		break;
+	case Model::Shape::roundedRectangle:
 		painter->drawRoundedRect(contentsBoundingRect(), 2, 2);
+		break;
 	default:
 		painter->drawRect(contentsBoundingRect());
 	}

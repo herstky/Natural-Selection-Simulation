@@ -20,15 +20,12 @@ public:
     qreal dTime();
     qreal acceleration();
 
-	qreal getCreationChance();
-
 protected:
 	qreal velocity;
 	qreal prevVelocity;
 	QTime prevTime;
 	qreal dDistance;
 	qreal direction;
-	qreal creationChance;
 	qreal replicationChance;
 	qreal mutationChance;
 	qreal deathChance;

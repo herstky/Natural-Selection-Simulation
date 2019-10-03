@@ -11,6 +11,8 @@ public:
 	View(QQuickItem* parent, Model& model);
 	~View();
 
+	void init();
+
 	void paint(QPainter* painter);
 
 	Model& model;

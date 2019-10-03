@@ -8,4 +8,6 @@ Entity::Entity(const Simulation& simulation, const QPointF& position)
 
 Entity::~Entity() {}
 
+void Entity::simulate(const Simulation& simulation) {}
 
+void Entity::move(const Simulation& simulation) {}
