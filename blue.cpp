@@ -8,6 +8,7 @@ unsigned int Blue::count = 0;
 Blue::Blue(const Simulation& simulation)
     : Organism(simulation)
 {
+	shape = ellipse;
     color = Qt::blue;
     creationChance = 0;
     replicationChance = 4;
@@ -19,6 +20,7 @@ Blue::Blue(const Simulation& simulation)
 Blue::Blue(const Simulation& simulation, const QPointF& position)
     : Organism(simulation, position)
 {
+	shape = ellipse;
     color = Qt::blue;
     creationChance = 0;
     replicationChance = 10;
@@ -32,15 +34,15 @@ Blue::~Blue()
     count--;
 }
 
-void Blue::replicate(Simulation& simulation)
+void Blue::replicate(const Simulation& simulation)
 {
     if (QRandomGenerator::global()->bounded(100.0) < mutationChance)
     {
-        Green* green = new Green(simulation.board.view, position());
+        Green* green = new Green(simulation, QPointF(x, y));
     }
     else
     {
-        Blue* blue = new Blue(simulation.board.view, position());
+        Blue* blue = new Blue(simulation, QPointF(x, y));
     }
 }
 

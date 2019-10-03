@@ -11,8 +11,6 @@ public:
 	Food(const Simulation& simulation, const QPointF& position);
 	~Food();
 
-	void paint(QPainter* painter);
-
 	qreal volume();
 	qreal calculateHeight();
 	qreal calculateWidth();

@@ -7,8 +7,8 @@ class Green : public Organism
 public:
     Green(const Simulation& simulation);
     Green(const Simulation& simulation, const QPointF& position);
-    ~Green() override;
+    ~Green();
     static unsigned int count;
-    void replicate(Simulation& simulation) override;
+    void replicate(const Simulation& simulation) override;
 };
 

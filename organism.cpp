@@ -45,13 +45,11 @@ void Organism::move(const Simulation& simulation)
     qreal dx = velocity * cos(direction);
     qreal dy = velocity * sin(direction);
 
-    if (x + dx + width > simulation.board.width()
-        || x + dx < 0)
+    if (x + dx + width > simulation.board()->width() || x + dx < 0)
     {
         direction = M_PI - direction;
     }
-    if (y + dy + height > simulation.board.height()
-        || y + dy < 0)
+    if (y + dy + height > simulation.board()->height() || y + dy < 0)
     {
         direction = 2 * M_PI - direction;
     }
@@ -80,7 +78,7 @@ void Organism::simulate(const Simulation& simulation)
 
 void Organism::replicate(const Simulation& simulation)
 {
-    Organism* organism = new Organism(simulation.board.view);
+    Organism* organism = new Organism(simulation.board(), QPointF(x, y));
 }
 
 void Organism::die(const Simulation& simulation)

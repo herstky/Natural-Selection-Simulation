@@ -3,6 +3,15 @@
 #include "simulation.h"
 #include "view.h"
 
+Model::Model()
+	: status(alive),
+	  color(Qt::black),
+	  shape(rectangle),
+	  height(0),
+	  width(0),
+	  x(0),
+	  y(0) {}
+
 Model::Model(const Simulation& simulation)
 	: status(alive),
 	  color(Qt::black),

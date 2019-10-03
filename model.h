@@ -10,6 +10,7 @@ class Model
 public:
 	enum Status { alive, dead };
 
+	Model();
 	Model(const Simulation& simulation);
 	Model(const Simulation& simulation, const QPointF& position);
 	~Model();

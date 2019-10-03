@@ -8,6 +8,7 @@ unsigned int Red::count = 0;
 Red::Red(const Simulation& simulation)
     : Organism(simulation)
 {
+	shape = ellipse;
     color = Qt::red;
     creationChance = 50;
     replicationChance = 7;
@@ -19,6 +20,7 @@ Red::Red(const Simulation& simulation)
 Red::Red(const Simulation& simulation, const QPointF& position)
     : Organism(simulation, position)
 {
+	shape = ellipse;
     color = Qt::red;
     creationChance = 50;
     replicationChance = 10;
@@ -36,10 +38,10 @@ void Red::replicate(const Simulation& simulation)
 {
     if (QRandomGenerator::global()->bounded(100.0) < mutationChance)
     {
-        Green* green = new Green(simulation.board.view, position());
+        Green* green = new Green(simulation, QPointF(x, y));
     }
     else
     {
-        Red* red = new Red(simulation.board.view, position());
+        Red* red = new Red(simulation, QPointF(x, y));
     }
 }

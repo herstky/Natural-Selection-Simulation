@@ -7,7 +7,7 @@ class Blue : public Organism
 public:
     Blue(const Simulation& simulation);
     Blue(const Simulation& simulation, const QPointF& position);
-    ~Blue() override;
+    ~Blue();
     static unsigned int count;
-    void replicate(Simulation& simulation) override;
+    void replicate(const Simulation& simulation) override;
 };
