@@ -31,7 +31,6 @@ void View::paint(QPainter* painter)
 {
 	if (model.status == Model::Status::dead)
 	{
-		deleteLater();
 		return;
 	}
 	

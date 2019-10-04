@@ -52,19 +52,14 @@ Organism::~Organism() {}
 
 void Organism::move(const Simulation& simulation)
 {
-	if (status == Model::Status::dead)
-	{
-		return;
-	}
-
     qreal dx = velocity * cos(direction);
     qreal dy = velocity * sin(direction);
 
-    if (x() + dx + width() > simulation.board()->width() || x() + dx < 0)
+    if (x() + dx + SCALE_FACTOR * width() > simulation.board()->width() || x() + dx < 0)
     {
         direction = M_PI - direction;
     }
-    if (y() + dy + height() > simulation.board()->height() || y() + dy < 0)
+    if (y() + dy + SCALE_FACTOR * height() > simulation.board()->height() || y() + dy < 0)
     {
         direction = 2 * M_PI - direction;
     }
@@ -80,15 +75,15 @@ void Organism::move(const Simulation& simulation)
 
 	setX(x() + dx);
 	setY(y() + dy);
+	
+	if (status == Model::Status::dead)
+	{
+		delete this;
+	}
 }
 
 void Organism::simulate(const Simulation& simulation)
 {
-	if (status == Model::Status::dead)
-	{
-		return;
-	}
-
 //    if (QRandomGenerator::global()->bounded(100.0) < replicationChance)
 //    {
 //        replicate(simulation);
@@ -97,6 +92,11 @@ void Organism::simulate(const Simulation& simulation)
 //    {
 //        die(simulation);
 //    }
+	if (status == Model::Status::dead)
+	{
+		delete this;
+		return;
+	}
 }
 
 void Organism::replicate(const Simulation& simulation)
@@ -107,6 +107,7 @@ void Organism::replicate(const Simulation& simulation)
 void Organism::die(const Simulation& simulation)
 {
 	status = Model::Status::dead;
+	view->deleteLater();
 }
 
 qreal Organism::volume()

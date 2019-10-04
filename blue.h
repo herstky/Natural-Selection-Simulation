@@ -7,7 +7,7 @@ class Blue : public Organism
 public:
     Blue(const Simulation& simulation);
     Blue(const Simulation& simulation, const QPointF& position);
-    ~Blue();
+    ~Blue() override;
     
 	static unsigned int count;
 	static qreal creationChance;

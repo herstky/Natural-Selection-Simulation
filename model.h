@@ -15,7 +15,7 @@ public:
 
 	Model(const Simulation& simulation);
 	Model(const Simulation& simulation, const QPointF& position);
-	~Model();
+	virtual ~Model();
 
 	Status status;
 	QColor color;

@@ -12,7 +12,7 @@ class Organism : public Entity
 public:
     Organism(const Simulation& simulation);
     Organism(const Simulation& simulation, const QPointF& position);
-    ~Organism();
+    virtual ~Organism() override;
 
     qreal volume();
     qreal diameter();

@@ -24,9 +24,6 @@ Simulation::Simulation(QQuickItem* parent)
     QTimer* timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(run()));
     timer->start(TICK_DURATION);
-
-	new Red(*this);
-
 }
 
 Simulation::~Simulation() {}
@@ -69,7 +66,7 @@ void Simulation::run()
 
     if (QRandomGenerator::global()->bounded(100) < Red::creationChance)
     {
-		//new Red(*this);
+		new Red(*this);
     }
 	/*if (QRandomGenerator::global()->bounded(100) < Food(*this).getCreationChance())
 	{
@@ -81,8 +78,8 @@ void Simulation::run()
         try
         {
 			View* view = static_cast<View*>(item);
-			Entity* entity = static_cast<Entity*>(&view->model);
-			entity->simulate(*this);
+			Organism* organism = static_cast<Organism*>(&view->model);
+			organism->simulate(*this);
         }
         catch (const std::exception& e)
         {
