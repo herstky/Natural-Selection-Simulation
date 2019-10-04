@@ -21,10 +21,10 @@ Organism::Organism(const Simulation& simulation)
       mass(0.001),
       density(WATER_DENSITY),
       energyLevel(100),
-      energyCapacity(100),
-	  mX(QRandomGenerator::global()->bounded(simulation.board()->width() - width())),
-	  mY(QRandomGenerator::global()->bounded(simulation.board()->height() - height()))
+      energyCapacity(100)
 {
+	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - SCALE_FACTOR * width());
+	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - SCALE_FACTOR * height());
 	initView(simulation);
 }
 
@@ -41,10 +41,10 @@ Organism::Organism(const Simulation& simulation, const QPointF& position)
       mass(0.001),
       density(WATER_DENSITY),
       energyLevel(100),
-      energyCapacity(100),
-	  mX(position.x()),
-	  mY(position.y())
+      energyCapacity(100)
 {
+	mX = position.x();
+	mY = position.y();
 	initView(simulation);
 }
 
@@ -74,6 +74,9 @@ void Organism::move(const Simulation& simulation)
     dDistance = std::sqrt(pow(dx, 2) + pow(dy, 2));
 
     expendEnergy(simulation);
+
+	qreal vx = view->x();
+	qreal vy = view->y();
 
 	setX(x() + dx);
 	setY(y() + dy);
@@ -136,19 +139,9 @@ qreal Organism::x()
 	return mX;
 }
 
-void Organism::setX(qreal x) 
-{
-	mX = x;
-}
-
 qreal Organism::y()
 {
 	return mY;
-}
-
-void Organism::setY(qreal y) 
-{
-	mY = y;
 }
 
 qreal Organism::height() 

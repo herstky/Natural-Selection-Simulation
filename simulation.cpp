@@ -24,6 +24,9 @@ Simulation::Simulation(QQuickItem* parent)
     QTimer* timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(run()));
     timer->start(TICK_DURATION);
+
+	new Red(*this);
+
 }
 
 Simulation::~Simulation() {}
@@ -41,8 +44,8 @@ void Simulation::run()
         try
         {
 			View* view = static_cast<View*>(item);
-			Entity* entity = static_cast<Entity*>(&view->model);
-			entity->move(*this);
+			Organism* organism = static_cast<Organism*>(&view->model);
+			organism->move(*this);
         }
         catch (const std::exception& e)
         {
@@ -66,7 +69,7 @@ void Simulation::run()
 
     if (QRandomGenerator::global()->bounded(100) < Red::creationChance)
     {
-		new Red(*this);
+		//new Red(*this);
     }
 	/*if (QRandomGenerator::global()->bounded(100) < Food(*this).getCreationChance())
 	{
@@ -91,12 +94,12 @@ void Simulation::run()
 
 void Simulation::outputCounts()
 {
-    //QQuickItem* parent = static_cast<QQuickItem*>(container.findChild<QObject*>("textRow"));
-    //QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
-    //redLabel->setProperty("text", "Red: " + QString::number(Red::count));
-    //QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
-    //greenLabel->setProperty("text", "Green: " + QString::number(Green::count));
-    //QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
-    //blueLabel->setProperty("text", "Blue: " + QString::number(Blue::count));
+    QQuickItem* parent = static_cast<QQuickItem*>(container.findChild<QObject*>("textRow"));
+    QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
+    redLabel->setProperty("text", "Red: " + QString::number(Red::count));
+    QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
+    greenLabel->setProperty("text", "Green: " + QString::number(Green::count));
+    QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
+    blueLabel->setProperty("text", "Blue: " + QString::number(Blue::count));
 }
 

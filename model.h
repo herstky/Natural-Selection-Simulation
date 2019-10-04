@@ -33,10 +33,13 @@ public:
 
 	void initView(const Simulation& simulation);
 
+protected:
+	qreal mX;
+	qreal mY;
+
 private:
 	qreal mHeight;
 	qreal mWidth;
-	qreal mX;
-	qreal mY;
+
 };
 

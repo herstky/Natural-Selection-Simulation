@@ -53,6 +53,7 @@ qreal Model::x()
 void Model::setX(qreal x)
 {
 	mX = x;
+	view->setX(x);
 }
 
 qreal Model::y()
@@ -63,6 +64,7 @@ qreal Model::y()
 void Model::setY(qreal y)
 {
 	mY = y;
+	view->setY(y);
 }
 
 void Model::initView(const Simulation& simulation)
