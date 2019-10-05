@@ -12,13 +12,13 @@ qreal Food::creationChance = 3;
 
 Food::Food(const Simulation& simulation)
 	: Entity(simulation),
-	  color(Qt::green),
 	  energyContent(10),
 	  mass(.005),
 	  density(1500),
 	  aspectRatio(1.5), 
 	  depth(.1)
 {
+	color = Qt::green;
 	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - SCALE_FACTOR * width());
 	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - SCALE_FACTOR * height());
 	initView(simulation);
@@ -27,13 +27,13 @@ Food::Food(const Simulation& simulation)
 
 Food::Food(const Simulation& simulation, const QPointF& position)
 	: Entity(simulation, position),
-	color(Qt::green),
-	energyContent(10),
-	mass(0.005),
-	density(1500),
-	aspectRatio(1),
-	depth(.1)
+	  energyContent(10),
+	  mass(0.005),
+	  density(1500),
+	  aspectRatio(1),
+	  depth(.1)
 {
+	color = Qt::green;
 	mX = position.x();
 	mY = position.y();
 	initView(simulation);

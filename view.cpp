@@ -6,10 +6,7 @@
 #include "constants.h"
 
 View::View(QQuickItem* parent, Model& model)
-	: QQuickPaintedItem(parent), model(model) 
-{
-	init();
-}
+	: QQuickPaintedItem(parent), model(model) {}
 
 View::~View() 
 {
@@ -18,7 +15,6 @@ View::~View()
 
 void View::init()
 {
-
 	setX(model.x());
 	setY(model.y());
 	setHeight(SCALE_FACTOR * model.height());

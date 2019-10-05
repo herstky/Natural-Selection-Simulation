@@ -17,7 +17,6 @@ public:
 	qreal volume();
 
 protected:
-	QColor color;
 	qreal energyContent;
 	qreal mass;
 	qreal density;
