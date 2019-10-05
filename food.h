@@ -6,25 +6,17 @@ class Simulation;
 
 class Food : public Entity
 {
+	friend class Simulation;
 public:
 	Food(const Simulation& simulation);
 	Food(const Simulation& simulation, const QPointF& position);
 	~Food();
 
+	qreal height() override;
+	qreal width() override;
 	qreal volume();
-	qreal volume(qreal _mass);
-	qreal calculateHeight();
-	qreal calculateHeight(qreal _volume);
-	qreal calculateWidth();
-	qreal calculateWidth(qreal _volume);
-
-	qreal getCreationChance();
-
-	void simulate(const Simulation& simulation) override;
-	void move(const Simulation& simulation) override;
 
 protected:
-	qreal creationChance;
 	QColor color;
 	qreal energyContent;
 	qreal mass;
@@ -34,5 +26,6 @@ protected:
 
 private:
 	static unsigned int count;
+	static qreal creationChance;
 };
 

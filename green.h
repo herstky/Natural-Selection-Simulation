@@ -4,14 +4,16 @@
 
 class Green : public Organism
 {
+	friend class Simulation;
 public:
     Green(const Simulation& simulation);
     Green(const Simulation& simulation, const QPointF& position);
     ~Green() override;
 
-    static unsigned int count;
-	static qreal creationChance;
-
     void replicate(const Simulation& simulation) override;
+
+private:
+	static unsigned int count;
+	static qreal creationChance;
 };
 

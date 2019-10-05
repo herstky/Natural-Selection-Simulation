@@ -41,8 +41,8 @@ void Simulation::run()
         try
         {
 			View* view = static_cast<View*>(item);
-			Organism* organism = static_cast<Organism*>(&view->model);
-			organism->move(*this);
+			Entity* entity = dynamic_cast<Entity*>(&view->model);
+			entity->move(*this);
         }
         catch (const std::exception& e)
         {
@@ -68,18 +68,18 @@ void Simulation::run()
     {
 		new Red(*this);
     }
-	/*if (QRandomGenerator::global()->bounded(100) < Food(*this).getCreationChance())
+	if (QRandomGenerator::global()->bounded(100) < Food::creationChance)
 	{
 		new Food(*this);
-	}*/
+	}
 
     for (auto item : board()->childItems())
     {
         try
         {
 			View* view = static_cast<View*>(item);
-			Organism* organism = static_cast<Organism*>(&view->model);
-			organism->simulate(*this);
+			Entity* entity = dynamic_cast<Entity*>(&view->model);
+			entity->simulate(*this);
         }
         catch (const std::exception& e)
         {

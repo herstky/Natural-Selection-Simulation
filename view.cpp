@@ -18,6 +18,7 @@ View::~View()
 
 void View::init()
 {
+
 	setX(model.x());
 	setY(model.y());
 	setHeight(SCALE_FACTOR * model.height());

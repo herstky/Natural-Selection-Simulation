@@ -5,32 +5,38 @@
 #include <QRandomGenerator>
 
 #include "constants.h"
+#include "simulation.h"
 
 unsigned int Food::count = 0;
+qreal Food::creationChance = 3;
 
 Food::Food(const Simulation& simulation)
 	: Entity(simulation),
-	  creationChance(10),
 	  color(Qt::green),
 	  energyContent(10),
-	  mass(.04),
+	  mass(.005),
 	  density(1500),
 	  aspectRatio(1.5), 
-	  depth(1)
+	  depth(.1)
 {
+	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - SCALE_FACTOR * width());
+	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - SCALE_FACTOR * height());
+	initView(simulation);
 	count++;
 }
 
 Food::Food(const Simulation& simulation, const QPointF& position)
 	: Entity(simulation, position),
-	creationChance(10),
 	color(Qt::green),
 	energyContent(10),
-	mass(0.1),
+	mass(0.005),
 	density(1500),
 	aspectRatio(1),
-	depth(1)
+	depth(.1)
 {
+	mX = position.x();
+	mY = position.y();
+	initView(simulation);
 	count++;
 }
 
@@ -39,40 +45,17 @@ Food::~Food()
 	count--;
 }
 
-qreal Food::volume()
-{
-	return mass / density;
-}
-
-qreal Food::volume(qreal _mass)
-{
-	return _mass / density;
-}
-
-qreal Food::calculateHeight()
+qreal Food::height()
 {
 	return std::sqrt(volume() / (aspectRatio * depth));
 }
 
-qreal Food::calculateHeight(qreal _volume)
+qreal Food::width()
 {
-	return std::sqrt(_volume / (aspectRatio * depth));
-}
-qreal Food::calculateWidth()
-{
-	return aspectRatio * calculateHeight();
+	return aspectRatio * height();
 }
 
-qreal Food::calculateWidth(qreal _volume)
+qreal Food::volume()
 {
-	return aspectRatio * calculateHeight(_volume);
+	return mass / density;
 }
-
-qreal Food::getCreationChance()
-{
-	return creationChance;
-}
-
-void Food::simulate(const Simulation& simulation) {}
-
-void Food::move(const Simulation& simulation) {}
