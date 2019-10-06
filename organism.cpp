@@ -23,8 +23,8 @@ Organism::Organism(const Simulation& simulation)
       energyLevel(100),
       energyCapacity(100)
 {
-	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - SCALE_FACTOR * width());
-	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - SCALE_FACTOR * height());
+	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - scaledWidth());
+	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - scaledHeight());
 	initView(simulation);
 }
 
@@ -55,11 +55,11 @@ void Organism::move(const Simulation& simulation)
     qreal dx = velocity * cos(direction);
     qreal dy = velocity * sin(direction);
 
-    if (x() + dx + SCALE_FACTOR * width() > simulation.board()->width() || x() + dx < 0)
+    if (x() + dx + scaledWidth() > simulation.board()->width() || x() + dx < 0)
     {
         direction = M_PI - direction;
     }
-    if (y() + dy + SCALE_FACTOR * height() > simulation.board()->height() || y() + dy < 0)
+    if (y() + dy + scaledHeight() > simulation.board()->height() || y() + dy < 0)
     {
         direction = 2 * M_PI - direction;
     }

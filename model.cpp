@@ -2,6 +2,7 @@
 
 #include "simulation.h"
 #include "view.h"
+#include "constants.h"
 
 Model::Model(const Simulation& simulation)
 	: status(Model::Status::alive),
@@ -30,6 +31,11 @@ qreal Model::height()
 	return mHeight;
 }
 
+qreal Model::scaledHeight()
+{
+	return SCALE_FACTOR * height();
+}
+
 void Model::setHeight(qreal height)
 {
 	mHeight = height;
@@ -38,6 +44,11 @@ void Model::setHeight(qreal height)
 qreal Model::width()
 {
 	return mWidth;
+}
+
+qreal Model::scaledWidth()
+{
+	return SCALE_FACTOR * width();
 }
 
 void Model::setWidth(qreal width)
@@ -73,3 +84,7 @@ void Model::initView(const Simulation& simulation)
 	view->init();
 }
 
+QRectF Model::hitbox()
+{
+	return QRectF(x(), y(), scaledWidth(), scaledHeight());
+}

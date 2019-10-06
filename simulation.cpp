@@ -64,10 +64,10 @@ void Simulation::run()
 		ticksRemaining = TICKS_PER_STEP;
 	}
 
-   /* if (QRandomGenerator::global()->bounded(100) < Red::creationChance)
+    if (QRandomGenerator::global()->bounded(100) < Red::creationChance)
     {
 		new Red(*this);
-    }*/
+    }
 	if (QRandomGenerator::global()->bounded(100) < Food::creationChance)
 	{
 		new Food(*this);
@@ -86,6 +86,21 @@ void Simulation::run()
             std::cout << "An exception was caught with message '" << e.what() << "'\n";
         }
     }
+
+	for (auto item : board()->childItems())
+	{
+		try
+		{
+			View* view = static_cast<View*>(item);
+			Entity* entity = dynamic_cast<Entity*>(&view->model);
+			entity->detectCollisions(*this);
+		}
+		catch (const std::exception & e)
+		{
+			std::cout << "An exception was caught with message '" << e.what() << "'\n";
+		}
+	}
+
     outputCounts();
 }
 

@@ -19,8 +19,8 @@ Food::Food(const Simulation& simulation)
 	  depth(.1)
 {
 	color = Qt::green;
-	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - SCALE_FACTOR * width());
-	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - SCALE_FACTOR * height());
+	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - scaledWidth());
+	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - scaledHeight());
 	initView(simulation);
 	count++;
 }

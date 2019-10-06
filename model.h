@@ -3,8 +3,9 @@
 #include <QtGlobal>
 #include <QColor>
 
-class Simulation;
+#include <QRectF>
 
+class Simulation;
 class View;
 
 class Model
@@ -24,12 +25,15 @@ public:
 
 	virtual qreal height();
 	virtual qreal width();
+	virtual qreal scaledHeight();
+	virtual qreal scaledWidth();
 	virtual void setHeight(qreal height);
 	virtual void setWidth(qreal width);
 	virtual qreal x();
 	virtual qreal y();
 	virtual void setX(qreal x);
 	virtual void setY(qreal y);
+	virtual QRectF hitbox();
 
 	void initView(const Simulation& simulation);
 

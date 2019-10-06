@@ -13,5 +13,6 @@ public:
 	
 	virtual void simulate(const Simulation& simulation);
 	virtual void move(const Simulation& simulation);
+	void detectCollisions(const Simulation& simulation);
 };
 
