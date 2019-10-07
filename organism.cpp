@@ -75,11 +75,6 @@ void Organism::move(const Simulation& simulation)
 
 	setX(x() + dx);
 	setY(y() + dy);
-	
-	if (status == Model::Status::dead)
-	{
-		delete this;
-	}
 }
 
 void Organism::simulate(const Simulation& simulation)
@@ -92,22 +87,11 @@ void Organism::simulate(const Simulation& simulation)
 //    {
 //        die(simulation);
 //    }
-	if (status == Model::Status::dead)
-	{
-		delete this;
-		return;
-	}
 }
 
 void Organism::replicate(const Simulation& simulation)
 {
     Organism* organism = new Organism(simulation.board(), QPointF(x(), y()));
-}
-
-void Organism::die(const Simulation& simulation)
-{
-	status = Model::Status::dead;
-	view->deleteLater();
 }
 
 qreal Organism::volume()

@@ -35,12 +35,11 @@ QQuickItem* Simulation::board() const
 
 void Simulation::run()
 {
-	QList<QQuickItem*> list = board()->childItems();
-    for (auto item : board()->childItems())
+	for (auto item : board()->childItems())
     {
         try
         {
-			View* view = static_cast<View*>(item);
+			View* view = dynamic_cast<View*>(item);
 			Entity* entity = dynamic_cast<Entity*>(&view->model);
 			entity->move(*this);
         }
@@ -77,7 +76,7 @@ void Simulation::run()
     {
         try
         {
-			View* view = static_cast<View*>(item);
+			View* view = dynamic_cast<View*>(item);
 			Entity* entity = dynamic_cast<Entity*>(&view->model);
 			entity->simulate(*this);
         }
@@ -100,6 +99,12 @@ void Simulation::run()
 			std::cout << "An exception was caught with message '" << e.what() << "'\n";
 		}
 	}
+
+	for (auto model : Model::deletionQueue)
+	{
+		delete model;
+	}
+	Model::deletionQueue = QList<Model*>();
 
     outputCounts();
 }

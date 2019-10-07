@@ -4,6 +4,8 @@
 #include "view.h"
 #include "constants.h"
 
+QList<Model*> Model::deletionQueue = QList<Model*>();
+
 Model::Model(const Simulation& simulation)
 	: status(Model::Status::alive),
 	  color(Qt::black),
@@ -87,4 +89,11 @@ void Model::initView(const Simulation& simulation)
 QRectF Model::hitbox()
 {
 	return QRectF(x(), y(), scaledWidth(), scaledHeight());
+}
+
+void Model::die(const Simulation& simulation)
+{
+	status = Model::Status::dead;
+	view->deleteLater();
+	deletionQueue.push_back(this);
 }

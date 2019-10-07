@@ -14,6 +14,8 @@ public:
 	enum class Status { alive, dead };
 	enum class Shape { ellipse, rectangle, roundedRectangle };
 
+	static QList<Model*> deletionQueue;
+
 	Model(const Simulation& simulation);
 	Model(const Simulation& simulation, const QPointF& position);
 	virtual ~Model();
@@ -34,6 +36,7 @@ public:
 	virtual void setX(qreal x);
 	virtual void setY(qreal y);
 	virtual QRectF hitbox();
+	virtual void die(const Simulation& simulation);
 
 	void initView(const Simulation& simulation);
 

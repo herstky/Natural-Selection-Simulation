@@ -31,19 +31,12 @@ void Entity::detectCollisions(const Simulation& simulation)
 			continue;
 		}
 
-		qreal a = hitbox().left();
-		qreal b = entity->hitbox().right();
-		qreal c = hitbox().right();
-		qreal d = entity->hitbox().left();
-		qreal e = hitbox().top();
-		qreal f = entity->hitbox().bottom();
-		qreal g = hitbox().bottom();
-		qreal h = entity->hitbox().top();
-
+		//https://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
+		//Logic inverted for top and bottom sides due to direction of y axis.
 		if (hitbox().left() < entity->hitbox().right() && hitbox().right() > entity->hitbox().left() &&
 			hitbox().top() < entity->hitbox().bottom() && hitbox().bottom() > entity->hitbox().top())
 		{
-			std::cout << "Collision detected!\n";
+			entity->die(simulation);
 		}
 	}
 }
