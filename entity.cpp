@@ -21,12 +21,17 @@ void Entity::move(const Simulation& simulation) {}
 
 void Entity::detectCollisions(const Simulation& simulation)
 {
+	if (status == Model::Status::dead)
+	{
+		return;
+	}
+
 	QList<QQuickItem*> items = simulation.board()->childItems();
 	for (auto item : items)
 	{
 		View* view = static_cast<View*>(item);
 		Entity* entity = dynamic_cast<Entity*>(&view->model);
-		if (entity == this)
+		if (entity == this || entity->status == Model::Status::dead)
 		{
 			continue;
 		}

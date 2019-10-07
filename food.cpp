@@ -45,6 +45,8 @@ Food::~Food()
 	count--;
 }
 
+void Food::detectCollisions(const Simulation& simulation) {}
+
 qreal Food::height()
 {
 	return std::sqrt(volume() / (aspectRatio * depth));

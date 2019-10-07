@@ -11,6 +11,8 @@ public:
 	View(QQuickItem* parent, Model& model);
 	~View();
 
+	static QList<View*> deletionQueue;
+
 	void init();
 
 	void paint(QPainter* painter);

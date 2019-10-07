@@ -12,6 +12,7 @@ public:
 	Food(const Simulation& simulation, const QPointF& position);
 	~Food();
 
+	void detectCollisions(const Simulation& simulation) override;
 	qreal height() override;
 	qreal width() override;
 	qreal volume();

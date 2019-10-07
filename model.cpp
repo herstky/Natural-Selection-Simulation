@@ -94,6 +94,5 @@ QRectF Model::hitbox()
 void Model::die(const Simulation& simulation)
 {
 	status = Model::Status::dead;
-	view->deleteLater();
-	deletionQueue.push_back(this);
+	view->deletionQueue.push_back(view);
 }

@@ -5,12 +5,14 @@
 #include "model.h"
 #include "constants.h"
 
+QList<View*> View::deletionQueue = QList<View*>();
+
 View::View(QQuickItem* parent, Model& model)
 	: QQuickPaintedItem(parent), model(model) {}
 
 View::~View() 
 {
-	//delete &model;
+	delete &model;
 }
 
 void View::init()

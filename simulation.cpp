@@ -90,7 +90,7 @@ void Simulation::run()
 	{
 		try
 		{
-			View* view = static_cast<View*>(item);
+			View* view = dynamic_cast<View*>(item);
 			Entity* entity = dynamic_cast<Entity*>(&view->model);
 			entity->detectCollisions(*this);
 		}
@@ -100,11 +100,11 @@ void Simulation::run()
 		}
 	}
 
-	for (auto model : Model::deletionQueue)
+	for (auto view : View::deletionQueue)
 	{
-		delete model;
+		view->deleteLater();
 	}
-	Model::deletionQueue = QList<Model*>();
+	View::deletionQueue = QList<View*>();
 
     outputCounts();
 }

@@ -52,6 +52,11 @@ Organism::~Organism() {}
 
 void Organism::move(const Simulation& simulation)
 {
+	if (status == Model::Status::dead)
+	{
+		return;
+	}
+
     qreal dx = velocity * cos(direction);
     qreal dy = velocity * sin(direction);
 
@@ -79,6 +84,10 @@ void Organism::move(const Simulation& simulation)
 
 void Organism::simulate(const Simulation& simulation)
 {
+	if (status == Model::Status::dead)
+	{
+		return;
+	}
 //    if (QRandomGenerator::global()->bounded(100.0) < replicationChance)
 //    {
 //        replicate(simulation);

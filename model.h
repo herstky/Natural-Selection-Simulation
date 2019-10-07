@@ -2,7 +2,6 @@
 
 #include <QtGlobal>
 #include <QColor>
-
 #include <QRectF>
 
 class Simulation;
@@ -47,6 +46,5 @@ protected:
 private:
 	qreal mHeight;
 	qreal mWidth;
-
 };
 
