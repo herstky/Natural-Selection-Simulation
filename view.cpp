@@ -5,22 +5,22 @@
 #include "model.h"
 #include "constants.h"
 
-QList<View*> View::deletionQueue = QList<View*>();
+QList<View*> View::mDeletionQueue = QList<View*>();
 
 View::View(QQuickItem* parent, Model& model)
-	: QQuickPaintedItem(parent), model(model) {}
+	: QQuickPaintedItem(parent), mModel(model) {}
 
 View::~View() 
 {
-	delete &model;
+	delete &mModel;
 }
 
 void View::init()
 {
-	setX(model.x());
-	setY(model.y());
-	setHeight(SCALE_FACTOR * model.height());
-	setWidth(SCALE_FACTOR * model.width());
+	setX(mModel.x());
+	setY(mModel.y());
+	setHeight(SCALE_FACTOR * mModel.height());
+	setWidth(SCALE_FACTOR * mModel.width());
 	setZ(SCALE_FACTOR * 1);
 	setOpacity(0.4);
 	setFlag(QQuickItem::ItemHasContents);
@@ -28,19 +28,19 @@ void View::init()
 
 void View::paint(QPainter* painter)
 {
-	if (model.status == Model::Status::dead)
+	if (mModel.mStatus == Model::Status::dead)
 	{
 		return;
 	}
 	
-	setPosition(QPointF(model.x(), model.y()));
+	setPosition(QPointF(mModel.x(), mModel.y()));
 
-	QBrush brush(model.color);
+	QBrush brush(mModel.mColor);
 	painter->setBrush(brush);
 	painter->setPen(Qt::NoPen);
 	painter->setRenderHint(QPainter::HighQualityAntialiasing);
 	
-	switch (model.shape)
+	switch (mModel.mShape)
 	{
 	case Model::Shape::ellipse:
 		painter->drawEllipse(contentsBoundingRect());

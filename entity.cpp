@@ -21,7 +21,7 @@ void Entity::move(const Simulation& simulation) {}
 
 void Entity::detectCollisions(const Simulation& simulation)
 {
-	if (status == Model::Status::dead)
+	if (mStatus == Model::Status::dead)
 	{
 		return;
 	}
@@ -30,8 +30,8 @@ void Entity::detectCollisions(const Simulation& simulation)
 	for (auto item : items)
 	{
 		View* view = static_cast<View*>(item);
-		Entity* entity = dynamic_cast<Entity*>(&view->model);
-		if (entity == this || entity->status == Model::Status::dead)
+		Entity* entity = dynamic_cast<Entity*>(&view->mModel);
+		if (entity == this || entity->mStatus == Model::Status::dead)
 		{
 			continue;
 		}

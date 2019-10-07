@@ -13,16 +13,14 @@ public:
 	enum class Status { alive, dead };
 	enum class Shape { ellipse, rectangle, roundedRectangle };
 
-	static QList<Model*> deletionQueue;
-
 	Model(const Simulation& simulation);
 	Model(const Simulation& simulation, const QPointF& position);
 	virtual ~Model();
 
-	Status status;
-	QColor color;
-	Shape shape;
-	View* view;
+	Status mStatus;
+	QColor mColor;
+	Shape mShape;
+	View* mView;
 
 	virtual qreal height();
 	virtual qreal width();

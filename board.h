@@ -9,8 +9,8 @@ public:
 	~Board();
 
 private:
-	qreal cellSize;
-	int rows;
-	int columns;
+	qreal mCellSize;
+	int mRows;
+	int mColumns;
 };
 

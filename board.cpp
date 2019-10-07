@@ -5,7 +5,7 @@
 #include <iostream>
 
 Board::Board() 
-	: cellSize(1), rows(30), columns(60) {}
+	: mCellSize(1), mRows(30), mColumns(60) {}
 
 Board::~Board() {}
 

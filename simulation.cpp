@@ -11,26 +11,26 @@
 #include "food.h"
 
 Simulation::Simulation(QQuickItem* parent)
-    : container(*parent),
-      TICK_DURATION(50),
-      TICKS_PER_STEP(1),
-      ticksRemaining(TICKS_PER_STEP)
+    : mContainer(*parent),
+      M_TICK_DURATION(50),
+      M_TICKS_PER_STEP(1),
+      mTicksRemaining(M_TICKS_PER_STEP)
 {
-    Red::count = 0;
-    Green::count = 0;
-    Blue::count = 0;
+    Red::mCount = 0;
+    Green::mCount = 0;
+    Blue::mCount = 0;
 
     outputCounts();
     QTimer* timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(run()));
-    timer->start(TICK_DURATION);
+    timer->start(M_TICK_DURATION);
 }
 
 Simulation::~Simulation() {}
 
 QQuickItem* Simulation::board() const
 {
-	return container.findChild<QQuickItem*>("board");
+	return mContainer.findChild<QQuickItem*>("board");
 }
 
 void Simulation::run()
@@ -40,7 +40,7 @@ void Simulation::run()
         try
         {
 			View* view = dynamic_cast<View*>(item);
-			Entity* entity = dynamic_cast<Entity*>(&view->model);
+			Entity* entity = dynamic_cast<Entity*>(&view->mModel);
 			entity->move(*this);
         }
         catch (const std::exception& e)
@@ -53,21 +53,21 @@ void Simulation::run()
 		}
     }
 
-    if (ticksRemaining)
+    if (mTicksRemaining)
     {
-        ticksRemaining--;
+        mTicksRemaining--;
         return;
     }
 	else
 	{
-		ticksRemaining = TICKS_PER_STEP;
+		mTicksRemaining = M_TICKS_PER_STEP;
 	}
 
-    if (QRandomGenerator::global()->bounded(100) < Red::creationChance)
+    if (QRandomGenerator::global()->bounded(100) < Red::mCreationChance)
     {
 		new Red(*this);
     }
-	if (QRandomGenerator::global()->bounded(100) < Food::creationChance)
+	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
 	{
 		new Food(*this);
 	}
@@ -77,7 +77,7 @@ void Simulation::run()
         try
         {
 			View* view = dynamic_cast<View*>(item);
-			Entity* entity = dynamic_cast<Entity*>(&view->model);
+			Entity* entity = dynamic_cast<Entity*>(&view->mModel);
 			entity->simulate(*this);
         }
         catch (const std::exception& e)
@@ -91,7 +91,7 @@ void Simulation::run()
 		try
 		{
 			View* view = dynamic_cast<View*>(item);
-			Entity* entity = dynamic_cast<Entity*>(&view->model);
+			Entity* entity = dynamic_cast<Entity*>(&view->mModel);
 			entity->detectCollisions(*this);
 		}
 		catch (const std::exception & e)
@@ -100,23 +100,23 @@ void Simulation::run()
 		}
 	}
 
-	for (auto view : View::deletionQueue)
+	for (auto view : View::mDeletionQueue)
 	{
 		view->deleteLater();
 	}
-	View::deletionQueue = QList<View*>();
+	View::mDeletionQueue = QList<View*>();
 
     outputCounts();
 }
 
 void Simulation::outputCounts()
 {
-    QQuickItem* parent = static_cast<QQuickItem*>(container.findChild<QObject*>("textRow"));
+    QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
     QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
-    redLabel->setProperty("text", "Red: " + QString::number(Red::count));
+    redLabel->setProperty("text", "Red: " + QString::number(Red::mCount));
     QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
-    greenLabel->setProperty("text", "Green: " + QString::number(Green::count));
+    greenLabel->setProperty("text", "Green: " + QString::number(Green::mCount));
     QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
-    blueLabel->setProperty("text", "Blue: " + QString::number(Blue::count));
+    blueLabel->setProperty("text", "Blue: " + QString::number(Blue::mCount));
 }
 

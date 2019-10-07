@@ -3,41 +3,41 @@
 #include "simulation.h"
 #include "green.h"
 
-unsigned int Red::count = 0;
-qreal Red::creationChance = 50;
+unsigned int Red::mCount = 0;
+qreal Red::mCreationChance = 50;
 
 Red::Red(const Simulation& simulation)
     : Organism(simulation)
 {
-	shape = Model::Shape::ellipse;
-    color = Qt::red;
-    creationChance = 50;
-    replicationChance = 7;
-    mutationChance = 10;
-    deathChance = 8;
-    count++;
+	mShape = Model::Shape::ellipse;
+    mColor = Qt::red;
+    mCreationChance = 50;
+    mReplicationChance = 7;
+    mMutationChance = 10;
+    mDeathChance = 8;
+    mCount++;
 }
 
 Red::Red(const Simulation& simulation, const QPointF& position)
     : Organism(simulation, position)
 {
-	shape = Model::Shape::ellipse;
-    color = Qt::red;
-    creationChance = 50;
-    replicationChance = 10;
-    mutationChance = 10;
-    deathChance = 15;
-    count++;
+	mShape = Model::Shape::ellipse;
+    mColor = Qt::red;
+    mCreationChance = 50;
+    mReplicationChance = 10;
+    mMutationChance = 10;
+    mDeathChance = 15;
+    mCount++;
 }
 
 Red::~Red()
 {
-    count--;
+    mCount--;
 }
 
 void Red::replicate(const Simulation& simulation)
 {
-    if (QRandomGenerator::global()->bounded(100.0) < mutationChance)
+    if (QRandomGenerator::global()->bounded(100.0) < mMutationChance)
     {
         new Green(simulation, QPointF(x(), y()));
     }

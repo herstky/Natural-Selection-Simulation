@@ -7,57 +7,57 @@
 #include "constants.h"
 #include "simulation.h"
 
-unsigned int Food::count = 0;
-qreal Food::creationChance = 3;
+unsigned int Food::mCount = 0;
+qreal Food::mCreationChance = 3;
 
 Food::Food(const Simulation& simulation)
 	: Entity(simulation),
-	  energyContent(10),
-	  mass(.005),
-	  density(1500),
-	  aspectRatio(1.5), 
-	  depth(.1)
+	  mEnergyContent(10),
+	  mMass(.005),
+	  mDensity(1500),
+	  mAspectRatio(1.5), 
+	  mDepth(.1)
 {
-	color = Qt::green;
+	mColor = Qt::green;
 	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - scaledWidth());
 	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - scaledHeight());
 	initView(simulation);
-	count++;
+	mCount++;
 }
 
 Food::Food(const Simulation& simulation, const QPointF& position)
 	: Entity(simulation, position),
-	  energyContent(10),
-	  mass(0.005),
-	  density(1500),
-	  aspectRatio(1),
-	  depth(.1)
+	  mEnergyContent(10),
+	  mMass(0.005),
+	  mDensity(1500),
+	  mAspectRatio(1),
+	  mDepth(.1)
 {
-	color = Qt::green;
+	mColor = Qt::green;
 	mX = position.x();
 	mY = position.y();
 	initView(simulation);
-	count++;
+	mCount++;
 }
 
 Food::~Food() 
 {
-	count--;
+	mCount--;
 }
 
 void Food::detectCollisions(const Simulation& simulation) {}
 
 qreal Food::height()
 {
-	return std::sqrt(volume() / (aspectRatio * depth));
+	return std::sqrt(volume() / (mAspectRatio * mDepth));
 }
 
 qreal Food::width()
 {
-	return aspectRatio * height();
+	return mAspectRatio * height();
 }
 
 qreal Food::volume()
 {
-	return mass / density;
+	return mMass / mDensity;
 }

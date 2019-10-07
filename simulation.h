@@ -16,7 +16,7 @@ class Simulation : QObject
 public:
     Simulation(QQuickItem* parent);
     ~Simulation();
-	QQuickItem& container;
+	QQuickItem& mContainer;
 
 	QQuickItem* board() const;
 
@@ -24,9 +24,9 @@ public slots:
     void run();
 
 private:
-    const int TICK_DURATION;
-    const int TICKS_PER_STEP;
-    int ticksRemaining;
+    const int M_TICK_DURATION;
+    const int M_TICKS_PER_STEP;
+    int mTicksRemaining;
 
 	void outputCounts();
 };

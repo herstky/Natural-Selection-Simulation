@@ -18,14 +18,14 @@ public:
 	qreal volume();
 
 protected:
-	qreal energyContent;
-	qreal mass;
-	qreal density;
-	qreal aspectRatio;
-	qreal depth;
+	qreal mEnergyContent;
+	qreal mMass;
+	qreal mDensity;
+	qreal mAspectRatio;
+	qreal mDepth;
 
 private:
-	static unsigned int count;
-	static qreal creationChance;
+	static unsigned int mCount;
+	static qreal mCreationChance;
 };
 

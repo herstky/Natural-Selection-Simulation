@@ -10,18 +10,18 @@
 
 Organism::Organism(const Simulation& simulation)
     : Entity(simulation),
-      velocity(3),
-      prevVelocity(velocity),
-      prevTime(QTime::currentTime()),
-      dDistance(0),
-      direction(QRandomGenerator::global()->bounded(2 * M_PI)),
-      replicationChance(0),
-      mutationChance(0),
-      deathChance(0),
-      mass(0.001),
-      density(WATER_DENSITY),
-      energyLevel(100),
-      energyCapacity(100)
+      mVelocity(3),
+      mInitialVelocity(mVelocity),
+      mInitialTime(QTime::currentTime()),
+      mDeltaDistance(0),
+      mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+      mReplicationChance(0),
+      mMutationChance(0),
+      mDeathChance(0),
+      mMass(0.001),
+      mDensity(WATER_DENSITY),
+      mEnergyLevel(100),
+      mEnergyCapacity(100)
 {
 	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - scaledWidth());
 	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - scaledHeight());
@@ -30,18 +30,18 @@ Organism::Organism(const Simulation& simulation)
 
 Organism::Organism(const Simulation& simulation, const QPointF& position)
     : Entity(simulation, position),
-      velocity(3),
-      prevVelocity(velocity),
-      prevTime(QTime::currentTime()),
-      dDistance(0),
-      direction(QRandomGenerator::global()->bounded(2 * M_PI)),
-      replicationChance(0),
-      mutationChance(0),
-      deathChance(0),
-      mass(0.001),
-      density(WATER_DENSITY),
-      energyLevel(100),
-      energyCapacity(100)
+      mVelocity(3),
+      mInitialVelocity(mVelocity),
+      mInitialTime(QTime::currentTime()),
+      mDeltaDistance(0),
+      mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+      mReplicationChance(0),
+      mMutationChance(0),
+      mDeathChance(0),
+      mMass(0.001),
+      mDensity(WATER_DENSITY),
+      mEnergyLevel(100),
+      mEnergyCapacity(100)
 {
 	mX = position.x();
 	mY = position.y();
@@ -52,31 +52,31 @@ Organism::~Organism() {}
 
 void Organism::move(const Simulation& simulation)
 {
-	if (status == Model::Status::dead)
+	if (mStatus == Model::Status::dead)
 	{
 		return;
 	}
 
-    qreal dx = velocity * cos(direction);
-    qreal dy = velocity * sin(direction);
+    qreal dx = mVelocity * cos(mDirection);
+    qreal dy = mVelocity * sin(mDirection);
 
     if (x() + dx + scaledWidth() > simulation.board()->width() || x() + dx < 0)
     {
-        direction = M_PI - direction;
+        mDirection = M_PI - mDirection;
     }
     if (y() + dy + scaledHeight() > simulation.board()->height() || y() + dy < 0)
     {
-        direction = 2 * M_PI - direction;
+        mDirection = 2 * M_PI - mDirection;
     }
 
-    dx = velocity * cos(direction);
-    dy = velocity * sin(direction);
-    dDistance = std::sqrt(pow(dx, 2) + pow(dy, 2));
+    dx = mVelocity * cos(mDirection);
+    dy = mVelocity * sin(mDirection);
+    mDeltaDistance = std::sqrt(pow(dx, 2) + pow(dy, 2));
 
     expendEnergy(simulation);
 
-	qreal vx = view->x();
-	qreal vy = view->y();
+	qreal vx = mView->x();
+	qreal vy = mView->y();
 
 	setX(x() + dx);
 	setY(y() + dy);
@@ -84,7 +84,7 @@ void Organism::move(const Simulation& simulation)
 
 void Organism::simulate(const Simulation& simulation)
 {
-	if (status == Model::Status::dead)
+	if (mStatus == Model::Status::dead)
 	{
 		return;
 	}
@@ -105,7 +105,7 @@ void Organism::replicate(const Simulation& simulation)
 
 qreal Organism::volume()
 {
-    return mass / density;
+    return mMass / mDensity;
 }
 
 qreal Organism::diameter()
@@ -115,12 +115,12 @@ qreal Organism::diameter()
 
 qreal Organism::dVelocity()
 {
-    return velocity - prevVelocity;
+    return mVelocity - mInitialVelocity;
 }
 
 qreal Organism::dTime()
 {
-    return QTime::currentTime().msecsTo(prevTime) / 1000.0;
+    return QTime::currentTime().msecsTo(mInitialTime) / 1000.0;
 }
 
 qreal Organism::acceleration()
@@ -154,16 +154,16 @@ void Organism::setWidth(qreal width) {}
 
 void Organism::expendEnergy(const Simulation& simulation)
 {
-    qreal drag = 1.0 / 2.0 * SPHERE_WATER_DRAG_COEFFICIENT * WATER_DENSITY * M_PI * pow((diameter() / 2), 2) * pow(velocity, 2);
+    qreal drag = 1.0 / 2.0 * SPHERE_WATER_DRAG_COEFFICIENT * WATER_DENSITY * M_PI * pow((diameter() / 2), 2) * pow(mVelocity, 2);
 
-	qreal force = mass * acceleration() + drag;
-    qreal work = force * dDistance;
+	qreal force = mMass * acceleration() + drag;
+    qreal work = force * mDeltaDistance;
 
-	prevTime = QTime::currentTime();
-	prevVelocity = velocity;
+	mInitialTime = QTime::currentTime();
+	mInitialVelocity = mVelocity;
 
-    energyLevel -= work;
-    if (energyLevel <= 0)
+    mEnergyLevel -= work;
+    if (mEnergyLevel <= 0)
     {
         die(simulation);
     }

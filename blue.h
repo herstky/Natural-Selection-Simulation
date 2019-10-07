@@ -13,6 +13,6 @@ public:
     void replicate(const Simulation& simulation) override;
 
 private:
-	static unsigned int count;
-	static qreal creationChance;
+	static unsigned int mCount;
+	static qreal mCreationChance;
 };

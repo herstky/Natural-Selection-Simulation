@@ -24,19 +24,19 @@ public:
 	void simulate(const Simulation& simulation) override;
 
 protected:
-	qreal velocity;
-	qreal prevVelocity;
-	QTime prevTime;
-	qreal dDistance;
-	qreal direction;
-	qreal replicationChance;
-	qreal mutationChance;
-	qreal deathChance;
+	qreal mVelocity;
+	qreal mInitialVelocity;
+	QTime mInitialTime;
+	qreal mDeltaDistance;
+	qreal mDirection;
+	qreal mReplicationChance;
+	qreal mMutationChance;
+	qreal mDeathChance;
 
-	qreal mass;
-	qreal density;
-	qreal energyLevel;
-	qreal energyCapacity;
+	qreal mMass;
+	qreal mDensity;
+	qreal mEnergyLevel;
+	qreal mEnergyCapacity;
 
 	qreal x() override;
 	qreal y() override;

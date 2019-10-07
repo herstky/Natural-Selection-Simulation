@@ -4,23 +4,21 @@
 #include "view.h"
 #include "constants.h"
 
-QList<Model*> Model::deletionQueue = QList<Model*>();
-
 Model::Model(const Simulation& simulation)
-	: status(Model::Status::alive),
-	  color(Qt::black),
-	  shape(Model::Shape::rectangle),
-	  view(nullptr),
+	: mStatus(Model::Status::alive),
+	  mColor(Qt::black),
+	  mShape(Model::Shape::rectangle),
+	  mView(nullptr),
 	  mHeight(1),
 	  mWidth(1),
       mX(0),
       mY(0) {}
 
 Model::Model(const Simulation& simulation, const QPointF& position) 
-	: status(Model::Status::alive),
-	  color(Qt::black),
-	  shape(Model::Shape::rectangle),
-	  view(nullptr),
+	: mStatus(Model::Status::alive),
+	  mColor(Qt::black),
+	  mShape(Model::Shape::rectangle),
+	  mView(nullptr),
 	  mHeight(1),
 	  mWidth(1),
 	  mX(position.x()),
@@ -66,7 +64,7 @@ qreal Model::x()
 void Model::setX(qreal x)
 {
 	mX = x;
-	view->setX(x);
+	mView->setX(x);
 }
 
 qreal Model::y()
@@ -77,13 +75,13 @@ qreal Model::y()
 void Model::setY(qreal y)
 {
 	mY = y;
-	view->setY(y);
+	mView->setY(y);
 }
 
 void Model::initView(const Simulation& simulation)
 {
-	view = new View(simulation.board(), *this);
-	view->init();
+	mView = new View(simulation.board(), *this);
+	mView->init();
 }
 
 QRectF Model::hitbox()
@@ -93,6 +91,6 @@ QRectF Model::hitbox()
 
 void Model::die(const Simulation& simulation)
 {
-	status = Model::Status::dead;
-	view->deletionQueue.push_back(view);
+	mStatus = Model::Status::dead;
+	mView->mDeletionQueue.push_back(mView);
 }
