@@ -46,5 +46,6 @@ protected:
 	void setWidth(qreal width) override;
     void expendEnergy(const Simulation& simulation);
 	virtual void replicate(const Simulation& simulation);
+	virtual QRectF hitbox() override;
 };
 

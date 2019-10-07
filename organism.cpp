@@ -168,3 +168,14 @@ void Organism::expendEnergy(const Simulation& simulation)
         die(simulation);
     }
 }
+
+QRectF Organism::hitbox()
+{
+	qreal radius = SCALE_FACTOR * diameter() / 2.0;
+	QPointF center = QPointF(x() + radius, y() + radius);
+	QPointF topLeft = QPointF(center.x() + radius * cos(3.0 * M_PI / 4.0), 
+						      center.y() - radius * sin(3.0 * M_PI / 4.0));
+	QPointF bottomRight = QPointF(center.x() + radius * cos(7.0 * M_PI / 4.0), 
+								  center.y() - radius * sin(7.0 * M_PI / 4.0));
+	return QRectF(topLeft, bottomRight);
+}
