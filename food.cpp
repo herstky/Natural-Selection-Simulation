@@ -11,33 +11,21 @@ unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 3;
 
 Food::Food(const Simulation& simulation)
-	: Entity(simulation),
-	  mEnergyContent(10),
-	  mMass(.005),
-	  mDensity(1500),
-	  mAspectRatio(1.5), 
-	  mDepth(.1)
+	: Entity(simulation)
 {
-	mColor = Qt::green;
 	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - scaledWidth());
 	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - scaledHeight());
+	init();
 	initView(simulation);
-	mCount++;
 }
 
 Food::Food(const Simulation& simulation, const QPointF& position)
-	: Entity(simulation, position),
-	  mEnergyContent(10),
-	  mMass(0.005),
-	  mDensity(1500),
-	  mAspectRatio(1),
-	  mDepth(.1)
+	: Entity(simulation, position)
 {
-	mColor = Qt::green;
 	mX = position.x();
 	mY = position.y();
+	init();
 	initView(simulation);
-	mCount++;
 }
 
 Food::~Food() 
@@ -60,4 +48,16 @@ qreal Food::width()
 qreal Food::volume()
 {
 	return mMass / mDensity;
+}
+
+void Food::init()
+{
+	mColor = Qt::green;
+	mType = Entity::Type::prey;
+	mEnergyContent = 128;
+	mMass = 0.005;
+	mDensity = 1500;
+	mAspectRatio = 1;
+	mDepth = 0.1;
+	mCount++;
 }

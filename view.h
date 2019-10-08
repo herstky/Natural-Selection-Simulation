@@ -18,6 +18,5 @@ public:
 	void paint(QPainter* painter);
 
 	Model& mModel;
-
 };
 

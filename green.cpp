@@ -9,23 +9,13 @@ qreal creationChance = 0;
 Green::Green(const Simulation& simulation)
     : Organism(simulation)
 {
-	mShape = Model::Shape::ellipse;
-    mColor = Qt::green;
-    mReplicationChance = 8;
-    mMutationChance = 5;
-    mDeathChance = 8;
-    mCount++;
+	init();
 }
 
 Green::Green(const Simulation& simulation, const QPointF& position)
     : Organism(simulation, position)
 {
-	mShape = Model::Shape::ellipse;
-    mColor = Qt::green;
-    mReplicationChance = 10;
-    mMutationChance = 5;
-    mDeathChance = 12;
-    mCount++;
+	init();
 }
 
 Green::~Green()
@@ -43,4 +33,15 @@ void Green::replicate(const Simulation& simulation)
     {
         new Green(simulation, QPointF(x(), y()));
     }
+}
+
+void Green::init()
+{
+	mType = Entity::Type::predator;
+	mShape = Model::Shape::ellipse;
+	mColor = Qt::green;
+	mReplicationChance = 8;
+	mMutationChance = 5;
+	mDeathChance = 8;
+	mCount++;
 }

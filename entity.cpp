@@ -8,10 +8,22 @@
 #include "view.h"
 
 Entity::Entity(const Simulation& simulation) 
-	: Model(simulation) {}
+	: Model(simulation),
+	  mType(Entity::Type::none),
+	  mEnergyContent(100),
+	  mMass(0.005),
+	  mDensity(1500),
+	  mAspectRatio(1),
+	  mDepth(0.1) {}
 
 Entity::Entity(const Simulation& simulation, const QPointF& position)
-	: Model(simulation, position) {}
+	: Model(simulation, position),
+	  mType(Entity::Type::none),
+   	  mEnergyContent(100),
+	  mMass(0.005),
+	  mDensity(1500),
+	  mAspectRatio(1),
+	  mDepth(0.1) {}
 
 Entity::~Entity() {}
 
@@ -41,7 +53,39 @@ void Entity::detectCollisions(const Simulation& simulation)
 		if (hitbox().left() < entity->hitbox().right() && hitbox().right() > entity->hitbox().left() &&
 			hitbox().top() < entity->hitbox().bottom() && hitbox().bottom() > entity->hitbox().top())
 		{
-			entity->die(simulation);
+			collide(simulation, *entity);
 		}
 	}
+}
+
+void Entity::collide(const Simulation& simulation, Entity& other) {}
+
+Entity::Type Entity::getType()
+{
+	return mType;
+}
+
+qreal Entity::getEnergyContent()
+{
+	return mEnergyContent;
+}
+
+qreal Entity::getMass()
+{
+	return mMass;
+}
+
+qreal Entity::getDensity()
+{
+	return mDensity;
+}
+
+qreal Entity::getAspectRatio()
+{
+	return mAspectRatio;
+}
+
+qreal Entity::getDepth()
+{
+	return mDepth;
 }

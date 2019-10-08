@@ -5,6 +5,7 @@
 class Blue : public Organism
 {
 	friend class Simulation;
+
 public:
     Blue(const Simulation& simulation);
     Blue(const Simulation& simulation, const QPointF& position);
@@ -15,4 +16,6 @@ public:
 private:
 	static unsigned int mCount;
 	static qreal mCreationChance;
+
+	virtual void init() override;
 };

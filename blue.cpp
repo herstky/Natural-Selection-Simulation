@@ -9,23 +9,13 @@ qreal Blue::mCreationChance = 0;
 Blue::Blue(const Simulation& simulation)
     : Organism(simulation)
 {
-	mShape = Model::Shape::ellipse;
-    mColor = Qt::blue;
-    mReplicationChance = 4;
-    mMutationChance = 0;
-    mDeathChance = 3;
-    mCount++;
+	init();
 }
 
 Blue::Blue(const Simulation& simulation, const QPointF& position)
-    : Organism(simulation, position)
+	: Organism(simulation, position)
 {
-	mShape = Model::Shape::ellipse;
-    mColor = Qt::blue;
-    mReplicationChance = 10;
-    mMutationChance = 0;
-    mDeathChance = 5;
-    mCount++;
+	init();
 }
 
 Blue::~Blue()
@@ -45,3 +35,13 @@ void Blue::replicate(const Simulation& simulation)
     }
 }
 
+void Blue::init()
+{
+	mType = Entity::Type::predator;
+	mShape = Model::Shape::ellipse;
+	mColor = Qt::blue;
+	mReplicationChance = 4;
+	mMutationChance = 0;
+	mDeathChance = 3;
+	mCount++;
+}

@@ -9,6 +9,8 @@ class View;
 
 class Model
 {
+	friend class Simulation;
+
 public:
 	enum class Status { alive, dead };
 	enum class Shape { ellipse, rectangle, roundedRectangle };
@@ -44,5 +46,7 @@ protected:
 private:
 	qreal mHeight;
 	qreal mWidth;
+
+	virtual void init();
 };
 

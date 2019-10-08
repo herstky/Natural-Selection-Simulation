@@ -113,19 +113,19 @@ qreal Organism::diameter()
    return 2 * std::cbrt(3 * volume() / (4 * M_PI));
 }
 
-qreal Organism::dVelocity()
+qreal Organism::deltaVelocity()
 {
     return mVelocity - mInitialVelocity;
 }
 
-qreal Organism::dTime()
+qreal Organism::deltaTime()
 {
     return QTime::currentTime().msecsTo(mInitialTime) / 1000.0;
 }
 
 qreal Organism::acceleration()
 {
-    return dVelocity() / dTime();
+    return deltaVelocity() / deltaTime();
 }
 
 qreal Organism::x()
@@ -178,4 +178,18 @@ QRectF Organism::hitbox()
 	QPointF bottomRight = QPointF(center.x() + radius * cos(7.0 * M_PI / 4.0), 
 								  center.y() - radius * sin(7.0 * M_PI / 4.0));
 	return QRectF(topLeft, bottomRight);
+}
+
+void Organism::collide(const Simulation& simulation, Entity& other)
+{
+	if (other.getType() == Entity::Type::prey)
+	{
+		eat(simulation, other);
+	}
+}
+
+void Organism::eat(const Simulation& simulation, Entity& other)
+{
+	mEnergyLevel += other.getMass() * other.getEnergyContent();
+	other.die(simulation);
 }

@@ -9,6 +9,7 @@ class Simulation;
 
 class Organism : public Entity 
 {
+	friend class Simulation;
 public:
     Organism(const Simulation& simulation);
     Organism(const Simulation& simulation, const QPointF& position);
@@ -16,12 +17,14 @@ public:
 
     qreal volume();
     qreal diameter();
-    qreal dVelocity();
-    qreal dTime();
+    qreal deltaVelocity();
+    qreal deltaTime();
     qreal acceleration();
 
 	void move(const Simulation& simulation) override;
 	void simulate(const Simulation& simulation) override;
+
+	void eat(const Simulation& simulation, Entity& other);
 
 protected:
 	qreal mVelocity;
@@ -47,5 +50,6 @@ protected:
     void expendEnergy(const Simulation& simulation);
 	virtual void replicate(const Simulation& simulation);
 	virtual QRectF hitbox() override;
+	virtual void collide(const Simulation& simulation, Entity& other) override;
 };
 

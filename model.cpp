@@ -26,6 +26,8 @@ Model::Model(const Simulation& simulation, const QPointF& position)
 
 Model::~Model() {}
 
+void Model::init() {}
+
 qreal Model::height()
 {
 	return mHeight;
