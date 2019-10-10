@@ -18,7 +18,7 @@ public:
 	virtual void move(const Simulation& simulation);
 	virtual void detectCollisions(const Simulation& simulation);
 	virtual void collide(const Simulation& simulation, Entity& other);
-	void emanateScent(Simulation& simulation);
+	virtual void emanateScent(Simulation& simulation);
 	Type getType();
 	qreal getEnergyContent();
 	qreal getMass();

@@ -27,17 +27,17 @@ public:
 	void eat(const Simulation& simulation, Entity& other);
 
 protected:
-	qreal mVelocity;
-	qreal mInitialVelocity;
-	QTime mInitialTime;
-	qreal mDeltaDistance;
-	qreal mDirection;
+	qreal mVelocity; // [m/s]
+	qreal mInitialVelocity; // [m/s]
+	QTime mInitialTime; 
+	qreal mDeltaDistance; // [m]
+	qreal mDirection; // [rad]
 	qreal mReplicationChance;
 	qreal mMutationChance;
 	qreal mDeathChance;
 
-	qreal mMass;
-	qreal mDensity;
+	qreal mMass; // [kg]
+	qreal mDensity; // [kg/m^3]
 	qreal mEnergyLevel;
 	qreal mEnergyCapacity;
 

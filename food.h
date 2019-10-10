@@ -17,6 +17,7 @@ public:
 	qreal height() override;
 	qreal width() override;
 	qreal volume();
+	virtual void emanateScent(Simulation& simulation) override;
 
 private:
 	static unsigned int mCount;

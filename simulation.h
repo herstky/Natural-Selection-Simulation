@@ -16,6 +16,8 @@ class Simulation : QObject
 	Q_OBJECT
 public:
 	friend class Entity;
+	friend class Food;
+	friend class Organism;
     Simulation(QQuickItem* parent);
     ~Simulation();
 	QQuickItem& mContainer;

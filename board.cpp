@@ -7,7 +7,7 @@
 
 Board::Board(QQuickItem* view) 
 	: mView(view),
-	  mCellSize(0.001), 
+	  mCellSize(0.003), 
 	  mRows(300), 
 	  mColumns(600)
 {
@@ -26,27 +26,27 @@ qreal Board::cellSize()
 	return mCellSize;
 }
 
-qreal Board::scaledCellSize()
+qreal Board::scaledCellSize() const
 {
 	return SCALE_FACTOR * mCellSize;
 }
 
-int Board::rows()
+int Board::rows() const
 {
 	return mRows;
 }
 
-int Board::columns()
+int Board::columns() const
 {
 	return mColumns;
 }
 
-qreal Board::height()
+qreal Board::height() const
 {
 	return scaledCellSize() * rows();
 }
 
-qreal Board::width()
+qreal Board::width() const
 {
 	return scaledCellSize() * columns();
 }

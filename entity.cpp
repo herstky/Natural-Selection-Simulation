@@ -63,14 +63,7 @@ void Entity::detectCollisions(const Simulation& simulation)
 
 void Entity::collide(const Simulation& simulation, Entity& other) {}
 
-void Entity::emanateScent(Simulation& simulation)
-{
-	/*int i = int(center().x());
-	int j = int(center().y());
-	QPointF c = center();
-	qreal res = simulation.mBoard.mGrid[0][0];
-	simulation.mBoard.mGrid[i][j] = 5.0;*/
-}
+void Entity::emanateScent(Simulation& simulation) {}
 
 Entity::Type Entity::getType()
 {

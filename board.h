@@ -8,6 +8,7 @@ class Simulation;
 
 class Board
 {
+	friend class Food;
 	friend class Simulation;
 public:
 	Board(QQuickItem* view);
@@ -15,11 +16,11 @@ public:
 
 	QQuickItem* view();
 	qreal cellSize();
-	qreal scaledCellSize();
-	int rows();
-	int columns();
-	qreal height();
-	qreal width();
+	qreal scaledCellSize() const;
+	int rows() const;
+	int columns() const;
+	qreal height() const;
+	qreal width() const;
 	std::vector<std::vector<qreal>>* grid();
 	// each grid element is a qreal representing number of Food particles in moles
 	std::vector<std::vector<qreal>> mGrid;

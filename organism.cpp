@@ -43,8 +43,8 @@ Organism::Organism(const Simulation& simulation, const QPointF& position)
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = position.x();
-	mY = position.y();
+	mX = position.x() / SCALE_FACTOR;
+	mY = position.y() / SCALE_FACTOR;
 	initView(simulation);
 }
 
@@ -60,11 +60,11 @@ void Organism::move(const Simulation& simulation)
     qreal dx = mVelocity * cos(mDirection);
     qreal dy = mVelocity * sin(mDirection);
 
-    if (x() + dx + scaledWidth() > simulation.boardView()->width() || x() + dx < 0)
+    if (x() + dx + width() > simulation.mBoard.width() || x() + dx < 0)
     {
         mDirection = M_PI - mDirection;
     }
-    if (y() + dy + scaledHeight() > simulation.boardView()->height() || y() + dy < 0)
+    if (y() + dy + height() > simulation.mBoard.height() || y() + dy < 0)
     {
         mDirection = 2 * M_PI - mDirection;
     }
@@ -75,8 +75,8 @@ void Organism::move(const Simulation& simulation)
 
     expendEnergy(simulation);
 
-	qreal vx = mView->x();
-	qreal vy = mView->y();
+	//qreal vx = mView->x();
+	//qreal vy = mView->y();
 
 	setX(x() + dx);
 	setY(y() + dy);

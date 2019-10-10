@@ -50,13 +50,22 @@ qreal Food::volume()
 	return mMass / mDensity;
 }
 
+void Food::emanateScent(Simulation& simulation)
+{
+	//int i = int(center().x());
+	//int j = int(center().y());
+	//QPointF c = center();
+	//qreal res = simulation.mBoard.mGrid[0][0];
+	//simulation.mBoard.mGrid[i][j] = 5.0;
+}
+
 void Food::init()
 {
 	mColor = Qt::green;
 	mType = Entity::Type::prey;
 	mEnergyContent = 128;
 	mMass = 0.005;
-	mDensity = 1500;
+	mDensity = 2000;
 	mAspectRatio = 1;
 	mDepth = 0.1;
 	mCount++;
