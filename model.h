@@ -26,12 +26,16 @@ public:
 
 	virtual qreal height();
 	virtual qreal width();
+	virtual QPointF center();
+	virtual QPointF scaledCenter();
 	virtual qreal scaledHeight();
 	virtual qreal scaledWidth();
 	virtual void setHeight(qreal height);
 	virtual void setWidth(qreal width);
 	virtual qreal x();
+	virtual qreal scaledX();
 	virtual qreal y();
+	virtual qreal scaledY();
 	virtual void setX(qreal x);
 	virtual void setY(qreal y);
 	virtual QRectF hitbox();
@@ -43,10 +47,10 @@ protected:
 	qreal mX;
 	qreal mY;
 
+	virtual void init();
+
 private:
 	qreal mHeight;
 	qreal mWidth;
-
-	virtual void init();
 };
 

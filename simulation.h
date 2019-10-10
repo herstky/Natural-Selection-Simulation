@@ -2,6 +2,7 @@
 
 #include <QQuickItem>
 #include <QTimer>
+#include <QTime>
 #include <QObject>
 #include <QRandomGenerator>
 
@@ -12,21 +13,28 @@
 
 class Simulation : QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
+	friend class Entity;
     Simulation(QQuickItem* parent);
     ~Simulation();
 	QQuickItem& mContainer;
 
-	QQuickItem* board() const;
+	QQuickItem* boardView() const;
+	qreal deltaTime() const;
 
 public slots:
     void run();
 
+protected:
+	void init();
+
 private:
-    const int M_TICK_DURATION;
-    const int M_TICKS_PER_STEP;
+	Board mBoard;
+    const int M_TICK_DURATION; // [ms]
+    const int M_TICKS_PER_STEP; // simulate only called every step
     int mTicksRemaining;
+	QTime mInitialTime; // time since previous step
 
 	void outputCounts();
 };

@@ -17,11 +17,11 @@ View::~View()
 
 void View::init()
 {
-	setX(mModel.x());
-	setY(mModel.y());
-	setHeight(SCALE_FACTOR * mModel.height());
-	setWidth(SCALE_FACTOR * mModel.width());
-	setZ(SCALE_FACTOR * 1);
+	setX(mModel.scaledX());
+	setY(mModel.scaledY());
+	setHeight(mModel.scaledHeight());
+	setWidth(mModel.scaledWidth());
+	setZ(1);
 	setOpacity(0.4);
 	setFlag(QQuickItem::ItemHasContents);
 }

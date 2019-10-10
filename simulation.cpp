@@ -12,30 +12,30 @@
 
 Simulation::Simulation(QQuickItem* parent)
     : mContainer(*parent),
+	  mBoard(Board(mContainer.findChild<QQuickItem*>("board"))),
       M_TICK_DURATION(50),
-      M_TICKS_PER_STEP(1),
-      mTicksRemaining(M_TICKS_PER_STEP)
+      M_TICKS_PER_STEP(10),
+      mTicksRemaining(M_TICKS_PER_STEP),
+	  mInitialTime(QTime::currentTime())
 {
-    Red::mCount = 0;
-    Green::mCount = 0;
-    Blue::mCount = 0;
-
-    outputCounts();
-    QTimer* timer = new QTimer();
-    connect(timer, SIGNAL(timeout()), this, SLOT(run()));
-    timer->start(M_TICK_DURATION);
+	init();
 }
 
 Simulation::~Simulation() {}
 
-QQuickItem* Simulation::board() const
+QQuickItem* Simulation::boardView() const
 {
-	return mContainer.findChild<QQuickItem*>("board");
+	return mBoard.mView;
+}
+
+qreal Simulation::deltaTime() const
+{
+	return QTime::currentTime().msecsTo(mInitialTime) / 1000.0;
 }
 
 void Simulation::run()
 {
-	for (auto item : board()->childItems())
+	for (auto item : boardView()->childItems())
     {
         try
         {
@@ -53,16 +53,6 @@ void Simulation::run()
 		}
     }
 
-    if (mTicksRemaining)
-    {
-        mTicksRemaining--;
-        return;
-    }
-	else
-	{
-		mTicksRemaining = M_TICKS_PER_STEP;
-	}
-
     if (QRandomGenerator::global()->bounded(100) < Red::mCreationChance)
     {
 		new Red(*this);
@@ -72,21 +62,31 @@ void Simulation::run()
 		new Food(*this);
 	}
 
-    for (auto item : board()->childItems())
-    {
-        try
-        {
-			View* view = dynamic_cast<View*>(item);
-			Entity* entity = dynamic_cast<Entity*>(&view->mModel);
-			entity->simulate(*this);
-        }
-        catch (const std::exception& e)
-        {
-            std::cout << "An exception was caught with message '" << e.what() << "'\n";
-        }
-    }
+	if (mTicksRemaining)
+	{
 
-	for (auto item : board()->childItems())
+		mTicksRemaining--;
+	}
+	else
+	{
+		for (auto item : boardView()->childItems())
+		{
+			try
+			{
+				View* view = dynamic_cast<View*>(item);
+				Entity* entity = dynamic_cast<Entity*>(&view->mModel);
+				entity->simulate(*this);
+			}
+			catch (const std::exception & e)
+			{
+				std::cout << "An exception was caught with message '" << e.what() << "'\n";
+			}
+		}
+		mInitialTime = QTime::currentTime();
+		mTicksRemaining = M_TICKS_PER_STEP;
+	}
+
+	for (auto item : boardView()->childItems())
 	{
 		try
 		{
@@ -107,6 +107,18 @@ void Simulation::run()
 	View::mDeletionQueue = QList<View*>();
 
     outputCounts();
+}
+
+void Simulation::init()
+{
+	Red::mCount = 0;
+	Green::mCount = 0;
+	Blue::mCount = 0;
+
+	outputCounts();
+	QTimer* timer = new QTimer();
+	connect(timer, SIGNAL(timeout()), this, SLOT(run()));
+	timer->start(M_TICK_DURATION);
 }
 
 void Simulation::outputCounts()

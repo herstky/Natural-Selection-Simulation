@@ -27,7 +27,10 @@ Entity::Entity(const Simulation& simulation, const QPointF& position)
 
 Entity::~Entity() {}
 
-void Entity::simulate(const Simulation& simulation) {}
+void Entity::simulate(Simulation& simulation) 
+{
+	emanateScent(simulation);
+}
 
 void Entity::move(const Simulation& simulation) {}
 
@@ -38,7 +41,7 @@ void Entity::detectCollisions(const Simulation& simulation)
 		return;
 	}
 
-	QList<QQuickItem*> items = simulation.board()->childItems();
+	QList<QQuickItem*> items = simulation.boardView()->childItems();
 	for (auto item : items)
 	{
 		View* view = static_cast<View*>(item);
@@ -59,6 +62,15 @@ void Entity::detectCollisions(const Simulation& simulation)
 }
 
 void Entity::collide(const Simulation& simulation, Entity& other) {}
+
+void Entity::emanateScent(Simulation& simulation)
+{
+	/*int i = int(center().x());
+	int j = int(center().y());
+	QPointF c = center();
+	qreal res = simulation.mBoard.mGrid[0][0];
+	simulation.mBoard.mGrid[i][j] = 5.0;*/
+}
 
 Entity::Type Entity::getType()
 {

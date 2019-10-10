@@ -13,9 +13,10 @@ public:
     
     void replicate(const Simulation& simulation) override;
 
+protected:
+	virtual void init() override;
+
 private:
 	static unsigned int mCount;
 	static qreal mCreationChance;
-
-	virtual void init() override;
 };

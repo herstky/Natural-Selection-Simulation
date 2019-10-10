@@ -8,13 +8,13 @@
 #include "simulation.h"
 
 unsigned int Food::mCount = 0;
-qreal Food::mCreationChance = 3;
+qreal Food::mCreationChance = 10;
 
 Food::Food(const Simulation& simulation)
 	: Entity(simulation)
 {
-	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - scaledWidth());
-	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - scaledHeight());
+	mX = QRandomGenerator::global()->bounded(simulation.boardView()->width() - scaledWidth());
+	mY = QRandomGenerator::global()->bounded(simulation.boardView()->height() - scaledHeight());
 	init();
 	initView(simulation);
 }

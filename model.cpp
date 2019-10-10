@@ -21,8 +21,8 @@ Model::Model(const Simulation& simulation, const QPointF& position)
 	  mView(nullptr),
 	  mHeight(1),
 	  mWidth(1),
-	  mX(position.x()),
-	  mY(position.y()) {}
+	  mX(position.x() / SCALE_FACTOR),
+	  mY(position.y() / SCALE_FACTOR) {}
 
 Model::~Model() {}
 
@@ -53,6 +53,16 @@ qreal Model::scaledWidth()
 	return SCALE_FACTOR * width();
 }
 
+QPointF Model::center()
+{//need to map x and y pos properly
+	return QPointF(x() + width() / 2.0, y() + height() / 2.0);
+}
+
+QPointF Model::scaledCenter()
+{
+	return QPointF(SCALE_FACTOR * x() + width() / 2.0, SCALE_FACTOR * y() + height() / 2.0);
+}
+
 void Model::setWidth(qreal width)
 {
 	mWidth = width;
@@ -63,10 +73,15 @@ qreal Model::x()
 	return mX;
 }
 
-void Model::setX(qreal x)
+qreal Model::scaledX()
 {
-	mX = x;
-	mView->setX(x);
+	return SCALE_FACTOR * mX;
+}
+
+void Model::setX(qreal _x)
+{
+	mX = _x;
+	mView->setX(x());
 }
 
 qreal Model::y()
@@ -74,15 +89,20 @@ qreal Model::y()
 	return mY;
 }
 
-void Model::setY(qreal y)
+qreal Model::scaledY()
 {
-	mY = y;
-	mView->setY(y);
+	return SCALE_FACTOR * mY;
+}
+
+void Model::setY(qreal _y)
+{
+	mY = _y;
+	mView->setY(y());
 }
 
 void Model::initView(const Simulation& simulation)
 {
-	mView = new View(simulation.board(), *this);
+	mView = new View(simulation.boardView(), *this);
 	mView->init();
 }
 

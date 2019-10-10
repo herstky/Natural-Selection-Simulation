@@ -18,13 +18,13 @@ Organism::Organism(const Simulation& simulation)
       mReplicationChance(0),
       mMutationChance(0),
       mDeathChance(0),
-      mMass(0.001),
+      mMass(0.0005),
       mDensity(WATER_DENSITY),
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = QRandomGenerator::global()->bounded(simulation.board()->width() - scaledWidth());
-	mY = QRandomGenerator::global()->bounded(simulation.board()->height() - scaledHeight());
+	mX = QRandomGenerator::global()->bounded(simulation.boardView()->width() - scaledWidth());
+	mY = QRandomGenerator::global()->bounded(simulation.boardView()->height() - scaledHeight());
 	initView(simulation);
 }
 
@@ -38,7 +38,7 @@ Organism::Organism(const Simulation& simulation, const QPointF& position)
       mReplicationChance(0),
       mMutationChance(0),
       mDeathChance(0),
-      mMass(0.001),
+      mMass(0.0005),
       mDensity(WATER_DENSITY),
       mEnergyLevel(100),
       mEnergyCapacity(100)
@@ -60,11 +60,11 @@ void Organism::move(const Simulation& simulation)
     qreal dx = mVelocity * cos(mDirection);
     qreal dy = mVelocity * sin(mDirection);
 
-    if (x() + dx + scaledWidth() > simulation.board()->width() || x() + dx < 0)
+    if (x() + dx + scaledWidth() > simulation.boardView()->width() || x() + dx < 0)
     {
         mDirection = M_PI - mDirection;
     }
-    if (y() + dy + scaledHeight() > simulation.board()->height() || y() + dy < 0)
+    if (y() + dy + scaledHeight() > simulation.boardView()->height() || y() + dy < 0)
     {
         mDirection = 2 * M_PI - mDirection;
     }
@@ -82,7 +82,7 @@ void Organism::move(const Simulation& simulation)
 	setY(y() + dy);
 }
 
-void Organism::simulate(const Simulation& simulation)
+void Organism::simulate(Simulation& simulation)
 {
 	if (mStatus == Model::Status::dead)
 	{
@@ -100,7 +100,7 @@ void Organism::simulate(const Simulation& simulation)
 
 void Organism::replicate(const Simulation& simulation)
 {
-    Organism* organism = new Organism(simulation.board(), QPointF(x(), y()));
+    Organism* organism = new Organism(simulation.boardView(), QPointF(x(), y()));
 }
 
 qreal Organism::volume()
@@ -110,7 +110,7 @@ qreal Organism::volume()
 
 qreal Organism::diameter()
 {
-   return 2 * std::cbrt(3 * volume() / (4 * M_PI));
+   return 2.0 * std::cbrt(3.0 * volume() / (4.0 * M_PI));
 }
 
 qreal Organism::deltaVelocity()

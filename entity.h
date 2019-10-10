@@ -14,10 +14,11 @@ public:
 	Entity(const Simulation& simulation, const QPointF& position);
 	virtual ~Entity() override;
 	
-	virtual void simulate(const Simulation& simulation);
+	virtual void simulate(Simulation& simulation);
 	virtual void move(const Simulation& simulation);
 	virtual void detectCollisions(const Simulation& simulation);
 	virtual void collide(const Simulation& simulation, Entity& other);
+	void emanateScent(Simulation& simulation);
 	Type getType();
 	qreal getEnergyContent();
 	qreal getMass();
@@ -27,10 +28,10 @@ public:
 
 protected:
 	Type mType;
-	qreal mEnergyContent; // kJ/kg
-	qreal mMass; // kg
-	qreal mDensity; // kg/m^3
-	qreal mAspectRatio; // height/width
-	qreal mDepth; // m
+	qreal mEnergyContent; // [kJ/kg]
+	qreal mMass; // [kg]
+	qreal mDensity; // [kg/m^3]
+	qreal mAspectRatio; // width/height
+	qreal mDepth; // [m]
 };
 

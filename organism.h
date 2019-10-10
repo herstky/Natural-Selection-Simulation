@@ -22,7 +22,7 @@ public:
     qreal acceleration();
 
 	void move(const Simulation& simulation) override;
-	void simulate(const Simulation& simulation) override;
+	void simulate(Simulation& simulation) override;
 
 	void eat(const Simulation& simulation, Entity& other);
 
