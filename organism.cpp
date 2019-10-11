@@ -10,7 +10,7 @@
 
 Organism::Organism(const Simulation& simulation)
     : Entity(simulation),
-      mVelocity(3),
+      mVelocity(0.003),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
       mDeltaDistance(0),
@@ -23,14 +23,14 @@ Organism::Organism(const Simulation& simulation)
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = QRandomGenerator::global()->bounded(simulation.boardView()->width() - scaledWidth());
-	mY = QRandomGenerator::global()->bounded(simulation.boardView()->height() - scaledHeight());
+	mX = QRandomGenerator::global()->bounded(simulation.boardView()->width() - scaledWidth()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(simulation.boardView()->height() - scaledHeight()) / SCALE_FACTOR;
 	initView(simulation);
 }
 
 Organism::Organism(const Simulation& simulation, const QPointF& position)
     : Entity(simulation, position),
-      mVelocity(3),
+      mVelocity(0.003),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
       mDeltaDistance(0),
@@ -74,9 +74,6 @@ void Organism::move(const Simulation& simulation)
     mDeltaDistance = std::sqrt(pow(dx, 2) + pow(dy, 2));
 
     expendEnergy(simulation);
-
-	//qreal vx = mView->x();
-	//qreal vy = mView->y();
 
 	setX(x() + dx);
 	setY(y() + dy);
@@ -126,16 +123,6 @@ qreal Organism::deltaTime()
 qreal Organism::acceleration()
 {
     return deltaVelocity() / deltaTime();
-}
-
-qreal Organism::x()
-{
-	return mX;
-}
-
-qreal Organism::y()
-{
-	return mY;
 }
 
 qreal Organism::height() 

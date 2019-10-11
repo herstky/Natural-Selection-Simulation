@@ -41,8 +41,6 @@ protected:
 	qreal mEnergyLevel;
 	qreal mEnergyCapacity;
 
-	qreal x() override;
-	qreal y() override;
 	qreal height() override;
 	void setHeight(qreal height) override;
 	qreal width() override;

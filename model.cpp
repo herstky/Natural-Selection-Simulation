@@ -78,10 +78,10 @@ qreal Model::scaledX()
 	return SCALE_FACTOR * mX;
 }
 
-void Model::setX(qreal _x)
+void Model::setX(qreal x)
 {
-	mX = _x;
-	mView->setX(x());
+	mX = x;
+	mView->setX(SCALE_FACTOR * x);
 }
 
 qreal Model::y()
@@ -94,10 +94,10 @@ qreal Model::scaledY()
 	return SCALE_FACTOR * mY;
 }
 
-void Model::setY(qreal _y)
+void Model::setY(qreal y)
 {
-	mY = _y;
-	mView->setY(y());
+	mY = y;
+	mView->setY(SCALE_FACTOR * y);
 }
 
 void Model::initView(const Simulation& simulation)
