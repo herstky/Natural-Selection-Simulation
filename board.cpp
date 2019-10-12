@@ -8,8 +8,8 @@
 Board::Board(QQuickItem* view) 
 	: mView(view),
 	  mCellSize(0.003), 
-	  mRows(300), 
-	  mColumns(600)
+	  mRows(150), 
+	  mColumns(300)
 {
 	init();
 }
@@ -21,7 +21,7 @@ QQuickItem* Board::view()
 	return mView;
 }
 
-qreal Board::cellSize()
+qreal Board::cellSize() const
 {
 	return mCellSize;
 }
@@ -43,10 +43,20 @@ int Board::columns() const
 
 qreal Board::height() const
 {
+	return cellSize() * rows();
+}
+
+qreal Board::scaledHeight() const
+{
 	return scaledCellSize() * rows();
 }
 
 qreal Board::width() const
+{
+	return cellSize() * columns();
+}
+
+qreal Board::scaledWidth() const
 {
 	return scaledCellSize() * columns();
 }
@@ -59,8 +69,8 @@ std::vector<std::vector<qreal>>* Board::grid()
 void Board::init()
 {
 	mGrid = std::vector<std::vector<qreal>>(mRows, std::vector<qreal>(mColumns, 0));
-	mView->setHeight(height());
-	dynamic_cast<QQuickItem*>(mView->parent())->setWidth(width());
+	mView->setHeight(scaledHeight());
+	dynamic_cast<QQuickItem*>(mView->parent())->setWidth(scaledWidth());
 }
 
 void Board::diffuseParticles(const Simulation& simulation)

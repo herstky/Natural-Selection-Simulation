@@ -25,11 +25,11 @@ public:
 	View* mView;
 
 	virtual qreal height();
+	virtual qreal scaledHeight();
 	virtual qreal width();
+	virtual qreal scaledWidth();
 	virtual QPointF center();
 	virtual QPointF scaledCenter();
-	virtual qreal scaledHeight();
-	virtual qreal scaledWidth();
 	virtual void setHeight(qreal height);
 	virtual void setWidth(qreal width);
 	virtual qreal x();

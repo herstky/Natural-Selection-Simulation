@@ -1,5 +1,8 @@
 #include "simulation.h"
+
 #include <QtWidgets/QLabel>
+#include <QThreadPool>
+#include <QtConcurrent/QtConcurrent>
 
 #include <iostream>
 
@@ -13,8 +16,10 @@
 Simulation::Simulation(QQuickItem* parent)
     : mContainer(*parent),
 	  mBoard(Board(mContainer.findChild<QQuickItem*>("board"))),
+	  mScentSystem(ScentSystem(&mBoard)),
+	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
-      M_TICKS_PER_STEP(10),
+      M_TICKS_PER_STEP(5),
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mInitialTime(QTime::currentTime())
 {
@@ -69,6 +74,12 @@ void Simulation::run()
 	}
 	else
 	{
+		if (mDiffusionThread.isRunning())
+			std::cout << "Warning, diffusion thread still running!\n";
+
+		mDiffusionThread.waitForFinished();
+		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), mScentSystem, &ScentSystem::diffuse);
+		
 		for (auto item : boardView()->childItems())
 		{
 			try
