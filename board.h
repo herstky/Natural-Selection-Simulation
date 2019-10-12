@@ -26,7 +26,7 @@ public:
 	qreal scaledWidth() const;
 	std::vector<std::vector<qreal>>* grid();
 	std::vector<std::vector<qreal>> mGrid;
-	void diffuseParticles(const Simulation& simulation);
+	void diffuseParticles(const Simulation& simulation); // TODO: move this function to its own thread
 
 private:
 	QQuickItem* mView;
