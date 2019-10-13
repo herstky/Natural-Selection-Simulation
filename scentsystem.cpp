@@ -13,6 +13,6 @@ void ScentSystem::diffuse()
 {
 	for (auto it = mScentMap.begin(); it != mScentMap.end(); it++)
 	{
-		std::cout << it->first << ":" << it->second << '\n';
+		//std::cout << it->first << ":" << it->second << '\n';
 	}
 }

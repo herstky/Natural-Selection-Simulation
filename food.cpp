@@ -13,8 +13,8 @@ qreal Food::mCreationChance = 10;
 Food::Food(const Simulation& simulation)
 	: Entity(simulation)
 {
-	mX = QRandomGenerator::global()->bounded(simulation.boardView()->width() - scaledWidth());
-	mY = QRandomGenerator::global()->bounded(simulation.boardView()->height() - scaledHeight());
+	mX = QRandomGenerator::global()->bounded(simulation.boardView()->width() - scaledWidth()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(simulation.boardView()->height() - scaledHeight()) / SCALE_FACTOR;
 	init();
 	initView(simulation);
 }
@@ -22,8 +22,8 @@ Food::Food(const Simulation& simulation)
 Food::Food(const Simulation& simulation, const QPointF& position)
 	: Entity(simulation, position)
 {
-	mX = position.x();
-	mY = position.y();
+	mX = position.x() / SCALE_FACTOR;
+	mY = position.y() / SCALE_FACTOR;
 	init();
 	initView(simulation);
 }

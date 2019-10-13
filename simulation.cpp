@@ -23,6 +23,7 @@ Simulation::Simulation(QQuickItem* parent)
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mInitialTime(QTime::currentTime())
 {
+	new Red(*this);
 	init();
 }
 
@@ -93,8 +94,6 @@ void Simulation::run()
 				std::cout << "An exception was caught with message '" << e.what() << "'\n";
 			}
 		}
-
-		//mBoard.diffuseParticles(*this);
 
 		mInitialTime = QTime::currentTime();
 		mTicksRemaining = M_TICKS_PER_STEP;

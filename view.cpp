@@ -33,7 +33,7 @@ void View::paint(QPainter* painter)
 		return;
 	}
 	
-	setPosition(QPointF(mModel.x(), mModel.y()));
+	setPosition(QPointF(mModel.scaledX(), mModel.scaledY()));
 
 	QBrush brush(mModel.mColor);
 	painter->setBrush(brush);

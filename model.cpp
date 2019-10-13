@@ -108,7 +108,7 @@ void Model::initView(const Simulation& simulation)
 
 QRectF Model::hitbox()
 {
-	return QRectF(x(), y(), scaledWidth(), scaledHeight());
+	return QRectF(scaledX(), scaledY(), scaledWidth(), scaledHeight());
 }
 
 void Model::die(const Simulation& simulation)

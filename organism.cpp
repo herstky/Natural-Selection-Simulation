@@ -77,6 +77,9 @@ void Organism::move(const Simulation& simulation)
 
 	setX(x() + dx);
 	setY(y() + dy);
+
+	qreal x = mView->x();
+	qreal y = mView->y();
 }
 
 void Organism::simulate(Simulation& simulation)
@@ -158,12 +161,12 @@ void Organism::expendEnergy(const Simulation& simulation)
 
 QRectF Organism::hitbox()
 {
-	qreal radius = SCALE_FACTOR * diameter() / 2.0;
-	QPointF center = QPointF(x() + radius, y() + radius);
-	QPointF topLeft = QPointF(center.x() + radius * cos(3.0 * M_PI / 4.0), 
-		center.y() - radius * sin(3.0 * M_PI / 4.0));
-	QPointF bottomRight = QPointF(center.x() + radius * cos(7.0 * M_PI / 4.0), 
-		center.y() - radius * sin(7.0 * M_PI / 4.0));
+	qreal scaledRadius = SCALE_FACTOR * diameter() / 2.0;
+	QPointF center = QPointF(scaledX() + scaledRadius, scaledY() + scaledRadius);
+	QPointF topLeft = QPointF(center.x() + scaledRadius * cos(3.0 * M_PI / 4.0), 
+		center.y() - scaledRadius * sin(3.0 * M_PI / 4.0));
+	QPointF bottomRight = QPointF(center.x() + scaledRadius * cos(7.0 * M_PI / 4.0), 
+		center.y() - scaledRadius * sin(7.0 * M_PI / 4.0));
 	return QRectF(topLeft, bottomRight);
 }
 
