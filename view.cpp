@@ -7,8 +7,8 @@
 
 QList<View*> View::mDeletionQueue = QList<View*>();
 
-View::View(QQuickItem* parent, Model& model)
-	: QQuickPaintedItem(parent), mModel(model) {}
+View::View(QQuickItem* pParent, Model& pModel)
+	: QQuickPaintedItem(pParent), mModel(pModel) {}
 
 View::~View() 
 {
@@ -26,7 +26,7 @@ void View::init()
 	setFlag(QQuickItem::ItemHasContents);
 }
 
-void View::paint(QPainter* painter)
+void View::paint(QPainter* pPainter)
 {
 	if (mModel.mStatus == Model::Status::dead)
 	{
@@ -36,22 +36,22 @@ void View::paint(QPainter* painter)
 	setPosition(QPointF(mModel.scaledX(), mModel.scaledY()));
 
 	QBrush brush(mModel.mColor);
-	painter->setBrush(brush);
-	painter->setPen(Qt::NoPen);
-	painter->setRenderHint(QPainter::HighQualityAntialiasing);
+	pPainter->setBrush(brush);
+	pPainter->setPen(Qt::NoPen);
+	pPainter->setRenderHint(QPainter::HighQualityAntialiasing);
 	
 	switch (mModel.mShape)
 	{
 	case Model::Shape::ellipse:
-		painter->drawEllipse(contentsBoundingRect());
+		pPainter->drawEllipse(contentsBoundingRect());
 		break;
 	case Model::Shape::rectangle:
-		painter->drawRect(contentsBoundingRect());
+		pPainter->drawRect(contentsBoundingRect());
 		break;
 	case Model::Shape::roundedRectangle:
-		painter->drawRoundedRect(contentsBoundingRect(), 2, 2);
+		pPainter->drawRoundedRect(contentsBoundingRect(), 2, 2);
 		break;
 	default:
-		painter->drawRect(contentsBoundingRect());
+		pPainter->drawRect(contentsBoundingRect());
 	}
 }

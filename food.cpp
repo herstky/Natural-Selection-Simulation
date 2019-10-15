@@ -10,22 +10,22 @@
 unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 10;
 
-Food::Food(const Simulation& simulation)
-	: Entity(simulation)
+Food::Food(const Simulation& pSimulation)
+	: Entity(pSimulation), mScentStrength(1.0)
 {
-	mX = QRandomGenerator::global()->bounded(simulation.boardView()->width() - scaledWidth()) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(simulation.boardView()->height() - scaledHeight()) / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) / SCALE_FACTOR;
 	init();
-	initView(simulation);
+	initView(pSimulation);
 }
 
-Food::Food(const Simulation& simulation, const QPointF& position)
-	: Entity(simulation, position)
+Food::Food(const Simulation& pSimulation, const QPointF& pPosition)
+	: Entity(pSimulation, pPosition), mScentStrength(1.0)
 {
-	mX = position.x() / SCALE_FACTOR;
-	mY = position.y() / SCALE_FACTOR;
+	mX = pPosition.x() / SCALE_FACTOR;
+	mY = pPosition.y() / SCALE_FACTOR;
 	init();
-	initView(simulation);
+	initView(pSimulation);
 }
 
 Food::~Food() 
@@ -33,30 +33,31 @@ Food::~Food()
 	mCount--;
 }
 
-void Food::detectCollisions(const Simulation& simulation) {}
+void Food::detectCollisions(const Simulation& pSimulation) {}
 
-qreal Food::height()
+const qreal Food::height() const
 {
 	return std::sqrt(volume() / (mAspectRatio * mDepth));
 }
 
-qreal Food::width()
+const qreal Food::width() const
 {
 	return mAspectRatio * height();
 }
 
-qreal Food::volume()
+const qreal Food::volume() const
 {
 	return mMass / mDensity;
 }
 
-void Food::emanateScent(Simulation& simulation)
+void Food::emanateScent(Simulation& pSimulation)
 {
-	//int i = int(center().x());
-	//int j = int(center().y());
-	//QPointF c = center();
-	//qreal res = simulation.mBoard.mGrid[0][0];
-	//simulation.mBoard.mGrid[i][j] = 5.0;
+	pSimulation.mScentSystem.add(pSimulation.mScentSystem.scentMap(), coords(pSimulation), mScentStrength);
+}
+
+void Food::simulate(Simulation& pSimulation)
+{
+	emanateScent(pSimulation);
 }
 
 void Food::init()

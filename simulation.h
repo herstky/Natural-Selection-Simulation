@@ -20,12 +20,13 @@ public:
 	friend class Entity;
 	friend class Food;
 	friend class Organism;
-    Simulation(QQuickItem* parent);
+    Simulation(QQuickItem* pParent);
     ~Simulation();
 	QQuickItem& mContainer;
 
 	QQuickItem* boardView() const;
 	qreal deltaTime() const;
+	Board* getBoard();
 
 public slots:
     void run();

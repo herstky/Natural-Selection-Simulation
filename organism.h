@@ -11,20 +11,20 @@ class Organism : public Entity
 {
 	friend class Simulation;
 public:
-    Organism(const Simulation& simulation);
-    Organism(const Simulation& simulation, const QPointF& position);
+    Organism(const Simulation& pSimulation);
+    Organism(const Simulation& pSimulation, const QPointF& pPosition);
     virtual ~Organism() override;
 
-    qreal volume();
-    qreal diameter();
+    const qreal volume() const;
+    const qreal diameter() const;
     qreal deltaVelocity();
     qreal deltaTime();
     qreal acceleration();
 
-	void move(const Simulation& simulation) override;
-	void simulate(Simulation& simulation) override;
+	void move(const Simulation& pSimulation) override;
+	void simulate(Simulation& pSimulation) override;
 
-	void eat(const Simulation& simulation, Entity& other);
+	void eat(const Simulation& pSimulation, Entity& pOther);
 
 protected:
 	qreal mVelocity; // [m/s]
@@ -41,13 +41,13 @@ protected:
 	qreal mEnergyLevel;
 	qreal mEnergyCapacity;
 
-	qreal height() override;
-	void setHeight(qreal height) override;
-	qreal width() override;
-	void setWidth(qreal width) override;
-    void expendEnergy(const Simulation& simulation);
-	virtual void replicate(const Simulation& simulation);
+	const qreal height() const override;
+	void setHeight(qreal pHeight) override;
+	const qreal width() const override;
+	void setWidth(qreal pWidth) override;
+    void expendEnergy(const Simulation& pSimulation);
+	virtual void replicate(const Simulation& pSimulation);
 	virtual QRectF hitbox() override;
-	virtual void collide(const Simulation& simulation, Entity& other) override;
+	virtual void collide(const Simulation& pSimulation, Entity& pOther) override;
 };
 

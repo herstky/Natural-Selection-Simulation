@@ -7,11 +7,11 @@ class Green : public Organism
 	friend class Simulation;
 
 public:
-    Green(const Simulation& simulation);
-    Green(const Simulation& simulation, const QPointF& position);
+    Green(const Simulation& pSimulation);
+    Green(const Simulation& pSimulation, const QPointF& pPosition);
     ~Green() override;
 
-    void replicate(const Simulation& simulation) override;
+    void replicate(const Simulation& pSimulation) override;
 
 protected:
 	virtual void init() override;

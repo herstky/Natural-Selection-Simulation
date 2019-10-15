@@ -8,8 +8,8 @@
 
 #include "view.h"
 
-Organism::Organism(const Simulation& simulation)
-    : Entity(simulation),
+Organism::Organism(const Simulation& pSimulation)
+    : Entity(pSimulation),
       mVelocity(0.003),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
@@ -23,13 +23,13 @@ Organism::Organism(const Simulation& simulation)
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = QRandomGenerator::global()->bounded(simulation.boardView()->width() - scaledWidth()) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(simulation.boardView()->height() - scaledHeight()) / SCALE_FACTOR;
-	initView(simulation);
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) / SCALE_FACTOR;
+	initView(pSimulation);
 }
 
-Organism::Organism(const Simulation& simulation, const QPointF& position)
-    : Entity(simulation, position),
+Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
+    : Entity(pSimulation, pPosition),
       mVelocity(0.003),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
@@ -43,37 +43,31 @@ Organism::Organism(const Simulation& simulation, const QPointF& position)
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = position.x() / SCALE_FACTOR;
-	mY = position.y() / SCALE_FACTOR;
-	initView(simulation);
+	mX = pPosition.x() / SCALE_FACTOR;
+	mY = pPosition.y() / SCALE_FACTOR;
+	initView(pSimulation);
 }
 
 Organism::~Organism() {}
 
-void Organism::move(const Simulation& simulation)
+void Organism::move(const Simulation& pSimulation)
 {
 	if (mStatus == Model::Status::dead)
-	{
 		return;
-	}
 
     qreal dx = mVelocity * cos(mDirection);
     qreal dy = mVelocity * sin(mDirection);
 
-    if (x() + dx + width() > simulation.mBoard.width() || x() + dx < 0)
-    {
+    if (x() + dx + width() > pSimulation.mBoard.width() || x() + dx < 0)
         mDirection = M_PI - mDirection;
-    }
-    if (y() + dy + height() > simulation.mBoard.height() || y() + dy < 0)
-    {
+    if (y() + dy + height() > pSimulation.mBoard.height() || y() + dy < 0)
         mDirection = 2 * M_PI - mDirection;
-    }
 
     dx = mVelocity * cos(mDirection);
     dy = mVelocity * sin(mDirection);
     mDeltaDistance = std::sqrt(pow(dx, 2) + pow(dy, 2));
 
-    expendEnergy(simulation);
+    expendEnergy(pSimulation);
 
 	setX(x() + dx);
 	setY(y() + dy);
@@ -82,12 +76,10 @@ void Organism::move(const Simulation& simulation)
 	qreal y = mView->y();
 }
 
-void Organism::simulate(Simulation& simulation)
+void Organism::simulate(Simulation& pSimulation)
 {
 	if (mStatus == Model::Status::dead)
-	{
 		return;
-	}
 //    if (QRandomGenerator::global()->bounded(100.0) < replicationChance)
 //    {
 //        replicate(simulation);
@@ -98,17 +90,17 @@ void Organism::simulate(Simulation& simulation)
 //    }
 }
 
-void Organism::replicate(const Simulation& simulation)
+void Organism::replicate(const Simulation& pSimulation)
 {
-    Organism* organism = new Organism(simulation.boardView(), QPointF(x(), y()));
+    Organism* organism = new Organism(pSimulation.boardView(), QPointF(x(), y()));
 }
 
-qreal Organism::volume()
+const qreal Organism::volume() const
 {
     return mMass / mDensity;
 }
 
-qreal Organism::diameter()
+const qreal Organism::diameter() const
 {
    return 2.0 * std::cbrt(3.0 * volume() / (4.0 * M_PI));
 }
@@ -128,21 +120,21 @@ qreal Organism::acceleration()
     return deltaVelocity() / deltaTime();
 }
 
-qreal Organism::height() 
+const qreal Organism::height() const
 {
 	return diameter();
 }
 
-void Organism::setHeight(qreal height) {}
+void Organism::setHeight(qreal pHeight) {}
 
-qreal Organism::width()
+const qreal Organism::width() const
 {
 	return diameter();
 }
 
-void Organism::setWidth(qreal width) {}
+void Organism::setWidth(qreal pWidth) {}
 
-void Organism::expendEnergy(const Simulation& simulation)
+void Organism::expendEnergy(const Simulation& pSimulation)
 {
     qreal drag = 1.0 / 2.0 * SPHERE_WATER_DRAG_COEFFICIENT * WATER_DENSITY * M_PI * pow((diameter() / 2), 2) * pow(mVelocity, 2);
 
@@ -154,32 +146,27 @@ void Organism::expendEnergy(const Simulation& simulation)
 
     mEnergyLevel -= work;
     if (mEnergyLevel <= 0)
-    {
-        die(simulation);
-    }
+        die(pSimulation);
 }
 
 QRectF Organism::hitbox()
 {
 	qreal scaledRadius = SCALE_FACTOR * diameter() / 2.0;
-	QPointF center = QPointF(scaledX() + scaledRadius, scaledY() + scaledRadius);
-	QPointF topLeft = QPointF(center.x() + scaledRadius * cos(3.0 * M_PI / 4.0), 
-		center.y() - scaledRadius * sin(3.0 * M_PI / 4.0));
-	QPointF bottomRight = QPointF(center.x() + scaledRadius * cos(7.0 * M_PI / 4.0), 
-		center.y() - scaledRadius * sin(7.0 * M_PI / 4.0));
+	QPointF topLeft = QPointF(scaledCenter().x() + scaledRadius * cos(3.0 * M_PI / 4.0), 
+		scaledCenter().y() - scaledRadius * sin(3.0 * M_PI / 4.0));
+	QPointF bottomRight = QPointF(scaledCenter().x() + scaledRadius * cos(7.0 * M_PI / 4.0), 
+		scaledCenter().y() - scaledRadius * sin(7.0 * M_PI / 4.0));
 	return QRectF(topLeft, bottomRight);
 }
 
-void Organism::collide(const Simulation& simulation, Entity& other)
+void Organism::collide(const Simulation& pSimulation, Entity& pOther)
 {
-	if (other.getType() == Entity::Type::prey)
-	{
-		eat(simulation, other);
-	}
+	if (pOther.getType() == Entity::Type::prey)
+		eat(pSimulation, pOther);
 }
 
-void Organism::eat(const Simulation& simulation, Entity& other)
+void Organism::eat(const Simulation& pSimulation, Entity& pOther)
 {
-	mEnergyLevel += other.getMass() * other.getEnergyContent();
-	other.die(simulation);
+	mEnergyLevel += pOther.getMass() * pOther.getEnergyContent();
+	pOther.die(pSimulation);
 }

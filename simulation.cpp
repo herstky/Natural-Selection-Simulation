@@ -13,10 +13,10 @@
 #include "blue.h"
 #include "food.h"
 
-Simulation::Simulation(QQuickItem* parent)
-    : mContainer(*parent),
+Simulation::Simulation(QQuickItem* pParent)
+    : mContainer(*pParent),
 	  mBoard(Board(mContainer.findChild<QQuickItem*>("board"))),
-	  mScentSystem(ScentSystem(&mBoard)),
+	  mScentSystem(ScentSystem(this)),
 	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
       M_TICKS_PER_STEP(5),
@@ -37,6 +37,11 @@ QQuickItem* Simulation::boardView() const
 qreal Simulation::deltaTime() const
 {
 	return QTime::currentTime().msecsTo(mInitialTime) / 1000.0;
+}
+
+Board* Simulation::getBoard()
+{
+	return &mBoard;
 }
 
 void Simulation::run()

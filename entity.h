@@ -10,15 +10,15 @@ class Entity : public Model
 
 public:
 	enum class Type { none, predator, prey };
-	Entity(const Simulation& simulation);
-	Entity(const Simulation& simulation, const QPointF& position);
+	Entity(const Simulation& pSimulation);
+	Entity(const Simulation& pSimulation, const QPointF& pPosition);
 	virtual ~Entity() override;
 	
-	virtual void simulate(Simulation& simulation);
-	virtual void move(const Simulation& simulation);
-	virtual void detectCollisions(const Simulation& simulation);
-	virtual void collide(const Simulation& simulation, Entity& other);
-	virtual void emanateScent(Simulation& simulation);
+	virtual void simulate(Simulation& pSimulation);
+	virtual void move(const Simulation& pSimulation);
+	virtual void detectCollisions(const Simulation& pSimulation); // bottleneck. must be optimized
+	virtual void collide(const Simulation& pSimulation, Entity& pOther);
+	virtual void emanateScent(Simulation& pSimulation);
 	Type getType();
 	qreal getEnergyContent();
 	qreal getMass();

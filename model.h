@@ -4,6 +4,8 @@
 #include <QColor>
 #include <QRectF>
 
+#include <utility>
+
 class Simulation;
 class View;
 
@@ -15,8 +17,8 @@ public:
 	enum class Status { alive, dead };
 	enum class Shape { ellipse, rectangle, roundedRectangle };
 
-	Model(const Simulation& simulation);
-	Model(const Simulation& simulation, const QPointF& position);
+	Model(const Simulation& pSimulation);
+	Model(const Simulation& pSimulation, const QPointF& pPosition);
 	virtual ~Model();
 
 	Status mStatus;
@@ -24,24 +26,25 @@ public:
 	Shape mShape;
 	View* mView;
 
-	virtual qreal height();
-	virtual qreal scaledHeight();
-	virtual qreal width();
-	virtual qreal scaledWidth();
-	virtual QPointF center();
-	virtual QPointF scaledCenter();
-	virtual void setHeight(qreal height);
-	virtual void setWidth(qreal width);
-	virtual qreal x();
-	virtual qreal scaledX();
-	virtual qreal y();
-	virtual qreal scaledY();
-	virtual void setX(qreal x);
-	virtual void setY(qreal y);
+	virtual const qreal height() const;
+	virtual const qreal scaledHeight() const;
+	virtual const qreal width() const;
+	virtual const qreal scaledWidth() const;
+	virtual const QPointF center() const;
+	virtual const QPointF scaledCenter() const;
+	virtual void setHeight(const qreal pHeight);
+	virtual void setWidth(const qreal pWidth);
+	virtual const qreal x() const;
+	virtual const qreal scaledX() const;
+	virtual const qreal y() const;
+	virtual const qreal scaledY() const;
+	virtual void setX(const qreal pX);
+	virtual void setY(const qreal pY);
+	const std::pair<int, int>& coords(Simulation& pSimulation) const;
 	virtual QRectF hitbox();
-	virtual void die(const Simulation& simulation);
+	virtual void die(const Simulation& pSimulation);
 
-	void initView(const Simulation& simulation);
+	void initView(const Simulation& pSimulation);
 
 protected:
 	qreal mX;

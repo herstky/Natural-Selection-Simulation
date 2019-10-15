@@ -6,14 +6,14 @@
 unsigned int Red::mCount = 0;
 qreal Red::mCreationChance = 50;
 
-Red::Red(const Simulation& simulation)
-    : Organism(simulation)
+Red::Red(const Simulation& pSimulation)
+    : Organism(pSimulation)
 {
 	init();
 }
 
-Red::Red(const Simulation& simulation, const QPointF& position)
-    : Organism(simulation, position)
+Red::Red(const Simulation& pSimulation, const QPointF& pPosition)
+    : Organism(pSimulation, pPosition)
 {
 	init();
 }
@@ -23,15 +23,15 @@ Red::~Red()
     mCount--;
 }
 
-void Red::replicate(const Simulation& simulation)
+void Red::replicate(const Simulation& pSimulation)
 {
     if (QRandomGenerator::global()->bounded(100.0) < mMutationChance)
     {
-        new Green(simulation, QPointF(x(), y()));
+        new Green(pSimulation, QPointF(x(), y()));
     }
     else
     {
-        new Red(simulation, QPointF(x(), y()));
+        new Red(pSimulation, QPointF(x(), y()));
     }
 }
 

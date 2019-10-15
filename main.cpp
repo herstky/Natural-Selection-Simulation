@@ -12,9 +12,11 @@
 #include "simulation.h"
 #include "organism.h"
 
+#include "neuralnetwork.h"
 
 int main(int argc, char *argv[])
 {
+	NeuralNetwork nn;
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);

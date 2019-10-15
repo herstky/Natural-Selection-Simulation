@@ -7,8 +7,8 @@
 #include "simulation.h"
 #include "view.h"
 
-Entity::Entity(const Simulation& simulation) 
-	: Model(simulation),
+Entity::Entity(const Simulation& pSimulation) 
+	: Model(pSimulation),
 	  mType(Entity::Type::none),
 	  mEnergyContent(100),
 	  mMass(0.005),
@@ -16,8 +16,8 @@ Entity::Entity(const Simulation& simulation)
 	  mAspectRatio(1),
 	  mDepth(0.1) {}
 
-Entity::Entity(const Simulation& simulation, const QPointF& position)
-	: Model(simulation, position),
+Entity::Entity(const Simulation& pSimulation, const QPointF& pPosition)
+	: Model(pSimulation, pPosition),
 	  mType(Entity::Type::none),
    	  mEnergyContent(100),
 	  mMass(0.005),
@@ -27,21 +27,21 @@ Entity::Entity(const Simulation& simulation, const QPointF& position)
 
 Entity::~Entity() {}
 
-void Entity::simulate(Simulation& simulation) 
+void Entity::simulate(Simulation& pSimulation) 
 {
-	emanateScent(simulation);
+	emanateScent(pSimulation);
 }
 
-void Entity::move(const Simulation& simulation) {}
+void Entity::move(const Simulation& pSimulation) {}
 
-void Entity::detectCollisions(const Simulation& simulation)
+void Entity::detectCollisions(const Simulation& pSimulation)
 {
 	if (mStatus == Model::Status::dead)
 	{
 		return;
 	}
 
-	QList<QQuickItem*> items = simulation.boardView()->childItems();
+	QList<QQuickItem*> items = pSimulation.boardView()->childItems();
 	for (auto item : items)
 	{
 		View* view = static_cast<View*>(item);
@@ -56,14 +56,14 @@ void Entity::detectCollisions(const Simulation& simulation)
 		if (hitbox().left() < entity->hitbox().right() && hitbox().right() > entity->hitbox().left() &&
 			hitbox().top() < entity->hitbox().bottom() && hitbox().bottom() > entity->hitbox().top())
 		{
-			collide(simulation, *entity);
+			collide(pSimulation, *entity);
 		}
 	}
 }
 
-void Entity::collide(const Simulation& simulation, Entity& other) {}
+void Entity::collide(const Simulation& pSimulation, Entity& pOther) {}
 
-void Entity::emanateScent(Simulation& simulation) {}
+void Entity::emanateScent(Simulation& pSimulation) {}
 
 Entity::Type Entity::getType()
 {

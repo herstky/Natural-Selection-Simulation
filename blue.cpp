@@ -6,14 +6,14 @@
 unsigned int Blue::mCount = 0;
 qreal Blue::mCreationChance = 0;
 
-Blue::Blue(const Simulation& simulation)
-    : Organism(simulation)
+Blue::Blue(const Simulation& pSimulation)
+    : Organism(pSimulation)
 {
 	init();
 }
 
-Blue::Blue(const Simulation& simulation, const QPointF& position)
-	: Organism(simulation, position)
+Blue::Blue(const Simulation& pSimulation, const QPointF& pPosition)
+	: Organism(pSimulation, pPosition)
 {
 	init();
 }
@@ -23,15 +23,15 @@ Blue::~Blue()
     mCount--;
 }
 
-void Blue::replicate(const Simulation& simulation)
+void Blue::replicate(const Simulation& pSimulation)
 {
     if (QRandomGenerator::global()->bounded(100.0) < mMutationChance)
     {
-        new Green(simulation, QPointF(x(), y()));
+        new Green(pSimulation, QPointF(x(), y()));
     }
     else
     {
-        new Blue(simulation, QPointF(x(), y()));
+        new Blue(pSimulation, QPointF(x(), y()));
     }
 }
 

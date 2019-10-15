@@ -4,7 +4,7 @@
 #include "view.h"
 #include "constants.h"
 
-Model::Model(const Simulation& simulation)
+Model::Model(const Simulation& pSimulation)
 	: mStatus(Model::Status::alive),
 	  mColor(Qt::black),
 	  mShape(Model::Shape::rectangle),
@@ -14,95 +14,100 @@ Model::Model(const Simulation& simulation)
       mX(0),
       mY(0) {}
 
-Model::Model(const Simulation& simulation, const QPointF& position) 
+Model::Model(const Simulation& pSimulation, const QPointF& pPosition) 
 	: mStatus(Model::Status::alive),
 	  mColor(Qt::black),
 	  mShape(Model::Shape::rectangle),
 	  mView(nullptr),
 	  mHeight(1),
 	  mWidth(1),
-	  mX(position.x() / SCALE_FACTOR),
-	  mY(position.y() / SCALE_FACTOR) {}
+	  mX(pPosition.x() / SCALE_FACTOR),
+	  mY(pPosition.y() / SCALE_FACTOR) {}
 
 Model::~Model() {}
 
 void Model::init() {}
 
-qreal Model::height()
+const qreal Model::height() const
 {
 	return mHeight;
 }
 
-qreal Model::scaledHeight()
+const qreal Model::scaledHeight() const
 {
 	return SCALE_FACTOR * height();
 }
 
-void Model::setHeight(qreal height)
+void Model::setHeight(const qreal pHeight)
 {
-	mHeight = height;
+	mHeight = pHeight;
 }
 
-qreal Model::width()
+const qreal Model::width() const
 {
 	return mWidth;
 }
 
-qreal Model::scaledWidth()
+const qreal Model::scaledWidth() const
 {
 	return SCALE_FACTOR * width();
 }
 
-QPointF Model::center()
+const QPointF Model::center() const
 {
 	return QPointF(x() + width() / 2.0, y() + height() / 2.0);
 }
 
-QPointF Model::scaledCenter()
+const QPointF Model::scaledCenter() const
 {
-	return QPointF(SCALE_FACTOR * x() + width() / 2.0, SCALE_FACTOR * y() + height() / 2.0);
+	return QPointF(scaledX() + scaledWidth() / 2.0, scaledY() + scaledHeight() / 2.0);
 }
 
-void Model::setWidth(qreal width)
+void Model::setWidth(const qreal pWidth)
 {
-	mWidth = width;
+	mWidth = pWidth;
 }
 
-qreal Model::x()
+const qreal Model::x() const
 {
 	return mX;
 }
 
-qreal Model::scaledX()
+const qreal Model::scaledX() const
 {
 	return SCALE_FACTOR * mX;
 }
 
-void Model::setX(qreal x)
+void Model::setX(const qreal pX)
 {
-	mX = x;
-	mView->setX(SCALE_FACTOR * x);
+	mX = pX;
+	mView->setX(SCALE_FACTOR * pX);
 }
 
-qreal Model::y()
+const qreal Model::y() const
 {
 	return mY;
 }
 
-qreal Model::scaledY()
+const qreal Model::scaledY() const
 {
 	return SCALE_FACTOR * mY;
 }
 
-void Model::setY(qreal y)
+void Model::setY(qreal pY)
 {
-	mY = y;
-	mView->setY(SCALE_FACTOR * y);
+	mY = pY;
+	mView->setY(SCALE_FACTOR * pY);
 }
 
-void Model::initView(const Simulation& simulation)
+const std::pair<int, int>& Model::coords(Simulation& pSimulation) const
 {
-	mView = new View(simulation.boardView(), *this);
+	return std::pair<int, int>(int(x() / pSimulation.getBoard()->cellSize()), int(y() / pSimulation.getBoard()->cellSize()));
+}
+
+void Model::initView(const Simulation& pSimulation)
+{
+	mView = new View(pSimulation.boardView(), *this);
 	mView->init();
 }
 
@@ -111,7 +116,7 @@ QRectF Model::hitbox()
 	return QRectF(scaledX(), scaledY(), scaledWidth(), scaledHeight());
 }
 
-void Model::die(const Simulation& simulation)
+void Model::die(const Simulation& pSimulation)
 {
 	mStatus = Model::Status::dead;
 	mView->mDeletionQueue.push_back(mView);

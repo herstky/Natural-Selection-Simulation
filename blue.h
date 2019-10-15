@@ -7,11 +7,11 @@ class Blue : public Organism
 	friend class Simulation;
 
 public:
-    Blue(const Simulation& simulation);
-    Blue(const Simulation& simulation, const QPointF& position);
+    Blue(const Simulation& pSimulation);
+    Blue(const Simulation& pSimulation, const QPointF& pPosition);
     ~Blue() override;
     
-    void replicate(const Simulation& simulation) override;
+    void replicate(const Simulation& pSimulation) override;
 
 protected:
 	virtual void init() override;
