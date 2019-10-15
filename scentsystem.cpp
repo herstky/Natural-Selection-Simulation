@@ -96,8 +96,7 @@ void ScentSystem::diffuse()
 		coordPair coords = it->first;
 		if (mScentMap[coords] < mThreshhold)
 		{
-			mScentMap.erase(coords);
-			it--;
+			mScentMap.erase(it--);
 		}
 	}
 }
