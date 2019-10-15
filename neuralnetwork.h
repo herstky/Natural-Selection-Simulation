@@ -9,7 +9,7 @@ public:
 	NeuralNetwork();
 	~NeuralNetwork();
 
-	void forwardPropagate();
+	void forwardPropagate(arma::mat input);
 
 private:
 	std::vector<unsigned int> mLayers;

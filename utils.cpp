@@ -1,6 +1,6 @@
 #include "utils.h"
 
-void sigmoid(arma::mat pMatrix)
+arma::mat sigmoid(arma::mat pMatrix)
 {
 	for (int m = 0; m < pMatrix.n_rows; m++)
 	{
@@ -9,4 +9,5 @@ void sigmoid(arma::mat pMatrix)
 			pMatrix(m, n) = 1 / (1 + exp(-pMatrix(m, n)));
 		}
 	}
+	return pMatrix;
 }

@@ -15,4 +15,4 @@ struct pair_hash
 	}
 };
 
-void sigmoid(arma::mat pMatrix);
+arma::mat sigmoid(arma::mat pMatrix);
