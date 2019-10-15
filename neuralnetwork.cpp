@@ -5,18 +5,24 @@
 #include "utils.h"
 
 NeuralNetwork::NeuralNetwork()
-	: mInputLayerSize(8),
-	  mHiddenLayerSize(10),
-	  mOutputLayerSize(2),
-	  mTheta0(2 * arma::randu<arma::mat>(mInputLayerSize, mHiddenLayerSize) - 1),
-	  mTheta1(2 * arma::randu<arma::mat>(mHiddenLayerSize, mOutputLayerSize) - 1) 
+	: mLayers(std::vector<unsigned int>({ 9, 4, 2 }))
 {
-	for (int m = 0; m < mTheta0.n_rows; m++)
+	for (int i = 1; i < mLayers.size(); i++)
 	{
-		for (int n = 0; n < mTheta1.n_cols; n++)
+		mWeights.push_back(2 * arma::randu<arma::mat>(mLayers[i-1], mLayers[i]) - 1);
+	}
+
+	for (auto matrix : mWeights)
+	{
+		for (int m = 0; m < matrix.n_rows; m++)
 		{
-			std::cout << mTheta0(m, n) << '\n';
+			for (int n = 0; n < matrix.n_cols; n++)
+			{
+				std::cout << matrix(m, n) << '\n';
+			}
+			std::cout << '\n';
 		}
+		std::cout << '\n' << '\n';
 	}
 }
 

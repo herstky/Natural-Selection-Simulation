@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <armadillo>
 
 class NeuralNetwork
@@ -11,10 +12,7 @@ public:
 	void forwardPropagate();
 
 private:
-	const unsigned int mInputLayerSize;
-	const unsigned int mHiddenLayerSize;
-	const unsigned int mOutputLayerSize;
-	arma::mat mTheta0;
-	arma::mat mTheta1;
+	std::vector<unsigned int> mLayers;
+	std::vector<arma::mat> mWeights;
 };
 
