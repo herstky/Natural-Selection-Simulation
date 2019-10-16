@@ -27,8 +27,9 @@ public:
 private:
 	Simulation* mSimulation;
 	qreal mThreshhold;
-	coordMap mScentMap;
+	static coordMap mScentMap;
 	coordMap mAdditionQueue;
 	coordMap mSubtractionQueue;
-	qreal diffusivity; // needs to be tuned
+	qreal mDiffusivity; // needs to be tuned
+	qreal mDecayRate;
 };
