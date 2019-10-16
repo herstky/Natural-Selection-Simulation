@@ -61,62 +61,8 @@ qreal Board::scaledWidth() const
 	return scaledCellSize() * columns();
 }
 
-std::vector<std::vector<qreal>>* Board::grid()
-{
-	return &mGrid;
-}
-
 void Board::init()
 {
-	mGrid = std::vector<std::vector<qreal>>(mRows, std::vector<qreal>(mColumns, 0));
 	mView->setHeight(scaledHeight());
 	dynamic_cast<QQuickItem*>(mView->parent())->setWidth(scaledWidth());
-}
-
-void Board::diffuseParticles(const Simulation& pSimulation)
-{
-	std::vector<std::vector<qreal>> incoming(rows(), std::vector<qreal>(columns(), 0));
-	std::vector<std::vector<qreal>> outgoing(rows(), std::vector<qreal>(columns(), 0));
-
-	for (int i = 0; i < rows(); i++)
-	{
-		for (int j = 0; j < columns(); j++)
-		{
-			std::vector<std::vector<int>> directions
-			{ 
-				{0, 1}, 
-				{1, 0},
-				{0, -1},
-				{-1, 0}
-			};
-
-			for (auto direction : directions)
-			{
-				int m = i + direction[0];
-				int n = j + direction[1];
-				qreal molesTransferred; // -D * A * dphi/dx * dt [mol]
-				if (m < 0 || m >= rows() || n < 0 || n >= columns())
-				{
-					molesTransferred = D_FOOD * (mGrid[i][j]) * pSimulation.deltaTime(); // A = 1 and dx = 1
-					outgoing[i][j] += molesTransferred;
-				}
-				else
-				{
-					molesTransferred = D_FOOD * (mGrid[i][j] - mGrid[m][n]) * pSimulation.deltaTime();
-					incoming[m][n] += molesTransferred;
-					outgoing[i][j] += molesTransferred;
-				}
-			}
-			// some particles exit system in positive z-direction
-			outgoing[i][j] += D_FOOD * (mGrid[i][j]) * pSimulation.deltaTime(); 
-		}
-	}
-
-	for (int i = 0; i < rows(); i++)
-	{
-		for (int j = 0; j < columns(); j++)
-		{
-			mGrid[i][j] += (incoming[i][j] - outgoing[i][j]);
-		}
-	}
 }
