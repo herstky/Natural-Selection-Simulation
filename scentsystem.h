@@ -30,5 +30,5 @@ private:
 	coordMap mScentMap;
 	coordMap mAdditionQueue;
 	coordMap mSubtractionQueue;
-	qreal diffusivity;
+	qreal diffusivity; // needs to be tuned
 };

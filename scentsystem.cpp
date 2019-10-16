@@ -40,39 +40,36 @@ void ScentSystem::diffuse()
 	for (auto it = mScentMap.begin(); it != mScentMap.end(); it++)
 	{
 		int size = mScentMap.size();
-		std::pair<int, int> curCell = it->first;
-		std::vector<std::pair<int, int>> directions
-		{
-			std::make_pair(-1, 0),
-			std::make_pair(0, -1),
-			std::make_pair(1, 0),
-			std::make_pair(0, 1),
-		};
-
+		coordPair curCell = it->first;
 		qreal totalOut = 0;
-		for (auto direction : directions)
+		int offset = -1;
+		for (int i = 0; i < 3; i++)
 		{
-			int col = it->first.second;
-			int row = it->first.first;
-			int colOffset = direction.second;
-			int rowOffset = direction.first;
-			std::pair<int, int> adjCell = std::make_pair(col + colOffset, row + rowOffset);
-			if (adjCell.second >= mSimulation->board()->columns()
-				|| adjCell.second < 0
-				|| adjCell.first >= mSimulation->board()->rows()
-				|| adjCell.first < 0)
+			for (int j = 0; j < 3; j++)
 			{
-				continue;
+				int m = curCell.first + i + offset;
+				int n = curCell.second + j + offset;
+				if (m >= mSimulation->board()->columns()
+					|| m < 0
+					|| n >= mSimulation->board()->rows()
+					|| n < 0)
+				{
+					continue;
+				}
+
+				coordPair adjCell(m, n);
+				qreal curScent = mScentMap[curCell];
+				qreal adjScent = mScentMap.count(adjCell) ? mScentMap[adjCell] : 0;
+
+				qreal distance = std::sqrt(pow(i, 2) + pow(j, 2));
+
+				qreal transfer = std::max<qreal>((curScent - adjScent) * diffusivity / distance, 0);
+				totalOut += transfer;
+
+				add(mAdditionQueue, adjCell, transfer);
 			}
-
-			qreal curScent = mScentMap[curCell];
-			qreal adjScent = mScentMap.count(adjCell) ? mScentMap[adjCell] : 0;
-
-			qreal transfer = std::max<qreal>((curScent - adjScent) * diffusivity, 0);
-			totalOut += transfer;
-
-			add(mAdditionQueue, adjCell, transfer);
 		}
+
 		totalOut += 2.0 * mScentMap[curCell] * diffusivity;
 		subtract(mSubtractionQueue, curCell, totalOut);
 	}
@@ -91,12 +88,18 @@ void ScentSystem::diffuse()
 	}
 	mSubtractionQueue.clear();
 
-	for (auto it = mScentMap.begin(); it != mScentMap.end(); it++)
+	for (auto it = mScentMap.begin(); it != mScentMap.end();)
 	{
 		coordPair coords = it->first;
+		// Standard associative-container erase idiom: 
+		// https://stackoverflow.com/questions/8234779/how-to-remove-from-a-map-while-iterating-it
 		if (mScentMap[coords] < mThreshhold)
 		{
-			mScentMap.erase(it--);
+			mScentMap.erase(it++);
+		}
+		else
+		{
+			it++;
 		}
 	}
 }
