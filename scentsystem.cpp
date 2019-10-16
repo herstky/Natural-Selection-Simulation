@@ -14,7 +14,7 @@ ScentSystem::ScentSystem(Simulation* pSimulation)
 	  mScentMap(coordMap()),
 	  mAdditionQueue(coordMap()),
 	  mSubtractionQueue(coordMap()),
-	  diffusivity(0.15) {}
+	  diffusivity(0.5) {}
 
 ScentSystem::~ScentSystem() {}
 
@@ -52,7 +52,8 @@ void ScentSystem::diffuse()
 				if (m >= mSimulation->board()->columns()
 					|| m < 0
 					|| n >= mSimulation->board()->rows()
-					|| n < 0)
+					|| n < 0
+					|| m + offset == 0 && n + offset == 0)
 				{
 					continue;
 				}
@@ -61,7 +62,7 @@ void ScentSystem::diffuse()
 				qreal curScent = mScentMap[curCell];
 				qreal adjScent = mScentMap.count(adjCell) ? mScentMap[adjCell] : 0;
 
-				qreal distance = std::sqrt(pow(i, 2) + pow(j, 2));
+				qreal distance = std::sqrt(pow(i + offset, 2) + pow(j + offset, 2));
 
 				qreal transfer = std::max<qreal>((curScent - adjScent) * diffusivity / distance, 0);
 				totalOut += transfer;
@@ -102,6 +103,7 @@ void ScentSystem::diffuse()
 			it++;
 		}
 	}
+	; // debug
 }
 
 coordMap& ScentSystem::scentMap()

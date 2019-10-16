@@ -23,8 +23,8 @@ Simulation::Simulation(QQuickItem* pParent)
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mInitialTime(QTime::currentTime())
 {
-	new Red(*this);
 	init();
+	new Food(*this, QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2));
 }
 
 Simulation::~Simulation() {}
@@ -68,10 +68,10 @@ void Simulation::run()
     {
 		new Red(*this);
     }
-	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
-	{
-		new Food(*this);
-	}
+	//if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
+	//{
+	//	new Food(*this);
+	//}
 
 	if (mTicksRemaining)
 	{
