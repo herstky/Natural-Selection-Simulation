@@ -4,6 +4,9 @@
 
 #include <QPainter>
 #include <QTime>
+#include <armadillo>
+
+#include "neuralnetwork.h"
 
 class Simulation;
 
@@ -24,9 +27,13 @@ public:
 	void move(const Simulation& pSimulation) override;
 	void simulate(Simulation& pSimulation) override;
 
+	arma::mat smell(Simulation& pSimulation);
+	void think(Simulation& pSimulation);
 	void eat(const Simulation& pSimulation, Entity& pOther);
 
 protected:
+	NeuralNetwork mBrain;
+	qreal mMaxSpeed; // [m/s]
 	qreal mVelocity; // [m/s]
 	qreal mInitialVelocity; // [m/s]
 	QTime mInitialTime; 

@@ -102,7 +102,7 @@ void Model::setY(qreal pY)
 
 const std::pair<int, int>& Model::coords(Simulation& pSimulation) const
 {
-	return std::pair<int, int>(int(x() / pSimulation.getBoard()->cellSize()), int(y() / pSimulation.getBoard()->cellSize()));
+	return std::pair<int, int>(int(x() / pSimulation.board()->cellSize()), int(y() / pSimulation.board()->cellSize()));
 }
 
 void Model::initView(const Simulation& pSimulation)

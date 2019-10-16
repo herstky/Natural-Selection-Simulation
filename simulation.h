@@ -26,7 +26,7 @@ public:
 
 	QQuickItem* boardView() const;
 	qreal deltaTime() const;
-	Board* getBoard();
+	Board* board();
 
 public slots:
     void run();

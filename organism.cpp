@@ -5,12 +5,13 @@
 
 #include "simulation.h"
 #include "constants.h"
-
 #include "view.h"
 
 Organism::Organism(const Simulation& pSimulation)
     : Entity(pSimulation),
-      mVelocity(0.003),
+	mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
+	  mMaxSpeed(.005),
+      mVelocity(0.001),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
       mDeltaDistance(0),
@@ -30,7 +31,9 @@ Organism::Organism(const Simulation& pSimulation)
 
 Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
     : Entity(pSimulation, pPosition),
-      mVelocity(0.003),
+	  mBrain(NeuralNetwork()),
+	  mMaxSpeed(0.005),
+      mVelocity(0.001),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
       mDeltaDistance(0),
@@ -80,14 +83,8 @@ void Organism::simulate(Simulation& pSimulation)
 {
 	if (mStatus == Model::Status::dead)
 		return;
-//    if (QRandomGenerator::global()->bounded(100.0) < replicationChance)
-//    {
-//        replicate(simulation);
-//    }
-//    if (QRandomGenerator::global()->bounded(100.0) < deathChance)
-//    {
-//        die(simulation);
-//    }
+
+	think(pSimulation);
 }
 
 void Organism::replicate(const Simulation& pSimulation)
@@ -163,6 +160,35 @@ void Organism::collide(const Simulation& pSimulation, Entity& pOther)
 {
 	if (pOther.getType() == Entity::Type::prey)
 		eat(pSimulation, pOther);
+}
+
+arma::mat Organism::smell(Simulation& pSimulation)
+{
+	arma::mat scents(3, 3);
+	int offset = -1;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			int m = coords(pSimulation).first + i + offset;
+			int n = coords(pSimulation).second + j + offset;
+			bool invalid = m >= pSimulation.board()->columns()
+				|| m < 0
+				|| n >= pSimulation.board()->rows()
+				|| n < 0;
+			scents(i, j) = invalid ? 0 : pSimulation.mScentSystem.getScent(coords(pSimulation));
+		}
+	}
+	scents.reshape(1, scents.n_rows * scents.n_cols);
+	return scents;
+}
+
+void Organism::think(Simulation& pSimulation)
+{
+	arma::mat scents = smell(pSimulation);
+	arma::mat decision = mBrain.forwardPropagate(scents);
+	mVelocity = mMaxSpeed * decision(0, 0);
+	mDirection = 2 * M_PI * decision(0, 1);
 }
 
 void Organism::eat(const Simulation& pSimulation, Entity& pOther)

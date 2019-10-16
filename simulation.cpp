@@ -39,7 +39,7 @@ qreal Simulation::deltaTime() const
 	return QTime::currentTime().msecsTo(mInitialTime) / 1000.0;
 }
 
-Board* Simulation::getBoard()
+Board* Simulation::board()
 {
 	return &mBoard;
 }

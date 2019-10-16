@@ -39,7 +39,7 @@ void ScentSystem::diffuse()
 {
 	for (auto it = mScentMap.begin(); it != mScentMap.end(); it++)
 	{
-		unsigned int size = mScentMap.size();
+		int size = mScentMap.size();
 		std::pair<int, int> curCell = it->first;
 		std::vector<std::pair<int, int>> directions
 		{
@@ -57,9 +57,9 @@ void ScentSystem::diffuse()
 			int colOffset = direction.second;
 			int rowOffset = direction.first;
 			std::pair<int, int> adjCell = std::make_pair(col + colOffset, row + rowOffset);
-			if (adjCell.second >= mSimulation->getBoard()->columns()
+			if (adjCell.second >= mSimulation->board()->columns()
 				|| adjCell.second < 0
-				|| adjCell.first >= mSimulation->getBoard()->rows()
+				|| adjCell.first >= mSimulation->board()->rows()
 				|| adjCell.first < 0)
 			{
 				continue;
@@ -104,4 +104,9 @@ void ScentSystem::diffuse()
 coordMap& ScentSystem::scentMap()
 {
 	return mScentMap;
+}
+
+qreal ScentSystem::getScent(coordPair pCoords)
+{
+	return mScentMap.count(pCoords) ? mScentMap[pCoords] : 0;
 }

@@ -7,12 +7,15 @@ class NeuralNetwork
 {
 public:
 	NeuralNetwork();
+	NeuralNetwork(std::vector<int> pLayers);
 	~NeuralNetwork();
 
-	void forwardPropagate(arma::mat input);
+	arma::mat forwardPropagate(arma::mat input);
 	
 private:
-	std::vector<unsigned int> mLayers;
+	std::vector<int> mLayers;
 	std::vector<arma::mat> mWeights;
+
+	void init();
 };
 

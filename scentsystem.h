@@ -22,6 +22,7 @@ public:
 	void subtract(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
 	void diffuse();
 	coordMap& scentMap();
+	qreal getScent(coordPair pCoords);
 
 private:
 	Simulation* mSimulation;
