@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include "constants.h"
 #include "view.h"
 #include "entity.h"
 #include "red.h"
@@ -173,18 +174,37 @@ void Simulation::init()
 
 	switch (mMode)
 	{
-		case(Mode::simulate):
+		case Mode::simulate:
+		{
 			break;
-		case(Mode::train):
-			qreal radius = 10; // [cells]
+		}
+
+		case Mode::train:
+		{
+			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
+			qreal radius = 10 * mBoard.cellSize() * SCALE_FACTOR;
 			int entities = 20;
 			int replicates = 4; // number of clones of each Entity
-			
-			QRandomGenerator::global()->generateDouble(1);
-			new Food(*this, QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2));
+
+			new Food(*this, center);
+
+			for (int i = 0; i < entities; i++)
+			{
+				NeuralNetwork neuralNetwork;
+				for (int j = 0; j < replicates; j++)
+				{
+					qreal angle = QRandomGenerator::global()->bounded(2 * M_PI);
+					QPointF pos = QPointF(radius * cos(angle) + center.x(), radius * sin(angle) + center.y());
+					new Red(*this, pos, neuralNetwork);
+				}
+			}
 			break;
+		}
+
 		default:
+		{
 			break;
+		}
 	}
 
 	QTimer* timer = new QTimer();

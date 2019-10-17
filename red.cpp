@@ -18,6 +18,20 @@ Red::Red(const Simulation& pSimulation, const QPointF& pPosition)
 	init();
 }
 
+
+Red::Red(const Simulation& pSimulation, NeuralNetwork pBrain)
+	: Organism(pSimulation, pBrain)
+{
+	init();
+}
+
+
+Red::Red(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain)
+	: Organism(pSimulation, pPosition, pBrain)
+{
+	init();
+}
+
 Red::~Red()
 {
     mCount--;

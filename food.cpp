@@ -66,7 +66,7 @@ void Food::emanateScent(Simulation& pSimulation)
 			qreal intensity = distance ? mScentStrength * scentSystem.getDiffusivity() / distance : mScentStrength;
 			qreal curScent = scentMap.count(curCoords) ? scentMap.at(curCoords) : 0;
 			curScent = std::max(intensity, curScent);
-			if (curScent > scentSystem.getThreshhold)
+			if (curScent > scentSystem.getThreshhold())
 				scentMap[curCoords] = curScent;
 		}
 	}

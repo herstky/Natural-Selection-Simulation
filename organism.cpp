@@ -53,6 +53,52 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
 	initView(pSimulation);
 }
 
+Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
+	: Entity(pSimulation),
+	mBrain(pBrain),
+	mMaxSpeed(.005),
+	mVelocity(0.001),
+	mInitialVelocity(mVelocity),
+	mInitialTime(QTime::currentTime()),
+	mDeltaDistance(0),
+	mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+	mReplicationChance(0),
+	mMutationChance(0),
+	mDeathChance(0),
+	mScentStrength(1.0),
+	mMass(0.0005),
+	mDensity(WATER_DENSITY),
+	mEnergyLevel(100),
+	mEnergyCapacity(100)
+{
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth() / 2.0) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight() / 2.0) / SCALE_FACTOR;
+	initView(pSimulation);
+}
+
+Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain)
+	: Entity(pSimulation, pPosition),
+	mBrain(pBrain),
+	mMaxSpeed(0.005),
+	mVelocity(0.001),
+	mInitialVelocity(mVelocity),
+	mInitialTime(QTime::currentTime()),
+	mDeltaDistance(0),
+	mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+	mReplicationChance(0),
+	mMutationChance(0),
+	mDeathChance(0),
+	mScentStrength(1.0),
+	mMass(0.0005),
+	mDensity(WATER_DENSITY),
+	mEnergyLevel(100),
+	mEnergyCapacity(100)
+{
+	mX = pPosition.x() / SCALE_FACTOR;
+	mY = pPosition.y() / SCALE_FACTOR;
+	initView(pSimulation);
+}
+
 Organism::~Organism() {}
 
 void Organism::move(const Simulation& pSimulation)
