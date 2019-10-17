@@ -33,7 +33,7 @@ const qreal Model::height() const
 	return mHeight;
 }
 
-const qreal Model::scaledHeight() const
+const qreal Model::heightP() const
 {
 	return SCALE_FACTOR * height();
 }
@@ -48,7 +48,7 @@ const qreal Model::width() const
 	return mWidth;
 }
 
-const qreal Model::scaledWidth() const
+const qreal Model::widthP() const
 {
 	return SCALE_FACTOR * width();
 }
@@ -58,9 +58,9 @@ const QPointF Model::center() const
 	return QPointF(x() + width() / 2.0, y() + height() / 2.0);
 }
 
-const QPointF Model::scaledCenter() const
+const QPointF Model::centerP() const
 {
-	return QPointF(scaledX() + scaledWidth() / 2.0, scaledY() + scaledHeight() / 2.0);
+	return QPointF(xP() + widthP() / 2.0, yP() + heightP() / 2.0);
 }
 
 void Model::setWidth(const qreal pWidth)
@@ -73,7 +73,7 @@ const qreal Model::x() const
 	return mX;
 }
 
-const qreal Model::scaledX() const
+const qreal Model::xP() const
 {
 	return SCALE_FACTOR * mX;
 }
@@ -89,7 +89,7 @@ const qreal Model::y() const
 	return mY;
 }
 
-const qreal Model::scaledY() const
+const qreal Model::yP() const
 {
 	return SCALE_FACTOR * mY;
 }
@@ -100,7 +100,7 @@ void Model::setY(qreal pY)
 	mView->setY(SCALE_FACTOR * pY);
 }
 
-const std::pair<int, int>& Model::coords(Simulation& pSimulation) const
+const std::pair<int, int> Model::coords(Simulation& pSimulation) const
 {
 	return std::pair<int, int>(int(x() / pSimulation.board()->cellSize()), int(y() / pSimulation.board()->cellSize()));
 }
@@ -113,7 +113,7 @@ void Model::initView(const Simulation& pSimulation)
 
 QRectF Model::hitbox()
 {
-	return QRectF(scaledX(), scaledY(), scaledWidth(), scaledHeight());
+	return QRectF(xP(), yP(), widthP(), heightP());
 }
 
 void Model::die(const Simulation& pSimulation)

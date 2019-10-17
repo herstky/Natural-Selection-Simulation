@@ -10,8 +10,8 @@
 Organism::Organism(const Simulation& pSimulation)
     : Entity(pSimulation),
 	  mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
-	  mMaxSpeed(.005),
-      mVelocity(0.001),
+	  mMaxSpeed(.01),
+      mVelocity(0.0),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
       mDeltaDistance(0),
@@ -25,16 +25,16 @@ Organism::Organism(const Simulation& pSimulation)
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
 	initView(pSimulation);
 }
 
 Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
     : Entity(pSimulation, pPosition),
 	  mBrain(NeuralNetwork()),
-	  mMaxSpeed(0.005),
-      mVelocity(0.001),
+	  mMaxSpeed(0.01),
+      mVelocity(0.0),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
       mDeltaDistance(0),
@@ -48,16 +48,16 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = pPosition.x() / SCALE_FACTOR;
-	mY = pPosition.y() / SCALE_FACTOR;
+	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
+	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 	initView(pSimulation);
 }
 
 Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	: Entity(pSimulation),
 	mBrain(pBrain),
-	mMaxSpeed(.005),
-	mVelocity(0.001),
+	mMaxSpeed(.01),
+	mVelocity(0.0),
 	mInitialVelocity(mVelocity),
 	mInitialTime(QTime::currentTime()),
 	mDeltaDistance(0),
@@ -71,16 +71,16 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	mEnergyLevel(100),
 	mEnergyCapacity(100)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth() / 2.0) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight() / 2.0) / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
 	initView(pSimulation);
 }
 
 Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain)
 	: Entity(pSimulation, pPosition),
 	mBrain(pBrain),
-	mMaxSpeed(0.005),
-	mVelocity(0.001),
+	mMaxSpeed(0.01),
+	mVelocity(0.0),
 	mInitialVelocity(mVelocity),
 	mInitialTime(QTime::currentTime()),
 	mDeltaDistance(0),
@@ -94,8 +94,8 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, Neur
 	mEnergyLevel(100),
 	mEnergyCapacity(100)
 {
-	mX = pPosition.x() / SCALE_FACTOR;
-	mY = pPosition.y() / SCALE_FACTOR;
+	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
+	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 	initView(pSimulation);
 }
 
@@ -197,10 +197,10 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 QRectF Organism::hitbox()
 {
 	qreal scaledRadius = SCALE_FACTOR * diameter() / 2.0;
-	QPointF topLeft = QPointF(scaledCenter().x() + scaledRadius * cos(3.0 * M_PI / 4.0), 
-		scaledCenter().y() - scaledRadius * sin(3.0 * M_PI / 4.0));
-	QPointF bottomRight = QPointF(scaledCenter().x() + scaledRadius * cos(7.0 * M_PI / 4.0), 
-		scaledCenter().y() - scaledRadius * sin(7.0 * M_PI / 4.0));
+	QPointF topLeft = QPointF(centerP().x() + scaledRadius * cos(3.0 * M_PI / 4.0), 
+		centerP().y() - scaledRadius * sin(3.0 * M_PI / 4.0));
+	QPointF bottomRight = QPointF(centerP().x() + scaledRadius * cos(7.0 * M_PI / 4.0), 
+		centerP().y() - scaledRadius * sin(7.0 * M_PI / 4.0));
 	return QRectF(topLeft, bottomRight);
 }
 
