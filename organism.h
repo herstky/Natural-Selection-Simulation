@@ -16,6 +16,8 @@ class Organism : public Entity
 public:
     Organism(const Simulation& pSimulation);
     Organism(const Simulation& pSimulation, const QPointF& pPosition);
+    Organism(const Simulation& pSimulation, NeuralNetwork pBrain);
+    Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain);
     virtual ~Organism() override;
 
     const qreal volume() const;
@@ -48,6 +50,8 @@ protected:
 	qreal mDensity; // [kg/m^3]
 	qreal mEnergyLevel;
 	qreal mEnergyCapacity;
+
+	virtual void init(Simulation& pSimulation);
 
 	const qreal height() const override;
 	void setHeight(qreal pHeight) override;

@@ -34,7 +34,7 @@ void Entity::simulate(Simulation& pSimulation)
 
 void Entity::train(Simulation& pSimulation)
 {
-
+	
 }
 
 void Entity::move(const Simulation& pSimulation) {}

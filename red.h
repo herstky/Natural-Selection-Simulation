@@ -9,6 +9,8 @@ class Red : public Organism
 public:
     Red(const Simulation& pSimulation);
     Red(const Simulation& pSimulation, const QPointF& pPosition);
+	Red(const Simulation& pSimulation, NeuralNetwork pBrain);
+	Red(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain);
     ~Red() override;
 
     void replicate(const Simulation& pSimulation) override;

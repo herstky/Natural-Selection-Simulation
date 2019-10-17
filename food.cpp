@@ -14,8 +14,8 @@ qreal Food::mCreationChance = 10;
 Food::Food(const Simulation& pSimulation)
 	: Entity(pSimulation), mScentStrength(1.0)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth() / 2.0) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight() / 2.0) / SCALE_FACTOR;
 	init();
 	initView(pSimulation);
 }
@@ -66,7 +66,7 @@ void Food::emanateScent(Simulation& pSimulation)
 			qreal intensity = distance ? mScentStrength * scentSystem.getDiffusivity() / distance : mScentStrength;
 			qreal curScent = scentMap.count(curCoords) ? scentMap.at(curCoords) : 0;
 			curScent = std::max(intensity, curScent);
-			if (curScent > scentSystem.getThreshhold)
+			if (curScent > scentSystem.getThreshhold())
 				scentMap[curCoords] = curScent;
 		}
 	}

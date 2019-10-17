@@ -81,7 +81,7 @@ const qreal Model::scaledX() const
 void Model::setX(const qreal pX)
 {
 	mX = pX;
-	mView->setX(SCALE_FACTOR * pX);
+	mView->setX(scaledX() - scaledWidth() / 2.0);
 }
 
 const qreal Model::y() const
@@ -97,7 +97,7 @@ const qreal Model::scaledY() const
 void Model::setY(qreal pY)
 {
 	mY = pY;
-	mView->setY(SCALE_FACTOR * pY);
+	mView->setY(scaledY() - scaledHeight() / 2.0);
 }
 
 const std::pair<int, int>& Model::coords(Simulation& pSimulation) const

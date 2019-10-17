@@ -25,8 +25,8 @@ Organism::Organism(const Simulation& pSimulation)
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth() / 2.0) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight() / 2.0) / SCALE_FACTOR;
 	initView(pSimulation);
 }
 
@@ -53,6 +53,52 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
 	initView(pSimulation);
 }
 
+Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
+	: Entity(pSimulation),
+	  mBrain(pBrain),
+	  mMaxSpeed(.005),
+	  mVelocity(0.001),
+	  mInitialVelocity(mVelocity),
+	  mInitialTime(QTime::currentTime()),
+	  mDeltaDistance(0),
+	  mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+	  mReplicationChance(0),
+	  mMutationChance(0),
+	  mDeathChance(0),
+	  mScentStrength(1.0),
+	  mMass(0.0005),
+	  mDensity(WATER_DENSITY),
+	  mEnergyLevel(100),
+	  mEnergyCapacity(100)
+{
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth() / 2.0) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight() / 2.0) / SCALE_FACTOR;
+	initView(pSimulation);
+}
+
+Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain)
+	: Entity(pSimulation, pPosition),
+	  mBrain(pBrain),
+	  mMaxSpeed(0.005),
+	  mVelocity(0.001),
+	  mInitialVelocity(mVelocity),
+	  mInitialTime(QTime::currentTime()),
+	  mDeltaDistance(0),
+	  mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+	  mReplicationChance(0),
+	  mMutationChance(0),
+	  mDeathChance(0),
+	  mScentStrength(1.0),
+	  mMass(0.0005),
+	  mDensity(WATER_DENSITY),
+	  mEnergyLevel(100),
+	  mEnergyCapacity(100)
+{
+	mX = pPosition.x() / SCALE_FACTOR;
+	mY = pPosition.y() / SCALE_FACTOR;
+	initView(pSimulation);
+}
+
 Organism::~Organism() {}
 
 void Organism::move(const Simulation& pSimulation)
@@ -63,9 +109,9 @@ void Organism::move(const Simulation& pSimulation)
     qreal dx = mVelocity * cos(mDirection);
     qreal dy = mVelocity * sin(mDirection);
 
-    if (x() + dx + width() > pSimulation.mBoard.width() || x() + dx < 0)
+    if (x() + dx + width() / 2.0 > pSimulation.mBoard.width() || x() - width() / 2.0 + dx < 0)
         mDirection = M_PI - mDirection;
-    if (y() + dy + height() > pSimulation.mBoard.height() || y() + dy < 0)
+    if (y() + dy + height() / 2.0 > pSimulation.mBoard.height() || y() - height() / 2.0 + dy < 0)
         mDirection = 2 * M_PI - mDirection;
 
     dx = mVelocity * cos(mDirection);
@@ -117,6 +163,25 @@ qreal Organism::deltaTime()
 qreal Organism::acceleration()
 {
     return deltaVelocity() / deltaTime();
+}
+
+void Organism::init(Simulation& pSimulation) 
+{
+	switch (pSimulation.mMode)
+	{
+		case Simulation::Mode::simulate:
+		{
+			break;
+		}
+		case Simulation::Mode::train:
+		{
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 }
 
 const qreal Organism::height() const

@@ -17,8 +17,8 @@ View::~View()
 
 void View::init()
 {
-	setX(mModel.scaledX());
-	setY(mModel.scaledY());
+	setX(mModel.scaledX() - mModel.scaledWidth() / 2.0);
+	setY(mModel.scaledY() - mModel.scaledHeight() / 2.0);
 	setHeight(mModel.scaledHeight());
 	setWidth(mModel.scaledWidth());
 	setZ(1);
