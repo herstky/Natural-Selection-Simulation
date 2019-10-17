@@ -17,16 +17,22 @@ class Simulation : QObject
 {
 	Q_OBJECT
 public:
+	enum class Mode { simulate, train };
+
 	friend class Entity;
 	friend class Food;
 	friend class Organism;
     Simulation(QQuickItem* pParent);
+    Simulation(QQuickItem* pParent, Mode pMode);
     ~Simulation();
 	QQuickItem& mContainer;
 
 	QQuickItem* boardView() const;
 	qreal deltaTime() const;
 	Board* board();
+
+	void simulate();
+	void train();
 
 public slots:
     void run();
@@ -35,6 +41,7 @@ protected:
 	void init();
 
 private:
+	Mode mMode;
 	Board mBoard;
 	ScentSystem mScentSystem;
 	QFuture<void> mDiffusionThread;

@@ -32,6 +32,11 @@ void Entity::simulate(Simulation& pSimulation)
 	emanateScent(pSimulation);
 }
 
+void Entity::train(Simulation& pSimulation)
+{
+
+}
+
 void Entity::move(const Simulation& pSimulation) {}
 
 void Entity::detectCollisions(const Simulation& pSimulation)
