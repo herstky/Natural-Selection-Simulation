@@ -14,8 +14,8 @@ ScentSystem::ScentSystem(Simulation* pSimulation)
 	  mScentMap(coordMap()),
 	  mAdditionQueue(coordMap()),
 	  mSubtractionQueue(coordMap()),
-	  mDiffusivity(0.15),
-	  mDecayRate(0.8) {}
+	  mDiffusivity(0.50),
+	  mDecayRate(0.5) {}
 
 ScentSystem::~ScentSystem() {}
 
@@ -38,7 +38,7 @@ void ScentSystem::subtract(coordMap& pCoordMap, const coordPair& pCoords, const 
 
 void ScentSystem::diffuse()
 {
-	for (auto it1 = mScentMap.begin(); it1 != mScentMap.end(); it1++)
+	/*for (auto it1 = mScentMap.begin(); it1 != mScentMap.end(); it1++)
 	{
 		coordPair curCell = it1->first;
 		qreal adjScentWeightedSum = 0;
@@ -75,6 +75,12 @@ void ScentSystem::diffuse()
 		qreal outFlow = (mScentMap.at(curCell) - adjScentWeightedAverage) * mDiffusivity / ((4 + 4 * sqrt(2)) / 8);
 		outFlow += std::max(mScentMap.at(curCell) * mDecayRate, 10 * mThreshhold);
 		subtract(mSubtractionQueue, curCell, outFlow);
+	}*/
+
+	for (auto it1 = mScentMap.begin(); it1 != mScentMap.end(); it1++)
+	{
+		coordPair curCell = it1->first;
+		subtract(mSubtractionQueue, curCell, mDecayRate * mScentMap.at(curCell));
 	}
 
 	for (auto it2 = mAdditionQueue.begin(); it2 != mAdditionQueue.end(); it2++)
@@ -115,4 +121,14 @@ coordMap& ScentSystem::scentMap()
 qreal ScentSystem::getScent(coordPair pCoords)
 {
 	return mScentMap.count(pCoords) ? mScentMap.at(pCoords) : 0;
+}
+
+qreal ScentSystem::getThreshhold()
+{
+	return mThreshhold;
+}
+
+qreal ScentSystem::getDiffusivity()
+{
+	return mDiffusivity;
 }

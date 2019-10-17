@@ -17,7 +17,7 @@ public:
 	const qreal height() const override;
 	const qreal width() const override;
 	const qreal volume() const;
-	virtual void emanateScent(Simulation& pSimulation) override;
+	virtual void emanateScent(Simulation& pSimulation) override; // DEBUG: Need to verify with multiple Food instances
 	virtual void simulate(Simulation& pSimulation) override;
 
 private:

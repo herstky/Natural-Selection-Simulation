@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QtMath>
 #include <QRandomGenerator>
+#include <cmath>
 
 #include "constants.h"
 #include "simulation.h"
@@ -52,7 +53,22 @@ const qreal Food::volume() const
 
 void Food::emanateScent(Simulation& pSimulation)
 {
-	pSimulation.mScentSystem.add(pSimulation.mScentSystem.scentMap(), coords(pSimulation), mScentStrength);
+	ScentSystem& scentSystem = pSimulation.mScentSystem;
+	coordMap& scentMap = scentSystem.scentMap();
+	int range = mScentStrength * scentSystem.getDiffusivity() / scentSystem.getThreshhold();
+	int offset = -(range / 2);
+	for (int i = 0; i < range; i++)
+	{
+		for (int j = 0; j < range; j++)
+		{
+			coordPair curCoords = coordPair(coords(pSimulation).first + i + offset, coords(pSimulation).second + j + offset);
+			qreal distance = std::sqrt(pow(i + offset, 2) + pow(j + offset, 2));
+			qreal intensity = distance ? mScentStrength * scentSystem.getDiffusivity() / distance : mScentStrength;
+			qreal curScent = scentMap.count(curCoords) ? scentMap.at(curCoords) : 0;
+			curScent = std::max(intensity, curScent);
+			scentMap[curCoords] = curScent;
+		}
+	}
 }
 
 void Food::simulate(Simulation& pSimulation)

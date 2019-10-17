@@ -9,7 +9,7 @@
 
 Organism::Organism(const Simulation& pSimulation)
     : Entity(pSimulation),
-	mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
+	  mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
 	  mMaxSpeed(.005),
       mVelocity(0.001),
       mInitialVelocity(mVelocity),
@@ -19,6 +19,7 @@ Organism::Organism(const Simulation& pSimulation)
       mReplicationChance(0),
       mMutationChance(0),
       mDeathChance(0),
+	  mScentStrength(1.0),
       mMass(0.0005),
       mDensity(WATER_DENSITY),
       mEnergyLevel(100),
@@ -41,6 +42,7 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
       mReplicationChance(0),
       mMutationChance(0),
       mDeathChance(0),
+	  mScentStrength(1.0),
       mMass(0.0005),
       mDensity(WATER_DENSITY),
       mEnergyLevel(100),

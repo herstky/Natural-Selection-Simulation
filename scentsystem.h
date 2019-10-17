@@ -23,6 +23,8 @@ public:
 	void diffuse();
 	coordMap& scentMap();
 	qreal getScent(coordPair pCoords);
+	qreal getThreshhold();
+	qreal getDiffusivity();
 
 private:
 	Simulation* mSimulation;

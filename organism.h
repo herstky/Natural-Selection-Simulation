@@ -42,6 +42,7 @@ protected:
 	qreal mReplicationChance;
 	qreal mMutationChance;
 	qreal mDeathChance;
+	qreal mScentStrength;
 
 	qreal mMass; // [kg]
 	qreal mDensity; // [kg/m^3]
