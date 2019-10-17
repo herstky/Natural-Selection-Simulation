@@ -11,11 +11,11 @@ Organism::Organism(const Simulation& pSimulation)
     : Entity(pSimulation),
 	  mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
 	  mMaxSpeed(.005),
-      mVelocity(0.001),
+      mVelocity(0.0),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
       mDeltaDistance(0),
-      mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+      mDirection(0.0),
       mReplicationChance(0),
       mMutationChance(0),
       mDeathChance(0),
@@ -25,8 +25,8 @@ Organism::Organism(const Simulation& pSimulation)
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth() / 2.0) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight() / 2.0) / SCALE_FACTOR;
+	mX = (QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) + scaledWidth() / 2.0) / SCALE_FACTOR;
+	mY = (QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) + scaledHeight() / 2.0) / SCALE_FACTOR;
 	initView(pSimulation);
 }
 
@@ -34,11 +34,11 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
     : Entity(pSimulation, pPosition),
 	  mBrain(NeuralNetwork()),
 	  mMaxSpeed(0.005),
-      mVelocity(0.001),
+      mVelocity(0.0),
       mInitialVelocity(mVelocity),
       mInitialTime(QTime::currentTime()),
       mDeltaDistance(0),
-      mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+      mDirection(0.0),
       mReplicationChance(0),
       mMutationChance(0),
       mDeathChance(0),
@@ -57,11 +57,11 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	: Entity(pSimulation),
 	  mBrain(pBrain),
 	  mMaxSpeed(.005),
-	  mVelocity(0.001),
+	  mVelocity(0.0),
 	  mInitialVelocity(mVelocity),
 	  mInitialTime(QTime::currentTime()),
 	  mDeltaDistance(0),
-	  mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+	  mDirection(0.0),
 	  mReplicationChance(0),
 	  mMutationChance(0),
 	  mDeathChance(0),
@@ -71,8 +71,8 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	  mEnergyLevel(100),
 	  mEnergyCapacity(100)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth() / 2.0) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight() / 2.0) / SCALE_FACTOR;
+	mX = (QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) + scaledWidth() / 2.0) / SCALE_FACTOR;
+	mY = (QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) + scaledHeight() / 2.0) / SCALE_FACTOR;
 	initView(pSimulation);
 }
 
@@ -80,11 +80,11 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, Neur
 	: Entity(pSimulation, pPosition),
 	  mBrain(pBrain),
 	  mMaxSpeed(0.005),
-	  mVelocity(0.001),
+	  mVelocity(0.0),
 	  mInitialVelocity(mVelocity),
 	  mInitialTime(QTime::currentTime()),
 	  mDeltaDistance(0),
-	  mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+	  mDirection(0.0),
 	  mReplicationChance(0),
 	  mMutationChance(0),
 	  mDeathChance(0),

@@ -9,13 +9,13 @@
 #include "simulation.h"
 
 unsigned int Food::mCount = 0;
-qreal Food::mCreationChance = 10;
+qreal Food::mCreationChance = 50;
 
 Food::Food(const Simulation& pSimulation)
 	: Entity(pSimulation), mScentStrength(1.0)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth() / 2.0) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight() / 2.0) / SCALE_FACTOR;
+	mX = (QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) + scaledWidth() / 2.0) / SCALE_FACTOR;
+	mY = (QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) + scaledHeight() / 2.0) / SCALE_FACTOR;
 	init();
 	initView(pSimulation);
 }

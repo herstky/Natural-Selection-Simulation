@@ -128,7 +128,7 @@ void Simulation::simulate()
 		{
 			View* view = dynamic_cast<View*>(item);
 			Entity* entity = dynamic_cast<Entity*>(&view->mModel);
-			entity->detectCollisions(*this);
+			//entity->detectCollisions(*this);
 		}
 		catch (const std::exception & e)
 		{
