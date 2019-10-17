@@ -20,6 +20,7 @@ public:
 	virtual void detectCollisions(const Simulation& pSimulation); // bottleneck. must be optimized
 	virtual void collide(const Simulation& pSimulation, Entity& pOther);
 	virtual void emanateScent(Simulation& pSimulation);
+	
 	Type getType();
 	qreal getEnergyContent();
 	qreal getMass();

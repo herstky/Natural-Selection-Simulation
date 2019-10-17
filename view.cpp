@@ -17,10 +17,10 @@ View::~View()
 
 void View::init()
 {
-	setX(mModel.scaledX() - mModel.scaledWidth() / 2.0);
-	setY(mModel.scaledY() - mModel.scaledHeight() / 2.0);
-	setHeight(mModel.scaledHeight());
-	setWidth(mModel.scaledWidth());
+	setX(mModel.xP());
+	setY(mModel.yP());
+	setHeight(mModel.heightP());
+	setWidth(mModel.widthP());
 	setZ(1);
 	setOpacity(0.4);
 	setFlag(QQuickItem::ItemHasContents);
@@ -33,7 +33,7 @@ void View::paint(QPainter* pPainter)
 		return;
 	}
 	
-	setPosition(QPointF(mModel.scaledX(), mModel.scaledY()));
+	setPosition(QPointF(mModel.xP(), mModel.yP()));
 
 	QBrush brush(mModel.mColor);
 	pPainter->setBrush(brush);

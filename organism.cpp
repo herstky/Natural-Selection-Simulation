@@ -25,8 +25,8 @@ Organism::Organism(const Simulation& pSimulation)
       mEnergyLevel(100),
       mEnergyCapacity(100)
 {
-	mX = (QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) + scaledWidth() / 2.0) / SCALE_FACTOR;
-	mY = (QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) + scaledHeight() / 2.0) / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
 	initView(pSimulation);
 }
 
@@ -71,8 +71,8 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	  mEnergyLevel(100),
 	  mEnergyCapacity(100)
 {
-	mX = (QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - scaledWidth()) + scaledWidth() / 2.0) / SCALE_FACTOR;
-	mY = (QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - scaledHeight()) + scaledHeight() / 2.0) / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
 	initView(pSimulation);
 }
 
@@ -109,9 +109,9 @@ void Organism::move(const Simulation& pSimulation)
     qreal dx = mVelocity * cos(mDirection);
     qreal dy = mVelocity * sin(mDirection);
 
-    if (x() + dx + width() / 2.0 > pSimulation.mBoard.width() || x() - width() / 2.0 + dx < 0)
+    if (x() + dx + width() > pSimulation.mBoard.width() || x() + dx < 0)
         mDirection = M_PI - mDirection;
-    if (y() + dy + height() / 2.0 > pSimulation.mBoard.height() || y() - height() / 2.0 + dy < 0)
+    if (y() + dy + height() > pSimulation.mBoard.height() || y() + dy < 0)
         mDirection = 2 * M_PI - mDirection;
 
     dx = mVelocity * cos(mDirection);
@@ -216,10 +216,10 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 QRectF Organism::hitbox()
 {
 	qreal scaledRadius = SCALE_FACTOR * diameter() / 2.0;
-	QPointF topLeft = QPointF(scaledCenter().x() + scaledRadius * cos(3.0 * M_PI / 4.0), 
-		scaledCenter().y() - scaledRadius * sin(3.0 * M_PI / 4.0));
-	QPointF bottomRight = QPointF(scaledCenter().x() + scaledRadius * cos(7.0 * M_PI / 4.0), 
-		scaledCenter().y() - scaledRadius * sin(7.0 * M_PI / 4.0));
+	QPointF topLeft = QPointF(centerP().x() + scaledRadius * cos(3.0 * M_PI / 4.0), 
+		centerP().y() - scaledRadius * sin(3.0 * M_PI / 4.0));
+	QPointF bottomRight = QPointF(centerP().x() + scaledRadius * cos(7.0 * M_PI / 4.0), 
+		centerP().y() - scaledRadius * sin(7.0 * M_PI / 4.0));
 	return QRectF(topLeft, bottomRight);
 }
 
