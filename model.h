@@ -40,7 +40,7 @@ public:
 	virtual const qreal yP() const;
 	virtual void setX(const qreal pX);
 	virtual void setY(const qreal pY);
-	const std::pair<int, int>& coords(Simulation& pSimulation) const;
+	const std::pair<int, int> coords(Simulation& pSimulation) const;
 	virtual QRectF hitbox();
 	virtual void die(const Simulation& pSimulation);
 

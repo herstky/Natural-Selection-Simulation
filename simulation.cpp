@@ -141,8 +141,6 @@ void Simulation::simulate()
 		view->deleteLater();
 	}
 	View::mDeletionQueue = QList<View*>();
-
-	outputCounts();
 }
 
 void Simulation::train()
@@ -154,15 +152,24 @@ void Simulation::run()
 {
 	switch (mMode)
 	{
-	case(Mode::simulate):
-		simulate();
-		break;
-	case(Mode::train):
-		train();
-		break;
-	default:
-		break;
+		case(Mode::simulate):
+		{
+			simulate();
+			break;
+		}
+		case(Mode::train):
+		{
+			train();
+			//simulate();
+			break;
+		}
+		default:
+		{
+			break;
+		}
 	}
+
+	outputCounts();
 }
 
 void Simulation::init()
@@ -174,7 +181,7 @@ void Simulation::init()
 
 	switch (mMode)
 	{
-		case Mode::simulate: 
+		case Mode::simulate:
 		{
 			break;
 		}
@@ -182,8 +189,8 @@ void Simulation::init()
 		case Mode::train:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-			qreal radius = 10 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 20;
+			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
+			int entities = 25;
 			int replicates = 4; // number of clones of each Entity
 
 			new Food(*this, center);
@@ -198,9 +205,9 @@ void Simulation::init()
 					new Red(*this, pos, neuralNetwork);
 				}
 			}
-
 			break;
 		}
+
 		default:
 		{
 			break;

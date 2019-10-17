@@ -16,8 +16,8 @@ class Organism : public Entity
 public:
     Organism(const Simulation& pSimulation);
     Organism(const Simulation& pSimulation, const QPointF& pPosition);
-    Organism(const Simulation& pSimulation, NeuralNetwork pBrain);
-    Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain);
+	Organism(const Simulation& pSimulation, NeuralNetwork pBrain);
+	Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain);
     virtual ~Organism() override;
 
     const qreal volume() const;

@@ -14,8 +14,8 @@ qreal Food::mCreationChance = 50;
 Food::Food(const Simulation& pSimulation)
 	: Entity(pSimulation), mScentStrength(1.0)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) + widthP() / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) + heightP() / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
 	init();
 	initView(pSimulation);
 }
@@ -23,8 +23,8 @@ Food::Food(const Simulation& pSimulation)
 Food::Food(const Simulation& pSimulation, const QPointF& pPosition)
 	: Entity(pSimulation, pPosition), mScentStrength(1.0)
 {
-	mX = pPosition.x() / SCALE_FACTOR;
-	mY = pPosition.y() / SCALE_FACTOR;
+	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
+	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 	init();
 	initView(pSimulation);
 }
