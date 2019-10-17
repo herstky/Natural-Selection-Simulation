@@ -8,15 +8,14 @@
 
 #include "simulation.h"
 
-coordMap ScentSystem::mScentMap = coordMap();
-
 ScentSystem::ScentSystem(Simulation* pSimulation)
 	: mSimulation(pSimulation),
 	  mThreshhold(0.1),
+	  mScentMap(coordMap()),
 	  mAdditionQueue(coordMap()),
 	  mSubtractionQueue(coordMap()),
-	  mDiffusivity(0.25),
-	  mDecayRate(0.0) {}
+	  mDiffusivity(0.15),
+	  mDecayRate(0.8) {}
 
 ScentSystem::~ScentSystem() {}
 
@@ -74,7 +73,7 @@ void ScentSystem::diffuse()
 
 		qreal adjScentWeightedAverage = adjScentWeightedSum / 8.0;
 		qreal outFlow = (mScentMap.at(curCell) - adjScentWeightedAverage) * mDiffusivity / ((4 + 4 * sqrt(2)) / 8);
-		outFlow += mScentMap.at(curCell) * mDecayRate;
+		outFlow += std::max(mScentMap.at(curCell) * mDecayRate, 10 * mThreshhold);
 		subtract(mSubtractionQueue, curCell, outFlow);
 	}
 

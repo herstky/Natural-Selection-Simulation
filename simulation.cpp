@@ -84,7 +84,7 @@ void Simulation::run()
 			std::cout << "Warning, diffusion thread still running!\n";
 
 		mDiffusionThread.waitForFinished();
-		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), mScentSystem, &ScentSystem::diffuse);
+		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::diffuse);
 
 		
 		for (auto item : boardView()->childItems())
