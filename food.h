@@ -1,12 +1,13 @@
 #pragma once
 
 #include <unordered_set>
+#include <memory>
 
 #include "entity.h"
 
 class Simulation;
 
-class Food : public Entity
+class Food : public Entity, public std::enable_shared_from_this<Food>
 {
 	friend class Simulation;
 
@@ -32,6 +33,6 @@ private:
 	static unsigned int mCount;
 	static qreal mCreationChance;
 	qreal mScentStrength;
-	std::unordered_set<Food*>* mContainer;
+	std::shared_ptr<std::unordered_set<std::shared_ptr<Food>>> mContainer;
 };
 

@@ -38,7 +38,7 @@ Food& Food::operator=(const Food& pOther)
 
 Food::~Food() 
 {
-	mContainer->erase(this);
+	mContainer->erase(shared_from_this());
 	mCount--;
 }
 

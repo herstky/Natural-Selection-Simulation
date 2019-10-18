@@ -26,8 +26,8 @@ Simulation::Simulation(QQuickItem* pParent)
       M_TICKS_PER_STEP(5),
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mInitialTime(QTime::currentTime()),
-	  mFoodSet(std::unordered_set<Food*>()),
-	  mOrganismGroups(std::vector<std::vector<Organism*>*>())
+	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
+	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>())
 {
 	init();
 }
@@ -42,39 +42,30 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  M_TICKS_PER_STEP(5),
 	  mTicksRemaining(M_TICKS_PER_STEP),
 	  mInitialTime(QTime::currentTime()),
-	  mFoodSet(std::unordered_set<Food*>()),
-	  mOrganismGroups(std::vector<std::vector<Organism*>*>())
-
+	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
+	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>())
 {
 	init();
 }
 
-Simulation::~Simulation() 
+void Simulation::addOrganism(std::shared_ptr<Organism> pOrganism)
 {
-	for (auto it = mFoodSet.begin(); it != mFoodSet.end(); it++)
-	{
-		delete *it; // segfault. need to manage memory statically
-	}
-	mFoodSet.clear();
-
-	for (auto group : mOrganismGroups)
-	{
-		for (auto entity : *group)
-		{
-			delete entity;
-		}
-		delete group;
-	}
+	mOrganismGroups.push_back(std::vector<std::shared_ptr<Organism>>{pOrganism});
 }
 
-void Simulation::addOrganism(Organism* pOrganism)
-{
-	mOrganismGroups.push_back(new std::vector<Organism*>{pOrganism});
-}
-
-void Simulation::addOrganismGroup(std::vector<Organism*>* pGroup)
+void Simulation::addOrganismGroup(std::vector<std::shared_ptr<Organism>> pGroup)
 {
 	mOrganismGroups.push_back(pGroup);
+}
+
+void Simulation::addFood(std::shared_ptr<Food> pFood)
+{
+	mFoodSet.emplace(pFood);
+}
+
+void Simulation::removeFood(std::shared_ptr<Food> pFood)
+{
+	mFoodSet.erase(pFood);
 }
 
 QQuickItem* Simulation::boardView() const
@@ -96,7 +87,8 @@ void Simulation::simulate()
 {
 	if (QRandomGenerator::global()->bounded(100) < Red::mCreationChance)
 	{
-		addOrganism(new Red(*this));
+
+		addOrganism(std::shared_ptr<Organism>(new Red(*this)));
 	}
 	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
 	{
@@ -227,12 +219,12 @@ void Simulation::init()
 			for (int i = 0; i < entities; i++)
 			{
 				NeuralNetwork neuralNetwork;
-				std::vector<Organism*>* group = new std::vector<Organism*>();
+				std::vector<std::shared_ptr<Organism>> group = std::vector<std::shared_ptr<Organism>>();
 				for (int j = 0; j < replicates; j++)
 				{
 					qreal angle = QRandomGenerator::global()->bounded(2 * M_PI);
 					QPointF pos = QPointF(radius * cos(angle) + center.x(), radius * sin(angle) + center.y());
-					group->push_back(new Red(*this, pos, neuralNetwork));
+					group.push_back(std::shared_ptr<Organism>(new Red(*this, pos, neuralNetwork)));
 				}
 				mOrganismGroups.push_back(group);
 			}

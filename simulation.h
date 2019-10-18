@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <unordered_set>
+#include <memory>
 
 #include "organism.h"
 #include "board.h"
@@ -26,12 +27,13 @@ public:
     
 	Simulation(QQuickItem* pParent);
     Simulation(QQuickItem* pParent, Mode pMode);
-    ~Simulation();
 	
 	QQuickItem& mContainer;
 
-	void addOrganism(Organism* pOrganism);
-	void addOrganismGroup(std::vector<Organism*>* pGroup);
+	void addOrganism(std::shared_ptr<Organism> pOrganism);
+	void addOrganismGroup(std::vector<std::shared_ptr<Organism>> pGroup);
+	void addFood(std::shared_ptr<Food> pFood);
+	void removeFood(std::shared_ptr<Food> pFood);
 	QQuickItem* boardView() const;
 	qreal deltaTime() const;
 	Board* board();
@@ -54,8 +56,8 @@ private:
     const int M_TICKS_PER_STEP; // simulate only called every step
     int mTicksRemaining;
 	QTime mInitialTime; // time since previous step
-	std::unordered_set<Food*> mFoodSet;
-	std::vector<std::vector<Organism*>*> mOrganismGroups;
+	std::unordered_set<std::shared_ptr<Food>> mFoodSet;
+	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;
 
 	void outputCounts();
 };
