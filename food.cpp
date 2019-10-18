@@ -11,26 +11,27 @@
 unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 50;
 
-Food::Food(const Simulation& pSimulation)
-	: Entity(pSimulation), mScentStrength(1.0)
+Food::Food(Simulation& pSimulation)
+	: Entity(pSimulation), mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
-	init();
+	init(pSimulation);
 	initView(pSimulation);
 }
 
-Food::Food(const Simulation& pSimulation, const QPointF& pPosition)
-	: Entity(pSimulation, pPosition), mScentStrength(1.0)
+Food::Food(Simulation& pSimulation, const QPointF& pPosition)
+	: Entity(pSimulation, pPosition), mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
-	init();
+	init(pSimulation);
 	initView(pSimulation);
 }
 
 Food::~Food() 
 {
+	mContainer.erase(this);
 	mCount--;
 }
 
@@ -77,7 +78,7 @@ void Food::simulate(Simulation& pSimulation)
 	emanateScent(pSimulation);
 }
 
-void Food::init()
+void Food::init(Simulation& pSimulation)
 {
 	mColor = Qt::green;
 	mType = Entity::Type::prey;
@@ -87,4 +88,6 @@ void Food::init()
 	mAspectRatio = 1;
 	mDepth = 0.1;
 	mCount++;
+	mContainer.emplace(this);
+	emanateScent(pSimulation);
 }

@@ -20,7 +20,7 @@ public:
 
 	void add(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
 	void subtract(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
-	void diffuse();
+	void update();
 	coordMap& scentMap();
 	qreal getScent(coordPair pCoords);
 	qreal getThreshhold();

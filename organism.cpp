@@ -92,7 +92,8 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, Neur
 	mMass(0.0005),
 	mDensity(WATER_DENSITY),
 	mEnergyLevel(100),
-	mEnergyCapacity(100)
+	mEnergyCapacity(100),
+	mEnergySpent(0)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
@@ -208,9 +209,25 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 	mInitialTime = QTime::currentTime();
 	mInitialVelocity = mVelocity;
 
-    mEnergyLevel -= work;
-    if (mEnergyLevel <= 0)
-        die(pSimulation);
+	switch (pSimulation.mMode)
+	{
+		case Simulation::Mode::simulate:
+		{
+			mEnergyLevel -= work;
+			if (mEnergyLevel <= 0)
+				die(pSimulation);
+			break;
+		}
+		case Simulation::Mode::train:
+		{
+			mEnergySpent += work;
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 }
 
 QRectF Organism::hitbox()
@@ -225,8 +242,23 @@ QRectF Organism::hitbox()
 
 void Organism::collide(const Simulation& pSimulation, Entity& pOther)
 {
-	if (pOther.getType() == Entity::Type::prey)
-		eat(pSimulation, pOther);
+	switch (pSimulation.mMode)
+	{
+		case Simulation::Mode::simulate:
+		{
+			if (pOther.getType() == Entity::Type::prey)
+				eat(pSimulation, pOther);
+			break;
+		}
+		case Simulation::Mode::train:
+		{
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 }
 
 arma::mat Organism::smell(Simulation& pSimulation)

@@ -50,6 +50,7 @@ protected:
 	qreal mDensity; // [kg/m^3]
 	qreal mEnergyLevel;
 	qreal mEnergyCapacity;
+	qreal mEnergySpent;
 
 	virtual void init(Simulation& pSimulation);
 

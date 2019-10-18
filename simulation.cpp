@@ -25,7 +25,9 @@ Simulation::Simulation(QQuickItem* pParent)
       M_TICK_DURATION(50),
       M_TICKS_PER_STEP(5),
       mTicksRemaining(M_TICKS_PER_STEP),
-	  mInitialTime(QTime::currentTime())
+	  mInitialTime(QTime::currentTime()),
+	  mFoodSet(std::unordered_set<Food*>()),
+	  mOrganismGroups(std::vector<std::vector<Organism*>*>())
 {
 	init();
 }
@@ -39,12 +41,43 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
 	  mTicksRemaining(M_TICKS_PER_STEP),
-	  mInitialTime(QTime::currentTime())
+	  mInitialTime(QTime::currentTime()),
+	  mFoodSet(std::unordered_set<Food*>()),
+	  mOrganismGroups(std::vector<std::vector<Organism*>*>())
+
 {
 	init();
 }
 
-Simulation::~Simulation() {}
+Simulation::~Simulation() 
+{
+
+	for (auto it = mFoodSet.begin(); it != mFoodSet.end(); it++)
+	{
+		delete *it;
+	}
+	mFoodSet.clear();
+
+
+	for (auto group : mOrganismGroups)
+	{
+		for (auto entity : *group)
+		{
+			delete entity;
+		}
+		delete group;
+	}
+}
+
+void Simulation::addOrganism(Organism* pOrganism)
+{
+	mOrganismGroups.push_back(new std::vector<Organism*>{pOrganism});
+}
+
+void Simulation::addOrganismGroup(std::vector<Organism*>* pGroup)
+{
+	mOrganismGroups.push_back(pGroup);
+}
 
 QQuickItem* Simulation::boardView() const
 {
@@ -62,6 +95,23 @@ Board* Simulation::board()
 }
 
 void Simulation::simulate()
+{
+	if (QRandomGenerator::global()->bounded(100) < Red::mCreationChance)
+	{
+		addOrganism(new Red(*this));
+	}
+	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
+	{
+		new Food(*this);
+	}
+}
+
+void Simulation::train()
+{
+	
+}
+
+void Simulation::run()
 {
 	for (auto item : boardView()->childItems())
 	{
@@ -81,15 +131,6 @@ void Simulation::simulate()
 		}
 	}
 
-	if (QRandomGenerator::global()->bounded(100) < Red::mCreationChance)
-	{
-		new Red(*this);
-	}
-	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
-	{
-		new Food(*this);
-	}
-
 	if (mTicksRemaining)
 	{
 
@@ -101,8 +142,7 @@ void Simulation::simulate()
 			std::cout << "Warning, diffusion thread still running!\n";
 
 		mDiffusionThread.waitForFinished();
-		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::diffuse);
-
+		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
 
 		for (auto item : boardView()->childItems())
 		{
@@ -128,7 +168,7 @@ void Simulation::simulate()
 		{
 			View* view = dynamic_cast<View*>(item);
 			Entity* entity = dynamic_cast<Entity*>(&view->mModel);
-			//entity->detectCollisions(*this);
+			entity->detectCollisions(*this);
 		}
 		catch (const std::exception & e)
 		{
@@ -141,15 +181,7 @@ void Simulation::simulate()
 		view->deleteLater();
 	}
 	View::mDeletionQueue = QList<View*>();
-}
 
-void Simulation::train()
-{
-
-}
-
-void Simulation::run()
-{
 	switch (mMode)
 	{
 		case(Mode::simulate):
@@ -160,7 +192,6 @@ void Simulation::run()
 		case(Mode::train):
 		{
 			train();
-			//simulate();
 			break;
 		}
 		default:
@@ -189,7 +220,7 @@ void Simulation::init()
 		case Mode::train:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
+			qreal radius = 40 * mBoard.cellSize() * SCALE_FACTOR;
 			int entities = 25;
 			int replicates = 4; // number of clones of each Entity
 
@@ -198,12 +229,14 @@ void Simulation::init()
 			for (int i = 0; i < entities; i++)
 			{
 				NeuralNetwork neuralNetwork;
+				std::vector<Organism*>* group = new std::vector<Organism*>();
 				for (int j = 0; j < replicates; j++)
 				{
 					qreal angle = QRandomGenerator::global()->bounded(2 * M_PI);
 					QPointF pos = QPointF(radius * cos(angle) + center.x(), radius * sin(angle) + center.y());
-					new Red(*this, pos, neuralNetwork);
+					group->push_back(new Red(*this, pos, neuralNetwork));
 				}
+				mOrganismGroups.push_back(group);
 			}
 			break;
 		}

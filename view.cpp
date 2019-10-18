@@ -12,7 +12,7 @@ View::View(QQuickItem* pParent, Model& pModel)
 
 View::~View() 
 {
-	delete &mModel;
+	//delete &mModel;
 }
 
 void View::init()

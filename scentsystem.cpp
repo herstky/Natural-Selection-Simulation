@@ -10,7 +10,7 @@
 
 ScentSystem::ScentSystem(Simulation* pSimulation)
 	: mSimulation(pSimulation),
-	  mThreshhold(0.1),
+	  mThreshhold(0.005),
 	  mScentMap(coordMap()),
 	  mAdditionQueue(coordMap()),
 	  mSubtractionQueue(coordMap()),
@@ -36,47 +36,8 @@ void ScentSystem::subtract(coordMap& pCoordMap, const coordPair& pCoords, const 
 	pCoordMap.at(pCoords) = std::max<qreal>(pCoordMap.at(pCoords), 0);
 }
 
-void ScentSystem::diffuse()
+void ScentSystem::update()
 {
-	/*for (auto it1 = mScentMap.begin(); it1 != mScentMap.end(); it1++)
-	{
-		coordPair curCell = it1->first;
-		qreal adjScentWeightedSum = 0;
-		int offset = -1;
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				int m = curCell.first + i + offset;
-				int n = curCell.second + j + offset;
-				if (m >= mSimulation->board()->columns()
-					|| m < 0
-					|| n >= mSimulation->board()->rows()
-					|| n < 0
-					|| i + offset == 0 && j + offset == 0)
-				{
-					continue;
-				}
-
-				coordPair adjCell(m, n);
-				qreal curScent = mScentMap.at(curCell);
-				qreal adjScent = mScentMap.count(adjCell) ? mScentMap.at(adjCell) : 0;
-
-				qreal distance = std::sqrt(pow(i + offset, 2) + pow(j + offset, 2));
-
-				qreal transfer = std::max<qreal>((curScent - adjScent) * mDiffusivity / distance, 0);
-				adjScentWeightedSum += (transfer + adjScent) / distance;
-
-				add(mAdditionQueue, adjCell, transfer);
-			}
-		}
-
-		qreal adjScentWeightedAverage = adjScentWeightedSum / 8.0;
-		qreal outFlow = (mScentMap.at(curCell) - adjScentWeightedAverage) * mDiffusivity / ((4 + 4 * sqrt(2)) / 8);
-		outFlow += std::max(mScentMap.at(curCell) * mDecayRate, 10 * mThreshhold);
-		subtract(mSubtractionQueue, curCell, outFlow);
-	}*/
-
 	for (auto it1 = mScentMap.begin(); it1 != mScentMap.end(); it1++)
 	{
 		coordPair curCell = it1->first;

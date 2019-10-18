@@ -6,6 +6,7 @@
 
 #include "simulation.h"
 #include "view.h"
+#include "food.h"
 
 Entity::Entity(const Simulation& pSimulation) 
 	: Model(pSimulation),
@@ -46,22 +47,23 @@ void Entity::detectCollisions(const Simulation& pSimulation)
 		return;
 	}
 
-	QList<QQuickItem*> items = pSimulation.boardView()->childItems();
-	for (auto item : items)
+	//QList<QQuickItem*> items = pSimulation.boardView()->childItems();
+	for (auto food : pSimulation.mFoodSet)
 	{
-		View* view = static_cast<View*>(item);
-		Entity* entity = dynamic_cast<Entity*>(&view->mModel);
-		if (entity == this || entity->mStatus == Model::Status::dead)
+		//View* view = static_cast<View*>(item);
+		//Entity* entity = dynamic_cast<Entity*>(&view->mModel);
+		if (food->mStatus == Model::Status::dead)
 		{
 			continue;
 		}
 
 		//https://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
 		//Logic inverted for top and bottom sides due to direction of y axis.
-		if (hitbox().left() < entity->hitbox().right() && hitbox().right() > entity->hitbox().left() &&
-			hitbox().top() < entity->hitbox().bottom() && hitbox().bottom() > entity->hitbox().top())
+		if (hitbox().left() < food->hitbox().right() && hitbox().right() > food->hitbox().left() &&
+			hitbox().top() < food->hitbox().bottom() && hitbox().bottom() > food->hitbox().top())
 		{
-			collide(pSimulation, *entity);
+			collide(pSimulation, *food);
+			std::cout << "collision detected!\n";
 		}
 	}
 }

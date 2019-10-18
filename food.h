@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_set>
+
 #include "entity.h"
 
 class Simulation;
@@ -9,8 +11,8 @@ class Food : public Entity
 	friend class Simulation;
 
 public:
-	Food(const Simulation& pSimulation);
-	Food(const Simulation& pSimulation, const QPointF& pPosition);
+	Food(Simulation& pSimulation);
+	Food(Simulation& pSimulation, const QPointF& pPosition);
 	~Food();
 
 	void detectCollisions(const Simulation& pSimulation) override;
@@ -20,12 +22,14 @@ public:
 	virtual void emanateScent(Simulation& pSimulation) override; // DEBUG: Need to verify with multiple Food instances
 	virtual void simulate(Simulation& pSimulation) override;
 
+protected:
+	virtual void init(Simulation& pSimulation);
+
 private:
 	static unsigned int mCount;
 	static qreal mCreationChance;
+	std::unordered_set<Food*>& mContainer;
 	
 	qreal mScentStrength;
-
-	virtual void init() override;
 };
 

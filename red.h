@@ -1,3 +1,5 @@
+// TODO: Need to store training scores in a replicate group
+
 #pragma once
 
 #include "organism.h"
