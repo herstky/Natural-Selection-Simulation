@@ -14,8 +14,6 @@ Board::Board(QQuickItem* pView)
 	init();
 }
 
-Board::~Board() {}
-
 QQuickItem* Board::view()
 {
 	return mView;

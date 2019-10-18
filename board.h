@@ -13,7 +13,6 @@ public:
 	friend class Simulation;
 
 	Board(QQuickItem* pView);
-	~Board();
 
 	QQuickItem* view();
 	qreal cellSize() const;

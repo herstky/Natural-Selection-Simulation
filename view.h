@@ -9,7 +9,6 @@ class View : public QQuickPaintedItem
 	Q_OBJECT;
 public:
 	View(QQuickItem* pParent, Model& pModel);
-	~View();
 
 	static QList<View*> mDeletionQueue;
 

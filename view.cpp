@@ -10,11 +10,6 @@ QList<View*> View::mDeletionQueue = QList<View*>();
 View::View(QQuickItem* pParent, Model& pModel)
 	: QQuickPaintedItem(pParent), mModel(pModel) {}
 
-View::~View() 
-{
-	//delete &mModel;
-}
-
 void View::init()
 {
 	setX(mModel.xP());

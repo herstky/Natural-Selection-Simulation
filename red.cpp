@@ -31,6 +31,11 @@ Red::Red(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork 
 	init();
 }
 
+Red& Red::operator=(const Red& pOther)
+{
+	return *this;
+}
+
 Red::~Red()
 {
     mCount--;

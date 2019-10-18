@@ -26,10 +26,12 @@ protected:
 	virtual void init(Simulation& pSimulation);
 
 private:
+	Food(const Food& pOther);
+	Food& operator=(const Food& pOther);
+	
 	static unsigned int mCount;
 	static qreal mCreationChance;
-	std::unordered_set<Food*>& mContainer;
-	
 	qreal mScentStrength;
+	std::unordered_set<Food*>* mContainer;
 };
 

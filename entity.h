@@ -10,9 +10,10 @@ class Entity : public Model
 
 public:
 	enum class Type { none, predator, prey };
+
+	Entity();
 	Entity(const Simulation& pSimulation);
 	Entity(const Simulation& pSimulation, const QPointF& pPosition);
-	virtual ~Entity() override;
 	
 	virtual void simulate(Simulation& pSimulation);
 	virtual void train(Simulation& pSimulation);

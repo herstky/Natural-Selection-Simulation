@@ -16,8 +16,6 @@ NeuralNetwork::NeuralNetwork(std::vector<int> pLayers)
 	init();
 }
 
-NeuralNetwork::~NeuralNetwork() {}
-
 arma::mat NeuralNetwork::forwardPropagate(arma::mat input)
 {
 	arma::mat a = input;

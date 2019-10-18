@@ -4,6 +4,16 @@
 #include "view.h"
 #include "constants.h"
 
+Model::Model()
+	: mStatus(Model::Status::alive),
+	  mColor(Qt::black),
+	  mShape(Model::Shape::rectangle),
+	  mView(nullptr),
+	  mHeight(1),
+	  mWidth(1),
+	  mX(0),
+	  mY(0) {}
+
 Model::Model(const Simulation& pSimulation)
 	: mStatus(Model::Status::alive),
 	  mColor(Qt::black),
@@ -23,8 +33,6 @@ Model::Model(const Simulation& pSimulation, const QPointF& pPosition)
 	  mWidth(1),
 	  mX(pPosition.x() / SCALE_FACTOR),
 	  mY(pPosition.y() / SCALE_FACTOR) {}
-
-Model::~Model() {}
 
 void Model::init() {}
 

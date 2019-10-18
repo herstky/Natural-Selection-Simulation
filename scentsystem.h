@@ -16,7 +16,6 @@ class ScentSystem
 {
 public:
 	ScentSystem(Simulation* pSimulation);
-	~ScentSystem();
 
 	void add(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
 	void subtract(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);

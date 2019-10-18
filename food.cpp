@@ -12,7 +12,7 @@ unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 50;
 
 Food::Food(Simulation& pSimulation)
-	: Entity(pSimulation), mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
+	: Entity(pSimulation), mScentStrength(1.0), mContainer(&pSimulation.mFoodSet)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
@@ -21,7 +21,7 @@ Food::Food(Simulation& pSimulation)
 }
 
 Food::Food(Simulation& pSimulation, const QPointF& pPosition)
-	: Entity(pSimulation, pPosition), mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
+	: Entity(pSimulation, pPosition), mScentStrength(1.0), mContainer(&pSimulation.mFoodSet)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
@@ -29,9 +29,16 @@ Food::Food(Simulation& pSimulation, const QPointF& pPosition)
 	initView(pSimulation);
 }
 
+Food::Food(const Food& pOther) : mScentStrength(1.0), mContainer(nullptr) {}
+
+Food& Food::operator=(const Food& pOther)
+{
+	return *this;
+}
+
 Food::~Food() 
 {
-	mContainer.erase(this);
+	mContainer->erase(this);
 	mCount--;
 }
 
@@ -88,6 +95,6 @@ void Food::init(Simulation& pSimulation)
 	mAspectRatio = 1;
 	mDepth = 0.1;
 	mCount++;
-	mContainer.emplace(this);
+	mContainer->emplace(this);
 	emanateScent(pSimulation);
 }

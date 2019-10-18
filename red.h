@@ -13,7 +13,7 @@ public:
     Red(const Simulation& pSimulation, const QPointF& pPosition);
 	Red(const Simulation& pSimulation, NeuralNetwork pBrain);
 	Red(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain);
-    ~Red() override;
+    ~Red();
 
     void replicate(const Simulation& pSimulation) override;
 
@@ -21,6 +21,9 @@ protected:
 	virtual void init() override;
 
 private:
+	Red(const Red& pOther) {}
+	Red& operator=(const Red& pOther);
+
 	static unsigned int mCount;
 	static qreal mCreationChance;
 };

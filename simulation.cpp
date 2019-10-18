@@ -51,13 +51,11 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 
 Simulation::~Simulation() 
 {
-
 	for (auto it = mFoodSet.begin(); it != mFoodSet.end(); it++)
 	{
-		delete *it;
+		delete *it; // segfault. need to manage memory statically
 	}
 	mFoodSet.clear();
-
 
 	for (auto group : mOrganismGroups)
 	{

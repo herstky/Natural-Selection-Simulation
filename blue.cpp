@@ -18,6 +18,11 @@ Blue::Blue(const Simulation& pSimulation, const QPointF& pPosition)
 	init();
 }
 
+Blue& Blue::operator=(const Blue& pOther)
+{
+	return *this;
+}
+
 Blue::~Blue()
 {
     mCount--;

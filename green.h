@@ -9,7 +9,7 @@ class Green : public Organism
 public:
     Green(const Simulation& pSimulation);
     Green(const Simulation& pSimulation, const QPointF& pPosition);
-    ~Green() override;
+    ~Green();
 
     void replicate(const Simulation& pSimulation) override;
 
@@ -17,6 +17,9 @@ protected:
 	virtual void init() override;
 
 private:
+	Green(const Green& pOther) {}
+	Green& operator=(const Green& pOther);
+
 	static unsigned int mCount;
 	static qreal mCreationChance;
 };

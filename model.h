@@ -17,9 +17,9 @@ public:
 	enum class Status { alive, dead };
 	enum class Shape { ellipse, rectangle, roundedRectangle };
 
+	Model();
 	Model(const Simulation& pSimulation);
 	Model(const Simulation& pSimulation, const QPointF& pPosition);
-	virtual ~Model();
 
 	Status mStatus;
 	QColor mColor;

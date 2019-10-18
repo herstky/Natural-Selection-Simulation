@@ -7,6 +7,25 @@
 #include "constants.h"
 #include "view.h"
 
+Organism::Organism()
+	: Entity(),
+	  mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
+	  mMaxSpeed(.01),
+	  mVelocity(0.0),
+	  mInitialVelocity(mVelocity),
+	  mInitialTime(QTime::currentTime()),
+	  mDeltaDistance(0),
+	  mDirection(0.0),
+	  mReplicationChance(0),
+	  mMutationChance(0),
+	  mDeathChance(0),
+	  mScentStrength(1.0),
+	  mMass(0.0005),
+	  mDensity(WATER_DENSITY),
+	  mEnergyLevel(100),
+	  mEnergyCapacity(100),
+	  mEnergySpent(0) {}
+
 Organism::Organism(const Simulation& pSimulation)
     : Entity(pSimulation),
 	  mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
@@ -23,7 +42,8 @@ Organism::Organism(const Simulation& pSimulation)
       mMass(0.0005),
       mDensity(WATER_DENSITY),
       mEnergyLevel(100),
-      mEnergyCapacity(100)
+      mEnergyCapacity(100),
+	  mEnergySpent(0)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
@@ -46,7 +66,8 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
       mMass(0.0005),
       mDensity(WATER_DENSITY),
       mEnergyLevel(100),
-      mEnergyCapacity(100)
+      mEnergyCapacity(100),
+	  mEnergySpent(0)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
@@ -69,7 +90,8 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	mMass(0.0005),
 	mDensity(WATER_DENSITY),
 	mEnergyLevel(100),
-	mEnergyCapacity(100)
+	mEnergyCapacity(100),
+	mEnergySpent(0)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
@@ -99,8 +121,6 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, Neur
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 	initView(pSimulation);
 }
-
-Organism::~Organism() {}
 
 void Organism::move(const Simulation& pSimulation)
 {

@@ -8,7 +8,6 @@ class NeuralNetwork
 public:
 	NeuralNetwork();
 	NeuralNetwork(std::vector<int> pLayers);
-	~NeuralNetwork();
 
 	arma::mat forwardPropagate(arma::mat input);
 	

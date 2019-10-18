@@ -18,6 +18,11 @@ Green::Green(const Simulation& pSimulation, const QPointF& pPosition)
 	init();
 }
 
+Green& Green::operator=(const Green& pOther)
+{
+	return *this;
+}
+
 Green::~Green()
 {
     mCount--;

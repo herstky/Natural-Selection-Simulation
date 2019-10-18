@@ -8,6 +8,15 @@
 #include "view.h"
 #include "food.h"
 
+Entity::Entity()
+	: Model(),
+	  mType(Entity::Type::none),
+	  mEnergyContent(100),
+	  mMass(0.005),
+	  mDensity(1500),
+	  mAspectRatio(1),
+	  mDepth(0.1) {}
+
 Entity::Entity(const Simulation& pSimulation) 
 	: Model(pSimulation),
 	  mType(Entity::Type::none),
@@ -25,8 +34,6 @@ Entity::Entity(const Simulation& pSimulation, const QPointF& pPosition)
 	  mDensity(1500),
 	  mAspectRatio(1),
 	  mDepth(0.1) {}
-
-Entity::~Entity() {}
 
 void Entity::simulate(Simulation& pSimulation) 
 {

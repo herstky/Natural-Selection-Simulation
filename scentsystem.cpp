@@ -17,8 +17,6 @@ ScentSystem::ScentSystem(Simulation* pSimulation)
 	  mDiffusivity(0.50),
 	  mDecayRate(0.5) {}
 
-ScentSystem::~ScentSystem() {}
-
 void ScentSystem::add(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount)
 {
 	if (pCoordMap.count(pCoords) == 0)
