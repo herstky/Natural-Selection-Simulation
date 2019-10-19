@@ -9,6 +9,7 @@
 
 #include "constants.h"
 #include "view.h"
+#include "model.h"
 #include "entity.h"
 #include "red.h"
 #include "green.h"
@@ -27,7 +28,8 @@ Simulation::Simulation(QQuickItem* pParent)
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mInitialTime(QTime::currentTime()),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
-	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>())
+	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
+	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
 {
 	init();
 }
@@ -43,7 +45,8 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mTicksRemaining(M_TICKS_PER_STEP),
 	  mInitialTime(QTime::currentTime()),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
-	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>())
+	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
+	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
 {
 	init();
 }
@@ -51,16 +54,22 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 void Simulation::addOrganism(std::shared_ptr<Organism> pOrganism)
 {
 	mOrganismGroups.push_back(std::vector<std::shared_ptr<Organism>>{pOrganism});
+	mInitViewQueue.push_back(pOrganism);
 }
 
 void Simulation::addOrganismGroup(std::vector<std::shared_ptr<Organism>> pGroup)
 {
 	mOrganismGroups.push_back(pGroup);
+	for (auto entity : pGroup)
+	{
+		mInitViewQueue.push_back(entity);
+	}
 }
 
 void Simulation::addFood(std::shared_ptr<Food> pFood)
 {
 	mFoodSet.emplace(pFood);
+	mInitViewQueue.push_back(pFood);
 }
 
 void Simulation::removeFood(std::shared_ptr<Food> pFood)
@@ -92,7 +101,7 @@ void Simulation::simulate()
 	}
 	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
 	{
-		new Food(*this);
+		addFood(std::shared_ptr<Food>(new Food(*this)));
 	}
 }
 
@@ -103,12 +112,18 @@ void Simulation::train()
 
 void Simulation::run()
 {
+	for (auto entity : mInitViewQueue)
+	{
+		entity->initView(*this);
+	}
+	mInitViewQueue.clear();
+
 	for (auto item : boardView()->childItems())
 	{
 		try
 		{
 			View* view = dynamic_cast<View*>(item);
-			Entity* entity = dynamic_cast<Entity*>(&view->mModel);
+			std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
 			entity->move(*this);
 		}
 		catch (const std::exception & e)
@@ -139,7 +154,7 @@ void Simulation::run()
 			try
 			{
 				View* view = dynamic_cast<View*>(item);
-				Entity* entity = dynamic_cast<Entity*>(&view->mModel);
+				std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
 				entity->simulate(*this);
 			}
 			catch (const std::exception & e)
@@ -157,7 +172,7 @@ void Simulation::run()
 		try
 		{
 			View* view = dynamic_cast<View*>(item);
-			Entity* entity = dynamic_cast<Entity*>(&view->mModel);
+			std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
 			entity->detectCollisions(*this);
 		}
 		catch (const std::exception & e)
@@ -170,18 +185,22 @@ void Simulation::run()
 	{
 		view->deleteLater();
 	}
-	View::mDeletionQueue = QList<View*>();
+	View::mDeletionQueue.clear();
 
 	switch (mMode)
 	{
-		case(Mode::simulate):
+		case Mode::debug:
 		{
-			simulate();
 			break;
 		}
-		case(Mode::train):
+		case Mode::train:
 		{
 			train();
+			break;
+		}
+		case Mode::simulate:
+		{
+			simulate();
 			break;
 		}
 		default:
@@ -202,11 +221,12 @@ void Simulation::init()
 
 	switch (mMode)
 	{
-		case Mode::simulate:
+		case Mode::debug:
 		{
+			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
+			addFood(std::shared_ptr<Food>(new Food(*this, center)));
 			break;
 		}
-
 		case Mode::train:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
@@ -214,8 +234,7 @@ void Simulation::init()
 			int entities = 25;
 			int replicates = 4; // number of clones of each Entity
 
-			new Food(*this, center);
-
+			addFood(std::shared_ptr<Food>(new Food(*this, center)));
 			for (int i = 0; i < entities; i++)
 			{
 				NeuralNetwork neuralNetwork;
@@ -226,11 +245,14 @@ void Simulation::init()
 					QPointF pos = QPointF(radius * cos(angle) + center.x(), radius * sin(angle) + center.y());
 					group.push_back(std::shared_ptr<Organism>(new Red(*this, pos, neuralNetwork)));
 				}
-				mOrganismGroups.push_back(group);
+				addOrganismGroup(group);
 			}
 			break;
 		}
-
+		case Mode::simulate:
+		{
+			break;
+		}
 		default:
 		{
 			break;

@@ -7,7 +7,7 @@
 
 class Simulation;
 
-class Food : public Entity, public std::enable_shared_from_this<Food>
+class Food : public Entity
 {
 	friend class Simulation;
 

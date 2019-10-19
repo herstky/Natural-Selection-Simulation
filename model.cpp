@@ -115,7 +115,7 @@ const std::pair<int, int> Model::coords(Simulation& pSimulation) const
 
 void Model::initView(const Simulation& pSimulation)
 {
-	mView = new View(pSimulation.boardView(), *this);
+	mView = std::shared_ptr<View>(new View(pSimulation.boardView(), shared_from_this()));
 	mView->init();
 }
 
@@ -127,5 +127,5 @@ QRectF Model::hitbox()
 void Model::die(const Simulation& pSimulation)
 {
 	mStatus = Model::Status::dead;
-	mView->mDeletionQueue.push_back(mView);
-}
+	View::mDeletionQueue.push_back(mView);
+} 

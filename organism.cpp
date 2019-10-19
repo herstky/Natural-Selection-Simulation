@@ -47,7 +47,6 @@ Organism::Organism(const Simulation& pSimulation)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
-	initView(pSimulation);
 }
 
 Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
@@ -71,7 +70,6 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
-	initView(pSimulation);
 }
 
 Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
@@ -95,7 +93,6 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
-	initView(pSimulation);
 }
 
 Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain)
@@ -119,7 +116,6 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, Neur
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
-	initView(pSimulation);
 }
 
 void Organism::move(const Simulation& pSimulation)

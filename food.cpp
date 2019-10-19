@@ -17,7 +17,6 @@ Food::Food(Simulation& pSimulation)
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
 	init(pSimulation);
-	initView(pSimulation);
 }
 
 Food::Food(Simulation& pSimulation, const QPointF& pPosition)
@@ -26,7 +25,6 @@ Food::Food(Simulation& pSimulation, const QPointF& pPosition)
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 	init(pSimulation);
-	initView(pSimulation);
 }
 
 Food::Food(const Food& pOther) : mScentStrength(1.0), mContainer(nullptr) {}
@@ -38,7 +36,7 @@ Food& Food::operator=(const Food& pOther)
 
 Food::~Food() 
 {
-	mContainer->erase(shared_from_this());
+	mContainer->erase(std::dynamic_pointer_cast<Food>(shared_from_this())); // seg fault
 	mCount--;
 }
 
@@ -95,6 +93,5 @@ void Food::init(Simulation& pSimulation)
 	mAspectRatio = 1;
 	mDepth = 0.1;
 	mCount++;
-	mContainer->emplace(this);
 	emanateScent(pSimulation);
 }

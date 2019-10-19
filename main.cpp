@@ -10,13 +10,9 @@
 #include <iostream>
 
 #include "simulation.h"
-#include "organism.h"
-
-#include "neuralnetwork.h"
 
 int main(int argc, char *argv[])
 {
-	NeuralNetwork nn;
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -31,7 +27,7 @@ int main(int argc, char *argv[])
 
     QQuickItem* container = engine.rootObjects().first()->findChild<QQuickItem*>("container");
 
-    Simulation sim(container->findChild<QQuickItem*>("column"), Simulation::Mode::train);
+    Simulation sim(container->findChild<QQuickItem*>("column"), Simulation::Mode::simulate);
 
     return app.exec();
 }

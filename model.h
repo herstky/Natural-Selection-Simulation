@@ -4,12 +4,13 @@
 #include <QColor>
 #include <QRectF>
 
+#include <memory>
 #include <utility>
 
 class Simulation;
 class View;
 
-class Model
+class Model : public std::enable_shared_from_this<Model>
 {
 	friend class Simulation;
 
@@ -24,7 +25,7 @@ public:
 	Status mStatus;
 	QColor mColor;
 	Shape mShape;
-	View* mView;
+	std::shared_ptr<View> mView;
 
 	virtual const qreal height() const;
 	virtual const qreal heightP() const;

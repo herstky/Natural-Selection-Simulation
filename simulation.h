@@ -19,7 +19,7 @@ class Simulation : QObject
 {
 	Q_OBJECT
 public:
-	enum class Mode { simulate, train };
+	enum class Mode { debug, train, simulate };
 
 	friend class Entity;
 	friend class Food;
@@ -58,6 +58,7 @@ private:
 	QTime mInitialTime; // time since previous step
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;
 	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;
+	std::vector<std::shared_ptr<Entity>> mInitViewQueue;
 
 	void outputCounts();
 };
