@@ -20,8 +20,9 @@
 Simulation::Simulation(QQuickItem* pParent)
     : mMode(Mode::simulate),
 	  mContainer(*pParent),
-	  mBoard(Board(mContainer.findChild<QQuickItem*>("board"))),
+	  mBoard(Board(std::shared_ptr<QQuickItem>(mContainer.findChild<QQuickItem*>("board")))),
 	  mScentSystem(ScentSystem(this)),
+	  mScentMap(coordMap()),
 	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
       M_TICKS_PER_STEP(5),
@@ -29,7 +30,8 @@ Simulation::Simulation(QQuickItem* pParent)
 	  mInitialTime(QTime::currentTime()),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
-	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
+	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
+	  mScentQueue(coordMap())
 {
 	init();
 }
@@ -37,8 +39,9 @@ Simulation::Simulation(QQuickItem* pParent)
 Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
-	  mBoard(Board(mContainer.findChild<QQuickItem*>("board"))),
+	  mBoard(Board(std::shared_ptr<QQuickItem>(mContainer.findChild<QQuickItem*>("board")))),
 	  mScentSystem(ScentSystem(this)),
+	  mScentMap(coordMap()),
 	  mDiffusionThread(QFuture<void>()),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
@@ -46,7 +49,8 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mInitialTime(QTime::currentTime()),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
-	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
+	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
+	  mScentQueue(coordMap())
 {
 	init();
 }
@@ -77,7 +81,12 @@ void Simulation::removeFood(std::shared_ptr<Food> pFood)
 	mFoodSet.erase(pFood);
 }
 
-QQuickItem* Simulation::boardView() const
+qreal Simulation::getScent(coordPair pCoords)
+{
+	return mScentMap.count(pCoords) ? mScentMap.at(pCoords) : 0;
+}
+
+std::shared_ptr<QQuickItem> Simulation::boardView() const
 {
 	return mBoard.mView;
 }
@@ -87,9 +96,9 @@ qreal Simulation::deltaTime() const
 	return QTime::currentTime().msecsTo(mInitialTime) / 1000.0;
 }
 
-Board* Simulation::board()
+Board& Simulation::board()
 {
-	return &mBoard;
+	return mBoard;
 }
 
 void Simulation::simulate()
@@ -144,9 +153,12 @@ void Simulation::run()
 	else
 	{
 		if (mDiffusionThread.isRunning())
-			std::cout << "Warning, diffusion thread still running!\n";
+			std::cout << "Warning, ScentSystem thread still running!\n";
 
-		mDiffusionThread.waitForFinished();
+		mDiffusionThread.waitForFinished(); // debug add cleanup here
+		mScentMap = mScentSystem.mScentMap;
+		mScentSystem.mAdditionQueue = mScentQueue;
+		mScentQueue.clear();
 		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
 
 		for (auto item : boardView()->childItems())
@@ -231,7 +243,7 @@ void Simulation::init()
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 40 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 25;
+			int entities = 50;
 			int replicates = 4; // number of clones of each Entity
 
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
@@ -241,8 +253,8 @@ void Simulation::init()
 				std::vector<std::shared_ptr<Organism>> group = std::vector<std::shared_ptr<Organism>>();
 				for (int j = 0; j < replicates; j++)
 				{
-					qreal angle = QRandomGenerator::global()->bounded(2 * M_PI);
-					QPointF pos = QPointF(radius * cos(angle) + center.x(), radius * sin(angle) + center.y());
+					qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / replicates) + j * 2 * M_PI / replicates;
+					QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
 					group.push_back(std::shared_ptr<Organism>(new Red(*this, pos, neuralNetwork)));
 				}
 				addOrganismGroup(group);

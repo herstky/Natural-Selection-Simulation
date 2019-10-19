@@ -7,8 +7,8 @@
 
 std::vector<std::shared_ptr<View>> View::mDeletionQueue = std::vector<std::shared_ptr<View>>();
 
-View::View(QQuickItem* pParent, std::shared_ptr<Model> pModel)
-	: QQuickPaintedItem(pParent), mModel(pModel) {}
+View::View(std::shared_ptr<QQuickItem> pParent, std::shared_ptr<Model> pModel)
+	: QQuickPaintedItem(pParent.get()), mModel(pModel) {}
 
 void View::init()
 {

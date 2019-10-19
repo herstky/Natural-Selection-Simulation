@@ -28,17 +28,7 @@ Green::~Green()
     mCount--;
 }
 
-void Green::replicate(const Simulation& pSimulation)
-{
-    if (QRandomGenerator::global()->bounded(100.0) < mMutationChance)
-    {
-        new Blue(pSimulation, QPointF(x(), y()));
-    }
-    else
-    {
-        new Green(pSimulation, QPointF(x(), y()));
-    }
-}
+void Green::replicate(const Simulation& pSimulation) {}
 
 void Green::init()
 {

@@ -15,11 +15,14 @@ class Simulation;
 class ScentSystem
 {
 public:
+	friend Simulation;
+
 	ScentSystem(Simulation* pSimulation);
 
 	void add(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
 	void subtract(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
 	void update();
+	void emanateScent(coordPair pCoords, qreal pScentStrength);
 	coordMap& scentMap();
 	qreal getScent(coordPair pCoords);
 	qreal getThreshhold();

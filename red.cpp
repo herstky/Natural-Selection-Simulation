@@ -41,17 +41,7 @@ Red::~Red()
     mCount--;
 }
 
-void Red::replicate(const Simulation& pSimulation)
-{
-    if (QRandomGenerator::global()->bounded(100.0) < mMutationChance)
-    {
-        new Green(pSimulation, QPointF(x(), y()));
-    }
-    else
-    {
-        new Red(pSimulation, QPointF(x(), y()));
-    }
-}
+void Red::replicate(const Simulation& pSimulation) {}
 
 void Red::init()
 {

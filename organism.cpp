@@ -74,22 +74,22 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
 
 Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	: Entity(pSimulation),
-	mBrain(pBrain),
-	mMaxSpeed(.01),
-	mVelocity(0.0),
-	mInitialVelocity(mVelocity),
-	mInitialTime(QTime::currentTime()),
-	mDeltaDistance(0),
-	mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
-	mReplicationChance(0),
-	mMutationChance(0),
-	mDeathChance(0),
-	mScentStrength(1.0),
-	mMass(0.0005),
-	mDensity(WATER_DENSITY),
-	mEnergyLevel(100),
-	mEnergyCapacity(100),
-	mEnergySpent(0)
+	  mBrain(pBrain),
+	  mMaxSpeed(.01),
+	  mVelocity(0.0),
+	  mInitialVelocity(mVelocity),
+	  mInitialTime(QTime::currentTime()),
+	  mDeltaDistance(0),
+	  mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+	  mReplicationChance(0),
+	  mMutationChance(0),
+	  mDeathChance(0),
+	  mScentStrength(1.0),
+	  mMass(0.0005),
+	  mDensity(WATER_DENSITY),
+	  mEnergyLevel(100),
+	  mEnergyCapacity(100),
+	  mEnergySpent(0)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
@@ -152,10 +152,7 @@ void Organism::simulate(Simulation& pSimulation)
 	think(pSimulation);
 }
 
-void Organism::replicate(const Simulation& pSimulation)
-{
-    Organism* organism = new Organism(pSimulation.boardView(), QPointF(x(), y()));
-}
+void Organism::replicate(const Simulation& pSimulation) {}
 
 const qreal Organism::volume() const
 {
@@ -287,11 +284,11 @@ arma::mat Organism::smell(Simulation& pSimulation)
 		{
 			int m = coords(pSimulation).first + i + offset;
 			int n = coords(pSimulation).second + j + offset;
-			bool invalid = m >= pSimulation.board()->columns()
+			bool invalid = m >= pSimulation.board().columns()
 				|| m < 0
-				|| n >= pSimulation.board()->rows()
+				|| n >= pSimulation.board().rows()
 				|| n < 0;
-			scents(i, j) = invalid ? 0 : pSimulation.mScentSystem.getScent(coords(pSimulation));
+			scents(i, j) = invalid ? 0 : pSimulation.getScent(coords(pSimulation));
 		}
 	}
 	scents.reshape(1, scents.n_rows * scents.n_cols);

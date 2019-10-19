@@ -36,6 +36,7 @@ Food& Food::operator=(const Food& pOther)
 
 Food::~Food() 
 {
+	std::shared_ptr<Food> foo = std::dynamic_pointer_cast<Food>(shared_from_this());
 	mContainer->erase(std::dynamic_pointer_cast<Food>(shared_from_this())); // seg fault
 	mCount--;
 }
@@ -59,23 +60,25 @@ const qreal Food::volume() const
 
 void Food::emanateScent(Simulation& pSimulation)
 {
-	ScentSystem& scentSystem = pSimulation.mScentSystem;
-	coordMap& scentMap = scentSystem.scentMap();
-	int range = mScentStrength * scentSystem.getDiffusivity() / scentSystem.getThreshhold();
-	int offset = -(range / 2);
-	for (int i = 0; i < range; i++)
-	{
-		for (int j = 0; j < range; j++)
-		{
-			coordPair curCoords = coordPair(coords(pSimulation).first + i + offset, coords(pSimulation).second + j + offset);
-			qreal distance = std::sqrt(pow(i + offset, 2) + pow(j + offset, 2));
-			qreal intensity = distance ? mScentStrength * scentSystem.getDiffusivity() / distance : mScentStrength;
-			qreal curScent = scentMap.count(curCoords) ? scentMap.at(curCoords) : 0;
-			curScent = std::max(intensity, curScent);
-			if (curScent > scentSystem.getThreshhold())
-				scentMap[curCoords] = curScent;
-		}
-	}
+	//ScentSystem& scentSystem = pSimulation.mScentSystem;
+	//coordMap& scentMap = scentSystem.scentMap();
+	//int range = mScentStrength * scentSystem.getDiffusivity() / scentSystem.getThreshhold();
+	//int offset = -(range / 2);
+	//for (int i = 0; i < range; i++)
+	//{
+	//	for (int j = 0; j < range; j++)
+	//	{
+	//		coordPair curCoords = coordPair(coords(pSimulation).first + i + offset, coords(pSimulation).second + j + offset);
+	//		qreal distance = std::sqrt(pow(i + offset, 2) + pow(j + offset, 2));
+	//		qreal intensity = distance ? mScentStrength * scentSystem.getDiffusivity() / distance : mScentStrength;
+	//		qreal curScent = scentMap.count(curCoords) ? scentMap.at(curCoords) : 0;
+	//		curScent = std::max(intensity, curScent);
+	//		if (curScent > scentSystem.getThreshhold())
+	//			scentMap[curCoords] = curScent;
+	//	}
+	//}
+
+	pSimulation.mScentQueue.emplace(coords(pSimulation), mScentStrength);
 }
 
 void Food::simulate(Simulation& pSimulation)

@@ -70,7 +70,6 @@ void Entity::detectCollisions(const Simulation& pSimulation)
 			hitbox().top() < food->hitbox().bottom() && hitbox().bottom() > food->hitbox().top())
 		{
 			collide(pSimulation, *food);
-			std::cout << "collision detected!\n";
 		}
 	}
 }

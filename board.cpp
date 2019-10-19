@@ -5,8 +5,8 @@
 
 #include <iostream>
 
-Board::Board(QQuickItem* pView) 
-	: mView(pView),
+Board::Board(std::shared_ptr<QQuickItem> pQQuickItem) 
+	: mView(pQQuickItem),
 	  mCellSize(0.003), 
 	  mRows(150), 
 	  mColumns(300)
@@ -14,7 +14,7 @@ Board::Board(QQuickItem* pView)
 	init();
 }
 
-QQuickItem* Board::view()
+std::shared_ptr<QQuickItem> Board::view()
 {
 	return mView;
 }
