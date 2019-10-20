@@ -39,7 +39,7 @@ public:
 	void addFood(std::shared_ptr<Food> pFood);
 	void removeFood(std::shared_ptr<Food> pFood);
 	qreal getScent(coordPair pCoords);
-	std::shared_ptr<QQuickItem> boardView() const;
+	QQuickItem& boardView() const;
 	qreal deltaTime() const;
 	Board& board();
 	void simulate();
@@ -60,6 +60,7 @@ private:
 	QFuture<void> mDiffusionThread;
     const int M_TICK_DURATION; // [ms]
     const int M_TICKS_PER_STEP; // simulate only called every step
+	const int M_STEPS_PER_ROUND;
     int mTicksRemaining;
 	QTime mInitialTime; // time since previous step
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;

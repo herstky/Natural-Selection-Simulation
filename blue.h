@@ -7,8 +7,8 @@ class Blue : public Organism
 	friend class Simulation;
 
 public:
-    Blue(const Simulation& pSimulation);
-    Blue(const Simulation& pSimulation, const QPointF& pPosition);
+    Blue();
+    Blue(const QPointF& pPosition);
     ~Blue();
     
     void replicate(const Simulation& pSimulation) override;

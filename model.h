@@ -7,6 +7,8 @@
 #include <memory>
 #include <utility>
 
+#include "constants.h"
+
 class Simulation;
 class View;
 
@@ -19,13 +21,12 @@ public:
 	enum class Shape { ellipse, rectangle, roundedRectangle };
 
 	Model();
-	Model(const Simulation& pSimulation);
-	Model(const Simulation& pSimulation, const QPointF& pPosition);
+	Model(const QPointF& pPosition);
 
 	Status mStatus;
 	QColor mColor;
 	Shape mShape;
-	std::shared_ptr<View> mView;
+	View* mView; // Raw pointer to allow for nullptr and because QT handles memory
 
 	virtual const qreal height() const;
 	virtual const qreal heightP() const;

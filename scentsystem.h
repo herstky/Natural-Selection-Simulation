@@ -17,19 +17,19 @@ class ScentSystem
 public:
 	friend Simulation;
 
-	ScentSystem(Simulation* pSimulation);
+	ScentSystem(Simulation& pSimulation);
 
 	void add(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
 	void subtract(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
 	void update();
-	void emanateScent(coordPair pCoords, qreal pScentStrength);
+	void emanateScent(coordPair& pCoords, qreal& pScentStrength);
 	coordMap& scentMap();
-	qreal getScent(coordPair pCoords);
+	qreal getScent(coordPair& pCoords);
 	qreal getThreshhold();
 	qreal getDiffusivity();
 
 private:
-	Simulation* mSimulation;
+	Simulation& mSimulation;
 	qreal mThreshhold;
 	coordMap mScentMap;
 	coordMap mAdditionQueue;

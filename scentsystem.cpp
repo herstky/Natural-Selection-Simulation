@@ -8,7 +8,7 @@
 
 #include "simulation.h"
 
-ScentSystem::ScentSystem(Simulation* pSimulation)
+ScentSystem::ScentSystem(Simulation& pSimulation)
 	: mSimulation(pSimulation),
 	  mThreshhold(0.005),
 	  mScentMap(coordMap()),
@@ -47,7 +47,6 @@ void ScentSystem::update()
 		coordPair coords = i->first;
 		qreal scentStrength = i->second;
 		emanateScent(coords, scentStrength);
-		//add(mScentMap, coords, mAdditionQueue.at(coords));
 	}
 	mAdditionQueue.clear();
 
@@ -74,7 +73,7 @@ void ScentSystem::update()
 	}
 }
 
-void ScentSystem::emanateScent(coordPair pCoords, qreal pScentStrength)
+void ScentSystem::emanateScent(coordPair& pCoords, qreal& pScentStrength)
 {
 	int range = pScentStrength * mDiffusivity / mThreshhold;
 	int offset = -(range / 2);
@@ -98,7 +97,7 @@ coordMap& ScentSystem::scentMap()
 	return mScentMap;
 }
 
-qreal ScentSystem::getScent(coordPair pCoords)
+qreal ScentSystem::getScent(coordPair& pCoords)
 {
 	return mScentMap.count(pCoords) ? mScentMap.at(pCoords) : 0;
 }

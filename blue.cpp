@@ -6,14 +6,14 @@
 unsigned int Blue::mCount = 0;
 qreal Blue::mCreationChance = 0;
 
-Blue::Blue(const Simulation& pSimulation)
-    : Organism(pSimulation)
+Blue::Blue()
+    : Organism()
 {
 	init();
 }
 
-Blue::Blue(const Simulation& pSimulation, const QPointF& pPosition)
-	: Organism(pSimulation, pPosition)
+Blue::Blue(const QPointF& pPosition)
+	: Organism(pPosition)
 {
 	init();
 }

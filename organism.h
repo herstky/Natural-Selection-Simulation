@@ -15,8 +15,7 @@ class Organism : public Entity
 	friend class Simulation;
 public:
 	Organism();
-    Organism(const Simulation& pSimulation);
-    Organism(const Simulation& pSimulation, const QPointF& pPosition);
+    Organism(const QPointF& pPosition);
 	Organism(const Simulation& pSimulation, NeuralNetwork pBrain);
 	Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain);
 

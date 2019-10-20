@@ -5,10 +5,10 @@
 #include "model.h"
 #include "constants.h"
 
-std::vector<std::shared_ptr<View>> View::mDeletionQueue = std::vector<std::shared_ptr<View>>();
+std::vector<View*> View::mDeletionQueue = std::vector<View*>();
 
-View::View(std::shared_ptr<QQuickItem> pParent, std::shared_ptr<Model> pModel)
-	: QQuickPaintedItem(pParent.get()), mModel(pModel) {}
+View::View(QQuickItem* pParent, std::shared_ptr<Model> pModel)
+	: QQuickPaintedItem(pParent), mModel(pModel) {}
 
 void View::init()
 {

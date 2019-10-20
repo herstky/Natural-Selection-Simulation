@@ -1,5 +1,7 @@
 #include "organism.h"
 
+#include <algorithm>
+
 #include <QtMath>
 #include <QRandomGenerator>
 
@@ -22,35 +24,12 @@ Organism::Organism()
 	  mScentStrength(1.0),
 	  mMass(0.0005),
 	  mDensity(WATER_DENSITY),
-	  mEnergyLevel(100),
-	  mEnergyCapacity(100),
+	  mEnergyLevel(1e-7),
+	  mEnergyCapacity(1e-6),
 	  mEnergySpent(0) {}
 
-Organism::Organism(const Simulation& pSimulation)
-    : Entity(pSimulation),
-	  mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
-	  mMaxSpeed(.01),
-      mVelocity(0.0),
-      mInitialVelocity(mVelocity),
-      mInitialTime(QTime::currentTime()),
-      mDeltaDistance(0),
-      mDirection(0.0),
-      mReplicationChance(0),
-      mMutationChance(0),
-      mDeathChance(0),
-	  mScentStrength(1.0),
-      mMass(0.0005),
-      mDensity(WATER_DENSITY),
-      mEnergyLevel(100),
-      mEnergyCapacity(100),
-	  mEnergySpent(0)
-{
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
-}
-
-Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
-    : Entity(pSimulation, pPosition),
+Organism::Organism(const QPointF& pPosition)
+    : Entity(pPosition),
 	  mBrain(NeuralNetwork()),
 	  mMaxSpeed(0.01),
       mVelocity(0.0),
@@ -64,8 +43,8 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
 	  mScentStrength(1.0),
       mMass(0.0005),
       mDensity(WATER_DENSITY),
-      mEnergyLevel(100),
-      mEnergyCapacity(100),
+      mEnergyLevel(1e-7),
+      mEnergyCapacity(1e-6),
 	  mEnergySpent(0)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
@@ -73,7 +52,7 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition)
 }
 
 Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
-	: Entity(pSimulation),
+	: Entity(),
 	  mBrain(pBrain),
 	  mMaxSpeed(.01),
 	  mVelocity(0.0),
@@ -87,32 +66,32 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	  mScentStrength(1.0),
 	  mMass(0.0005),
 	  mDensity(WATER_DENSITY),
-	  mEnergyLevel(100),
-	  mEnergyCapacity(100),
+	  mEnergyLevel(1e-7),
+	  mEnergyCapacity(1e-6),
 	  mEnergySpent(0)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
 }
 
 Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain)
-	: Entity(pSimulation, pPosition),
-	mBrain(pBrain),
-	mMaxSpeed(0.01),
-	mVelocity(0.0),
-	mInitialVelocity(mVelocity),
-	mInitialTime(QTime::currentTime()),
-	mDeltaDistance(0),
-	mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
-	mReplicationChance(0),
-	mMutationChance(0),
-	mDeathChance(0),
-	mScentStrength(1.0),
-	mMass(0.0005),
-	mDensity(WATER_DENSITY),
-	mEnergyLevel(100),
-	mEnergyCapacity(100),
-	mEnergySpent(0)
+	: Entity(pPosition),
+	  mBrain(pBrain),
+	  mMaxSpeed(0.01),
+	  mVelocity(0.0),
+	  mInitialVelocity(mVelocity),
+	  mInitialTime(QTime::currentTime()),
+	  mDeltaDistance(0),
+	  mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
+	  mReplicationChance(0),
+	  mMutationChance(0),
+	  mDeathChance(0),
+	  mScentStrength(1.0),
+	  mMass(0.0005),
+	  mDensity(WATER_DENSITY),
+	  mEnergyLevel(1e-7),
+	  mEnergyCapacity(1e-6),
+	  mEnergySpent(0)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
@@ -216,7 +195,7 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 {
     qreal drag = 1.0 / 2.0 * SPHERE_WATER_DRAG_COEFFICIENT * WATER_DENSITY * M_PI * pow((diameter() / 2), 2) * pow(mVelocity, 2);
 
-	qreal force = mMass * acceleration() + drag;
+	qreal force = std::max(mMass * acceleration(), 0.0) + drag;
     qreal work = force * mDeltaDistance;
 
 	mInitialTime = QTime::currentTime();

@@ -9,18 +9,18 @@
 #include "simulation.h"
 
 unsigned int Food::mCount = 0;
-qreal Food::mCreationChance = 50;
+qreal Food::mCreationChance = 5;
 
 Food::Food(Simulation& pSimulation)
-	: Entity(pSimulation), mScentStrength(1.0), mContainer(&pSimulation.mFoodSet)
+	: Entity(), mScentStrength(1.0), mContainer(&pSimulation.mFoodSet)
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView()->width() - widthP()) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView()->height() - heightP()) / SCALE_FACTOR;
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
 	init(pSimulation);
 }
 
 Food::Food(Simulation& pSimulation, const QPointF& pPosition)
-	: Entity(pSimulation, pPosition), mScentStrength(1.0), mContainer(&pSimulation.mFoodSet)
+	: Entity(pPosition), mScentStrength(1.0), mContainer(&pSimulation.mFoodSet)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;

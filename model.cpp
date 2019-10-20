@@ -14,25 +14,12 @@ Model::Model()
 	  mX(0),
 	  mY(0) {}
 
-Model::Model(const Simulation& pSimulation)
-	: mStatus(Model::Status::alive),
-	  mColor(Qt::black),
-	  mShape(Model::Shape::rectangle),
-	  mView(nullptr),
-	  mHeight(1),
-	  mWidth(1),
-      mX(0),
-      mY(0) {}
-
-Model::Model(const Simulation& pSimulation, const QPointF& pPosition) 
-	: mStatus(Model::Status::alive),
-	  mColor(Qt::black),
-	  mShape(Model::Shape::rectangle),
-	  mView(nullptr),
-	  mHeight(1),
-	  mWidth(1),
-	  mX(pPosition.x() / SCALE_FACTOR),
-	  mY(pPosition.y() / SCALE_FACTOR) {}
+Model::Model(const QPointF& pPosition)
+	: Model()
+{
+	mX = pPosition.x() / SCALE_FACTOR;
+	mY = pPosition.y() / SCALE_FACTOR;
+}
 
 void Model::init() {}
 
@@ -115,7 +102,7 @@ const std::pair<int, int> Model::coords(Simulation& pSimulation) const
 
 void Model::initView(const Simulation& pSimulation)
 {
-	mView = std::shared_ptr<View>(new View(pSimulation.boardView(), shared_from_this()));
+	mView = new View(&pSimulation.boardView(), shared_from_this());
 	mView->init();
 }
 

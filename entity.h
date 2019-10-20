@@ -12,8 +12,7 @@ public:
 	enum class Type { none, predator, prey };
 
 	Entity();
-	Entity(const Simulation& pSimulation);
-	Entity(const Simulation& pSimulation, const QPointF& pPosition);
+	Entity(const QPointF& pPosition);
 	
 	virtual void simulate(Simulation& pSimulation);
 	virtual void train(Simulation& pSimulation);

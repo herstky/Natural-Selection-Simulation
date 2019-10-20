@@ -6,14 +6,21 @@
 unsigned int Red::mCount = 0;
 qreal Red::mCreationChance = 50;
 
-Red::Red(const Simulation& pSimulation)
-    : Organism(pSimulation)
+Red::Red()
+    : Organism()
 {
 	init();
 }
 
-Red::Red(const Simulation& pSimulation, const QPointF& pPosition)
-    : Organism(pSimulation, pPosition)
+Red::Red(const Simulation& pSimulation)
+{
+	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
+	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
+	init();
+}
+
+Red::Red(const QPointF& pPosition)
+    : Organism(pPosition)
 {
 	init();
 }

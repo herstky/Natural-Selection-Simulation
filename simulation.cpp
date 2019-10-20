@@ -20,12 +20,13 @@
 Simulation::Simulation(QQuickItem* pParent)
     : mMode(Mode::simulate),
 	  mContainer(*pParent),
-	  mBoard(Board(std::shared_ptr<QQuickItem>(mContainer.findChild<QQuickItem*>("board")))),
-	  mScentSystem(ScentSystem(this)),
+	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
+	  mScentSystem(ScentSystem(*this)),
 	  mScentMap(coordMap()),
 	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
       M_TICKS_PER_STEP(5),
+	  M_STEPS_PER_ROUND(100000), 
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mInitialTime(QTime::currentTime()),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
@@ -37,21 +38,9 @@ Simulation::Simulation(QQuickItem* pParent)
 }
 
 Simulation::Simulation(QQuickItem* pParent, Mode pMode)
-	: mMode(pMode),
-	  mContainer(*pParent),
-	  mBoard(Board(std::shared_ptr<QQuickItem>(mContainer.findChild<QQuickItem*>("board")))),
-	  mScentSystem(ScentSystem(this)),
-	  mScentMap(coordMap()),
-	  mDiffusionThread(QFuture<void>()),
-	  M_TICK_DURATION(50),
-	  M_TICKS_PER_STEP(5),
-	  mTicksRemaining(M_TICKS_PER_STEP),
-	  mInitialTime(QTime::currentTime()),
-	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
-	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
-	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
-	  mScentQueue(coordMap())
+	: Simulation(pParent)
 {
+	mMode = pMode;
 	init();
 }
 
@@ -86,7 +75,7 @@ qreal Simulation::getScent(coordPair pCoords)
 	return mScentMap.count(pCoords) ? mScentMap.at(pCoords) : 0;
 }
 
-std::shared_ptr<QQuickItem> Simulation::boardView() const
+QQuickItem& Simulation::boardView() const
 {
 	return mBoard.mView;
 }
@@ -105,7 +94,6 @@ void Simulation::simulate()
 {
 	if (QRandomGenerator::global()->bounded(100) < Red::mCreationChance)
 	{
-
 		addOrganism(std::shared_ptr<Organism>(new Red(*this)));
 	}
 	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
@@ -127,7 +115,7 @@ void Simulation::run()
 	}
 	mInitViewQueue.clear();
 
-	for (auto item : boardView()->childItems())
+	for (auto item : boardView().childItems())
 	{
 		try
 		{
@@ -155,13 +143,13 @@ void Simulation::run()
 		if (mDiffusionThread.isRunning())
 			std::cout << "Warning, ScentSystem thread still running!\n";
 
-		mDiffusionThread.waitForFinished(); // debug add cleanup here
+		mDiffusionThread.waitForFinished();
 		mScentMap = mScentSystem.mScentMap;
 		mScentSystem.mAdditionQueue = mScentQueue;
 		mScentQueue.clear();
 		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
 
-		for (auto item : boardView()->childItems())
+		for (auto item : boardView().childItems())
 		{
 			try
 			{
@@ -179,7 +167,7 @@ void Simulation::run()
 		mTicksRemaining = M_TICKS_PER_STEP;
 	}
 
-	for (auto item : boardView()->childItems())
+	for (auto item : boardView().childItems())
 	{
 		try
 		{
@@ -195,6 +183,23 @@ void Simulation::run()
 
 	for (auto view : View::mDeletionQueue)
 	{
+		int i = 0;
+		for (auto group : mOrganismGroups)
+		{
+			int j = 0;
+			for (auto organism : group)
+			{
+				if (organism == std::dynamic_pointer_cast<Organism>(view->mModel))
+				{
+					group.erase(group.begin() + j);
+					if (!group.size())
+						mOrganismGroups.erase(mOrganismGroups.begin() + i);
+					break;
+				}
+				i++;
+			}
+			j++;
+		}
 		view->deleteLater();
 	}
 	View::mDeletionQueue.clear();

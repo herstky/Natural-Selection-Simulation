@@ -32,6 +32,6 @@ void NeuralNetwork::init()
 {
 	for (unsigned int i = 1; i < mLayers.size(); i++)
 	{
-		mWeights.push_back(2 * arma::randu<arma::mat>(mLayers[i - 1] + 1LL, mLayers[i]) - 1);
+		mWeights.push_back(2 * arma::randu<arma::mat>(mLayers[i - 1] + 1, mLayers[i]) - 1);
 	}
 }

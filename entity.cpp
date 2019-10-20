@@ -17,17 +17,8 @@ Entity::Entity()
 	  mAspectRatio(1),
 	  mDepth(0.1) {}
 
-Entity::Entity(const Simulation& pSimulation) 
-	: Model(pSimulation),
-	  mType(Entity::Type::none),
-	  mEnergyContent(100),
-	  mMass(0.005),
-	  mDensity(1500),
-	  mAspectRatio(1),
-	  mDepth(0.1) {}
-
-Entity::Entity(const Simulation& pSimulation, const QPointF& pPosition)
-	: Model(pSimulation, pPosition),
+Entity::Entity(const QPointF& pPosition)
+	: Model(pPosition),
 	  mType(Entity::Type::none),
    	  mEnergyContent(100),
 	  mMass(0.005),
@@ -54,11 +45,8 @@ void Entity::detectCollisions(const Simulation& pSimulation)
 		return;
 	}
 
-	//QList<QQuickItem*> items = pSimulation.boardView()->childItems();
 	for (auto food : pSimulation.mFoodSet)
 	{
-		//View* view = static_cast<View*>(item);
-		//Entity* entity = dynamic_cast<Entity*>(&view->mModel);
 		if (food->mStatus == Model::Status::dead)
 		{
 			continue;

@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-Board::Board(std::shared_ptr<QQuickItem> pQQuickItem) 
+Board::Board(QQuickItem& pQQuickItem) 
 	: mView(pQQuickItem),
 	  mCellSize(0.003), 
 	  mRows(150), 
@@ -14,7 +14,7 @@ Board::Board(std::shared_ptr<QQuickItem> pQQuickItem)
 	init();
 }
 
-std::shared_ptr<QQuickItem> Board::view()
+QQuickItem& Board::view()
 {
 	return mView;
 }
@@ -61,6 +61,6 @@ qreal Board::scaledWidth() const
 
 void Board::init()
 {
-	mView->setHeight(scaledHeight());
-	dynamic_cast<QQuickItem*>(mView->parent())->setWidth(scaledWidth());
+	mView.setHeight(scaledHeight());
+	dynamic_cast<QQuickItem*>(mView.parent())->setWidth(scaledWidth());
 }

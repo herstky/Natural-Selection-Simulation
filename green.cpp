@@ -6,14 +6,14 @@
 unsigned int Green::mCount = 0;
 qreal creationChance = 0;
 
-Green::Green(const Simulation& pSimulation)
-    : Organism(pSimulation)
+Green::Green()
+    : Organism()
 {
 	init();
 }
 
-Green::Green(const Simulation& pSimulation, const QPointF& pPosition)
-    : Organism(pSimulation, pPosition)
+Green::Green(const QPointF& pPosition)
+    : Organism(pPosition)
 {
 	init();
 }

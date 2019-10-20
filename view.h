@@ -11,9 +11,9 @@ class View : public QQuickPaintedItem
 {
 	Q_OBJECT;
 public:
-	View(std::shared_ptr<QQuickItem> pParent, std::shared_ptr<Model> pModel);
+	View(QQuickItem* pParent, std::shared_ptr<Model> pModel);
 
-	static std::vector<std::shared_ptr<View>> mDeletionQueue;
+	static std::vector<View*> mDeletionQueue;
 
 	void init();
 

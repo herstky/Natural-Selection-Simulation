@@ -14,9 +14,9 @@ public:
 	friend class Food;
 	friend class Simulation;
 
-	Board(std::shared_ptr<QQuickItem> pView);
+	Board(QQuickItem& pView);
 
-	std::shared_ptr<QQuickItem> view();
+	QQuickItem& view();
 	qreal cellSize() const;
 	qreal scaledCellSize() const;
 	int rows() const;
@@ -27,7 +27,7 @@ public:
 	qreal scaledWidth() const;
 
 private:
-	std::shared_ptr<QQuickItem> mView;
+	QQuickItem& mView;
 	qreal mCellSize; // [m]
 	int mRows;
 	int mColumns;
