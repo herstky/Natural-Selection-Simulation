@@ -15,6 +15,7 @@ public:
     ~Red();
 
     void replicate(const Simulation& pSimulation) override;
+	virtual void die(const Simulation& pSimulation) override;
 
 protected:
 	virtual void init() override;

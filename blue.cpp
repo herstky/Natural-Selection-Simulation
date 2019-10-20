@@ -22,12 +22,15 @@ Blue& Blue::operator=(const Blue& pOther)
 	return *this;
 }
 
-Blue::~Blue()
-{
-    mCount--;
-}
+Blue::~Blue() {}
 
 void Blue::replicate(const Simulation& pSimulation) {}
+
+void Blue::die(const Simulation& pSimulation)
+{
+	Model::die(pSimulation);
+	mCount--;
+}
 
 void Blue::init()
 {

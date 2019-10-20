@@ -27,10 +27,7 @@ public:
 protected:
 	virtual void init(Simulation& pSimulation);
 
-private:
-	//Food(const Food& pOther);
-	//Food& operator=(const Food& pOther);
-	
+private:	
 	static unsigned int mCount;
 	static qreal mCreationChance;
 	qreal mScentStrength;

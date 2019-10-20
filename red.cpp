@@ -42,12 +42,15 @@ Red& Red::operator=(const Red& pOther)
 	return *this;
 }
 
-Red::~Red()
-{
-    mCount--;
-}
+Red::~Red() {}
 
 void Red::replicate(const Simulation& pSimulation) {}
+
+void Red::die(const Simulation& pSimulation)
+{
+	Model::die(pSimulation);
+	mCount--;
+}
 
 void Red::init()
 {

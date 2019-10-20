@@ -22,12 +22,15 @@ Green& Green::operator=(const Green& pOther)
 	return *this;
 }
 
-Green::~Green()
-{
-    mCount--;
-}
+Green::~Green() {}
 
 void Green::replicate(const Simulation& pSimulation) {}
+
+void Green::die(const Simulation& pSimulation)
+{
+	Model::die(pSimulation);
+	mCount--;
+}
 
 void Green::init()
 {
