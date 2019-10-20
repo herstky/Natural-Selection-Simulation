@@ -27,6 +27,7 @@ public:
 	qreal getScent(coordPair& pCoords);
 	qreal getThreshhold();
 	qreal getDiffusivity();
+	void reset();
 
 private:
 	Simulation& mSimulation;

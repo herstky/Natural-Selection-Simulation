@@ -29,6 +29,7 @@ Simulation::Simulation(QQuickItem* pParent)
 	  M_STEPS_PER_ROUND(500), 
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
+	  mResetScentSystem(false),
 	  mInitialTime(QTime::currentTime()),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
@@ -120,6 +121,8 @@ void Simulation::train()
 			item->deleteLater();
 		}
 		mTimer->stop();
+		mResetScentSystem = true;
+		mStepsRemaining = M_STEPS_PER_ROUND;
 		init();
 	}
 }
@@ -158,12 +161,21 @@ void Simulation::run()
 	{
 		if (mDiffusionThread.isRunning())
 			std::cout << "Warning, ScentSystem thread still running!\n";
+		mDiffusionThread.waitForFinished();
 
-	/*	mDiffusionThread.waitForFinished();
-		mScentMap = mScentSystem.mScentMap;
-		mScentSystem.mAdditionQueue = mScentQueue;
-		mScentQueue.clear();
-		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);*/
+		if (mResetScentSystem)
+		{
+			mScentSystem.reset();
+			mResetScentSystem = false;
+		}
+		else
+		{
+			// Swap scent maps before starting concurrent thread
+			mScentMap = mScentSystem.mScentMap;
+			mScentSystem.mAdditionQueue = mScentQueue;
+			mScentQueue.clear();
+		}
+		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
 
 		for (auto item : boardView().childItems())
 		{
@@ -262,11 +274,6 @@ void Simulation::init()
 	mScentQueue.clear();
 
 	mTicksRemaining = M_TICKS_PER_STEP;
-
-	Red::mCount = 0;
-	Green::mCount = 0;
-	Blue::mCount = 0;
-	outputCounts();
 
 	switch (mMode)
 	{

@@ -7,7 +7,6 @@ unsigned int Blue::mCount = 0;
 qreal Blue::mCreationChance = 0;
 
 Blue::Blue()
-    : Organism()
 {
 	init();
 }

@@ -64,6 +64,7 @@ private:
 	const int M_STEPS_PER_ROUND;
     int mTicksRemaining;
 	int mStepsRemaining;
+	bool mResetScentSystem;
 	QTime mInitialTime; // time since previous step
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;
 	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;

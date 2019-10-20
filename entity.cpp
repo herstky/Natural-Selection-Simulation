@@ -9,8 +9,7 @@
 #include "food.h"
 
 Entity::Entity()
-	: Model(),
-	  mType(Entity::Type::none),
+    : mType(Entity::Type::none),
 	  mEnergyContent(100),
 	  mMass(0.005),
 	  mDensity(1500),

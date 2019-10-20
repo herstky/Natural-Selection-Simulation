@@ -10,8 +10,7 @@
 #include "view.h"
 
 Organism::Organism()
-	: Entity(),
-	  mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
+	: mBrain(NeuralNetwork(std::vector<int>{ 9, 4, 2 })),
 	  mMaxSpeed(.01),
 	  mVelocity(0.0),
 	  mInitialVelocity(mVelocity),

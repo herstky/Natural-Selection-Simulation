@@ -12,7 +12,7 @@ unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 5;
 
 Food::Food(Simulation& pSimulation)
-	: Entity(), mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
+	: mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;

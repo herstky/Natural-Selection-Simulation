@@ -111,3 +111,10 @@ qreal ScentSystem::getDiffusivity()
 {
 	return mDiffusivity;
 }
+
+void ScentSystem::reset()
+{
+	mScentMap.clear();
+	mAdditionQueue.clear();
+	mSubtractionQueue.clear();
+}

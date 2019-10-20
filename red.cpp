@@ -7,7 +7,6 @@ unsigned int Red::mCount = 0;
 qreal Red::mCreationChance = 50;
 
 Red::Red()
-    : Organism()
 {
 	init();
 }
