@@ -12,7 +12,7 @@ unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 5;
 
 Food::Food(Simulation& pSimulation)
-	: Entity(), mScentStrength(1.0), mContainer(&pSimulation.mFoodSet)
+	: Entity(), mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
@@ -20,25 +20,31 @@ Food::Food(Simulation& pSimulation)
 }
 
 Food::Food(Simulation& pSimulation, const QPointF& pPosition)
-	: Entity(pPosition), mScentStrength(1.0), mContainer(&pSimulation.mFoodSet)
+	: Entity(pPosition), mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 	init(pSimulation);
 }
 
-Food::Food(const Food& pOther) : mScentStrength(1.0), mContainer(nullptr) {}
+//Food::Food(const Food& pOther) : mScentStrength(1.0), mContainer(nullptr) {}
 
-Food& Food::operator=(const Food& pOther)
-{
-	return *this;
-}
+//Food& Food::operator=(const Food& pOther)
+//{
+//	return *this;
+//}
 
-Food::~Food() 
+//Food::~Food() 
+//{
+//	//std::shared_ptr<Food> foo = std::dynamic_pointer_cast<Food>(shared_from_this());
+//	//mContainer->erase(std::dynamic_pointer_cast<Food>(shared_from_this())); // seg fault
+//	//mCount--;
+//}
+
+void Food::die(const Simulation& pSimulation)
 {
-	std::shared_ptr<Food> foo = std::dynamic_pointer_cast<Food>(shared_from_this());
-	mContainer->erase(std::dynamic_pointer_cast<Food>(shared_from_this())); // seg fault
 	mCount--;
+	View::mDeletionQueue.push_back(mView);
 }
 
 void Food::detectCollisions(const Simulation& pSimulation) {}

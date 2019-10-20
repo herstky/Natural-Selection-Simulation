@@ -56,12 +56,14 @@ private:
 	Mode mMode;
 	Board mBoard;
 	ScentSystem mScentSystem;
+	QTimer* mTimer;
 	coordMap mScentMap;
 	QFuture<void> mDiffusionThread;
     const int M_TICK_DURATION; // [ms]
     const int M_TICKS_PER_STEP; // simulate only called every step
 	const int M_STEPS_PER_ROUND;
     int mTicksRemaining;
+	int mStepsRemaining;
 	QTime mInitialTime; // time since previous step
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;
 	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;

@@ -26,20 +26,25 @@ Simulation::Simulation(QQuickItem* pParent)
 	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
       M_TICKS_PER_STEP(5),
-	  M_STEPS_PER_ROUND(100000), 
+	  M_STEPS_PER_ROUND(500), 
       mTicksRemaining(M_TICKS_PER_STEP),
+	  mStepsRemaining(M_STEPS_PER_ROUND),
 	  mInitialTime(QTime::currentTime()),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
 	  mScentQueue(coordMap())
 {
+	mTimer = new QTimer();
+	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 	init();
 }
 
 Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: Simulation(pParent)
 {
+	mTimer = new QTimer();
+	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 	mMode = pMode;
 	init();
 }
@@ -104,7 +109,19 @@ void Simulation::simulate()
 
 void Simulation::train()
 {
-	
+	if (mStepsRemaining)
+	{
+		mStepsRemaining--;
+	}
+	else
+	{
+		for (auto item : boardView().childItems())
+		{
+			item->deleteLater();
+		}
+		mTimer->stop();
+		init();
+	}
 }
 
 void Simulation::run()
@@ -135,7 +152,6 @@ void Simulation::run()
 
 	if (mTicksRemaining)
 	{
-
 		mTicksRemaining--;
 	}
 	else
@@ -143,11 +159,11 @@ void Simulation::run()
 		if (mDiffusionThread.isRunning())
 			std::cout << "Warning, ScentSystem thread still running!\n";
 
-		mDiffusionThread.waitForFinished();
+	/*	mDiffusionThread.waitForFinished();
 		mScentMap = mScentSystem.mScentMap;
 		mScentSystem.mAdditionQueue = mScentQueue;
 		mScentQueue.clear();
-		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
+		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);*/
 
 		for (auto item : boardView().childItems())
 		{
@@ -183,22 +199,29 @@ void Simulation::run()
 
 	for (auto view : View::mDeletionQueue)
 	{
-		int i = 0;
-		for (auto group : mOrganismGroups)
+		if (std::dynamic_pointer_cast<Food>(view->mModel))
 		{
-			int j = 0;
-			for (auto organism : group)
+			mFoodSet.erase(std::dynamic_pointer_cast<Food>(view->mModel));
+		}
+		else
+		{
+			int i = 0;
+			for (auto group : mOrganismGroups)
 			{
-				if (organism == std::dynamic_pointer_cast<Organism>(view->mModel))
+				int j = 0;
+				for (auto organism : group)
 				{
-					group.erase(group.begin() + j);
-					if (!group.size())
-						mOrganismGroups.erase(mOrganismGroups.begin() + i);
-					break;
+					if (organism == std::dynamic_pointer_cast<Organism>(view->mModel))
+					{
+						group.erase(group.begin() + j);
+						if (!group.size())
+							mOrganismGroups.erase(mOrganismGroups.begin() + i);
+						break;
+					}
+					i++;
 				}
-				i++;
+				j++;
 			}
-			j++;
 		}
 		view->deleteLater();
 	}
@@ -231,6 +254,15 @@ void Simulation::run()
 
 void Simulation::init()
 {
+	View::mDeletionQueue.clear();
+	mFoodSet.clear();
+	mOrganismGroups.clear();
+	mInitViewQueue.clear();
+	mScentMap.clear();
+	mScentQueue.clear();
+
+	mTicksRemaining = M_TICKS_PER_STEP;
+
 	Red::mCount = 0;
 	Green::mCount = 0;
 	Blue::mCount = 0;
@@ -276,9 +308,7 @@ void Simulation::init()
 		}
 	}
 
-	QTimer* timer = new QTimer();
-	connect(timer, SIGNAL(timeout()), this, SLOT(run()));
-	timer->start(M_TICK_DURATION);
+	mTimer->start(M_TICK_DURATION);
 }
 
 void Simulation::outputCounts()

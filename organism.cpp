@@ -267,7 +267,7 @@ arma::mat Organism::smell(Simulation& pSimulation)
 				|| m < 0
 				|| n >= pSimulation.board().rows()
 				|| n < 0;
-			scents(i, j) = invalid ? 0 : pSimulation.getScent(coords(pSimulation));
+			scents(i, j) = invalid ? -1 : pSimulation.getScent(coords(pSimulation));
 		}
 	}
 	scents.reshape(1, scents.n_rows * scents.n_cols);
