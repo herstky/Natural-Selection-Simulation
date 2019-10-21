@@ -74,11 +74,10 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mScentQueue(coordMap())
 {
 	mTimer = new QTimer();
-	QObject::connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
+	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
-	QQuickItem* obj = qobject_cast<QQuickItem*>(parent->findChild<QObject*>("animateCheckBox"));
-	QCheckBox* checkBox = qobject_cast<QCheckBox*>(obj);
-	QObject::connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(toggleAnimation()));
+	QObject* checkBox = parent->findChild<QObject*>("animateCheckBox");
+	connect(checkBox, SIGNAL(clicked()), this, SLOT(toggleAnimation()));
 	mMode = pMode;
 	init(mBestNeuralNetwork.first);
 }
@@ -439,9 +438,12 @@ void Simulation::outputCounts()
 
 void Simulation::toggleAnimation()
 {
-	QQuickItem* parent = dynamic_cast<QQuickItem*>(mContainer.findChild<QObject*>("buttonRow"));
-	QCheckBox* checkBox = dynamic_cast<QCheckBox*>(parent->findChild<QObject*>("animateCheckBox"));
-	if (checkBox->checkState())
+	QObject* s = sender();
+	QCheckBox* box = qobject_cast<QCheckBox*>(s);
+	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
+	QAbstractButton* checkBox = qobject_cast<QAbstractButton*>(parent->findChild<QObject*>("animateCheckBox"));
+	QAbstractButton* foo = dynamic_cast<QAbstractButton*>(s);
+	if (checkBox->isChecked())
 	{
 		for (auto item : boardView().childItems())
 		{
