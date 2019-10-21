@@ -17,8 +17,8 @@ public:
 	virtual void simulate(Simulation& pSimulation);
 	virtual void train(Simulation& pSimulation);
 	virtual void move(const Simulation& pSimulation);
-	virtual void detectCollisions(const Simulation& pSimulation);
-	virtual void collide(const Simulation& pSimulation, Entity& pOther);
+	virtual void detectCollisions(Simulation& pSimulation);
+	virtual void collide(Simulation& pSimulation, Entity& pOther);
 	virtual void emanateScent(Simulation& pSimulation);
 	
 	Type getType();

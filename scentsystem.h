@@ -19,12 +19,12 @@ public:
 
 	ScentSystem(Simulation& pSimulation);
 
-	void add(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
-	void subtract(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount);
+	void add(coordMap pCoordMap, coordPair pCoords, qreal pAmount);
+	void subtract(coordMap pCoordMap, coordPair pCoords, qreal pAmount);
 	void update();
-	void emanateScent(coordPair& pCoords, qreal& pScentStrength);
-	coordMap& scentMap();
-	qreal getScent(coordPair& pCoords);
+	void emanateScent(coordPair pCoords, qreal pScentStrength);
+	coordMap scentMap();
+	qreal getScent(coordPair pCoords);
 	qreal getThreshhold();
 	qreal getDiffusivity();
 	void reset();

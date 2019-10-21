@@ -37,7 +37,7 @@ void Entity::train(Simulation& pSimulation)
 
 void Entity::move(const Simulation& pSimulation) {}
 
-void Entity::detectCollisions(const Simulation& pSimulation)
+void Entity::detectCollisions(Simulation& pSimulation)
 {
 	if (mStatus == Model::Status::dead)
 	{
@@ -61,7 +61,7 @@ void Entity::detectCollisions(const Simulation& pSimulation)
 	}
 }
 
-void Entity::collide(const Simulation& pSimulation, Entity& pOther) {}
+void Entity::collide(Simulation& pSimulation, Entity& pOther) {}
 
 void Entity::emanateScent(Simulation& pSimulation) {}
 

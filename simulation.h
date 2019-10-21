@@ -50,7 +50,7 @@ public slots:
     void run();
 
 protected:
-	void init();
+	void init(const NeuralNetwork& pNeuralNetwork);
 
 private:
 	Mode mMode;
@@ -65,6 +65,8 @@ private:
     int mTicksRemaining;
 	int mStepsRemaining;
 	bool mResetScentSystem;
+	int mRound;
+	qreal mScore;
 	QTime mInitialTime; // time since previous step
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;
 	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;

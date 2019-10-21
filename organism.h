@@ -50,6 +50,7 @@ protected:
 	qreal mEnergyLevel;
 	qreal mEnergyCapacity;
 	qreal mEnergySpent;
+	qreal mScore;
 
 	virtual void init(Simulation& pSimulation);
 
@@ -60,6 +61,6 @@ protected:
     void expendEnergy(const Simulation& pSimulation);
 	virtual void replicate(const Simulation& pSimulation);
 	virtual QRectF hitbox() override;
-	virtual void collide(const Simulation& pSimulation, Entity& pOther) override;
+	virtual void collide(Simulation& pSimulation, Entity& pOther) override;
 };
 

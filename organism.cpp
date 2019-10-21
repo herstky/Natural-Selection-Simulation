@@ -25,7 +25,8 @@ Organism::Organism()
 	  mDensity(WATER_DENSITY),
 	  mEnergyLevel(1e-7),
 	  mEnergyCapacity(1e-6),
-	  mEnergySpent(0) {}
+	  mEnergySpent(0),
+	  mScore(0) {}
 
 Organism::Organism(const QPointF& pPosition)
     : Entity(pPosition),
@@ -44,7 +45,8 @@ Organism::Organism(const QPointF& pPosition)
       mDensity(WATER_DENSITY),
       mEnergyLevel(1e-7),
       mEnergyCapacity(1e-6),
-	  mEnergySpent(0)
+	  mEnergySpent(0),
+	  mScore(0)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
@@ -67,7 +69,8 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	  mDensity(WATER_DENSITY),
 	  mEnergyLevel(1e-7),
 	  mEnergyCapacity(1e-6),
-	  mEnergySpent(0)
+	  mEnergySpent(0),
+	  mScore(0)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
@@ -90,7 +93,8 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, Neur
 	  mDensity(WATER_DENSITY),
 	  mEnergyLevel(1e-7),
 	  mEnergyCapacity(1e-6),
-	  mEnergySpent(0)
+	  mEnergySpent(0),
+	  mScore(0)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
@@ -231,7 +235,7 @@ QRectF Organism::hitbox()
 	return QRectF(topLeft, bottomRight);
 }
 
-void Organism::collide(const Simulation& pSimulation, Entity& pOther)
+void Organism::collide(Simulation& pSimulation, Entity& pOther)
 {
 	switch (pSimulation.mMode)
 	{
@@ -243,6 +247,14 @@ void Organism::collide(const Simulation& pSimulation, Entity& pOther)
 		}
 		case Simulation::Mode::train:
 		{
+			qreal delta;
+			if (!mScore)
+				delta = 1;
+			else
+				delta = 0.1;
+			
+			mScore += delta;
+			pSimulation.mScore += delta;
 			break;
 		}
 		default:
@@ -260,13 +272,14 @@ arma::mat Organism::smell(Simulation& pSimulation)
 	{
 		for (int j = 0; j < 3; j++)
 		{
+			coordPair foobar = coords(pSimulation);
 			int m = coords(pSimulation).first + i + offset;
 			int n = coords(pSimulation).second + j + offset;
-			bool invalid = m >= pSimulation.board().columns()
+			bool invalid = m >= pSimulation.board().rows()
 				|| m < 0
-				|| n >= pSimulation.board().rows()
+				|| n >= pSimulation.board().columns()
 				|| n < 0;
-			scents(i, j) = invalid ? -1 : pSimulation.getScent(coords(pSimulation));
+			scents(i, j) = invalid ? -1 : pSimulation.getScent(coordPair(m, n));
 		}
 	}
 	scents.reshape(1, scents.n_rows * scents.n_cols);

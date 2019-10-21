@@ -33,7 +33,7 @@ void Food::die(const Simulation& pSimulation)
 	mCount--;
 }
 
-void Food::detectCollisions(const Simulation& pSimulation) {}
+void Food::detectCollisions(Simulation& pSimulation) {}
 
 const qreal Food::height() const
 {

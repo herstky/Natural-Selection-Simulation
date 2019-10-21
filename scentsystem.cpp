@@ -15,9 +15,29 @@ ScentSystem::ScentSystem(Simulation& pSimulation)
 	  mAdditionQueue(coordMap()),
 	  mSubtractionQueue(coordMap()),
 	  mDiffusivity(0.50),
-	  mDecayRate(0.5) {}
+	  mDecayRate(0.0) 
+{
+	qreal scentStrength = -1;
+	int range = scentStrength * mDiffusivity / mThreshhold;
+	for (int i = 0; i < pSimulation.board().columns(); i++)
+	{
+		for (int j = 0; j < range; j++)
+		{
+			mScentMap[coordPair(j, i)] = scentStrength * mDiffusivity / (1 - j / range);
+			mScentMap[coordPair(pSimulation.board().rows() - 1 - j, i)] = scentStrength * mDiffusivity / (1 - j / range);
+		}
+	}
+	for (int i = 0; i < pSimulation.board().rows(); i++)
+	{
+		for (int j = 0; j < range; j++)
+		{
+			mScentMap[coordPair(i,j)] = scentStrength * mDiffusivity / (1 - j / range);
+			mScentMap[coordPair(i, pSimulation.board().columns() - 1 - j)] = scentStrength * mDiffusivity / (1 - j / range);
+		}
+	}
+}
 
-void ScentSystem::add(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount)
+void ScentSystem::add(coordMap pCoordMap, coordPair pCoords, qreal pAmount)
 {
 	if (pCoordMap.count(pCoords) == 0)
 		pCoordMap[pCoords] = pAmount;
@@ -26,7 +46,7 @@ void ScentSystem::add(coordMap& pCoordMap, const coordPair& pCoords, const qreal
 	pCoordMap.at(pCoords) = std::min<qreal>(pCoordMap.at(pCoords), 1);
 }
 
-void ScentSystem::subtract(coordMap& pCoordMap, const coordPair& pCoords, const qreal pAmount)
+void ScentSystem::subtract(coordMap pCoordMap, coordPair pCoords, qreal pAmount)
 {
 	if (pCoordMap.count(pCoords) == 0)
 		return;
@@ -73,7 +93,7 @@ void ScentSystem::update()
 	}
 }
 
-void ScentSystem::emanateScent(coordPair& pCoords, qreal& pScentStrength)
+void ScentSystem::emanateScent(coordPair pCoords, qreal pScentStrength)
 {
 	int range = pScentStrength * mDiffusivity / mThreshhold;
 	int offset = -(range / 2);
@@ -92,12 +112,12 @@ void ScentSystem::emanateScent(coordPair& pCoords, qreal& pScentStrength)
 	}
 }
 
-coordMap& ScentSystem::scentMap()
+coordMap ScentSystem::scentMap()
 {
 	return mScentMap;
 }
 
-qreal ScentSystem::getScent(coordPair& pCoords)
+qreal ScentSystem::getScent(coordPair pCoords)
 {
 	return mScentMap.count(pCoords) ? mScentMap.at(pCoords) : 0;
 }

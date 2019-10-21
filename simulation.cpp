@@ -6,6 +6,7 @@
 #include <QRandomGenerator>
 
 #include <iostream>
+#include <algorithm>
 
 #include "constants.h"
 #include "view.h"
@@ -26,9 +27,11 @@ Simulation::Simulation(QQuickItem* pParent)
 	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
       M_TICKS_PER_STEP(5),
-	  M_STEPS_PER_ROUND(500), 
+	  M_STEPS_PER_ROUND(200), 
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
+	  mRound(0),
+	  mScore(0),
 	  mResetScentSystem(false),
 	  mInitialTime(QTime::currentTime()),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
@@ -38,16 +41,34 @@ Simulation::Simulation(QQuickItem* pParent)
 {
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
-	init();
+	init(NeuralNetwork());
 }
 
 Simulation::Simulation(QQuickItem* pParent, Mode pMode)
-	: Simulation(pParent)
+	: mMode(Mode::simulate),
+	  mContainer(*pParent),
+	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
+	  mScentSystem(ScentSystem(*this)),
+	  mScentMap(coordMap()),
+	  mDiffusionThread(QFuture<void>()),
+	  M_TICK_DURATION(50),
+	  M_TICKS_PER_STEP(5),
+	  M_STEPS_PER_ROUND(250),
+	  mTicksRemaining(M_TICKS_PER_STEP),
+	  mStepsRemaining(M_STEPS_PER_ROUND),
+	  mRound(0),
+	  mScore(0),
+	  mResetScentSystem(false),
+	  mInitialTime(QTime::currentTime()),
+	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
+	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
+	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
+	  mScentQueue(coordMap())
 {
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 	mMode = pMode;
-	init();
+	init(NeuralNetwork());
 }
 
 void Simulation::addOrganism(std::shared_ptr<Organism> pOrganism)
@@ -116,14 +137,41 @@ void Simulation::train()
 	}
 	else
 	{
+		std::vector<std::pair<int, qreal>> groupResults;
+		int i = 0;
+		for (auto group : mOrganismGroups)
+		{
+			qreal sum = 0;
+			for (auto organism : group)
+			{
+				sum += organism->mScore;
+			}
+			groupResults.push_back(std::pair<int, qreal>(i, sum));
+			i++;
+		}
+		std::sort(groupResults.begin(), groupResults.end(), 
+			[](const std::pair<int, qreal>& a, const std::pair<int, qreal>& b)
+			{
+				return (a.second > b.second);
+			});
+
+		int first = groupResults[0].first;
+		int second = groupResults[1].first;
+
+		NeuralNetwork firstNN = mOrganismGroups[first][0]->mBrain;
+		NeuralNetwork secondNN = mOrganismGroups[second][0]->mBrain;
+		NeuralNetwork newNN = NeuralNetwork::crossoverWeights(firstNN, secondNN);		
+
 		for (auto item : boardView().childItems())
 		{
 			item->deleteLater();
 		}
+		Red::mCount = 0;
+		Blue::mCount = 0;
+		Green::mCount = 0;
 		mTimer->stop();
-		mResetScentSystem = true;
 		mStepsRemaining = M_STEPS_PER_ROUND;
-		init();
+		init(newNN);
 	}
 }
 
@@ -177,22 +225,22 @@ void Simulation::run()
 		}
 		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
 
-		for (auto item : boardView().childItems())
-		{
-			try
-			{
-				View* view = dynamic_cast<View*>(item);
-				std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
-				entity->simulate(*this);
-			}
-			catch (const std::exception & e)
-			{
-				std::cout << "An exception was caught with message '" << e.what() << "'\n";
-			}
-		}
-
 		mInitialTime = QTime::currentTime();
 		mTicksRemaining = M_TICKS_PER_STEP;
+	}
+
+	for (auto item : boardView().childItems())
+	{
+		try
+		{
+			View* view = dynamic_cast<View*>(item);
+			std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
+			entity->simulate(*this);
+		}
+		catch (const std::exception & e)
+		{
+			std::cout << "An exception was caught with message '" << e.what() << "'\n";
+		}
 	}
 
 	for (auto item : boardView().childItems())
@@ -264,14 +312,17 @@ void Simulation::run()
 	outputCounts();
 }
 
-void Simulation::init()
+void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 {
 	View::mDeletionQueue.clear();
+	mResetScentSystem = true;
 	mFoodSet.clear();
 	mOrganismGroups.clear();
 	mInitViewQueue.clear();
 	mScentMap.clear();
 	mScentQueue.clear();
+	mRound++;
+	mScore = 0;
 
 	mTicksRemaining = M_TICKS_PER_STEP;
 
@@ -281,6 +332,7 @@ void Simulation::init()
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
+			addOrganism(std::shared_ptr<Organism>(new Red(center)));
 			break;
 		}
 		case Mode::train:
@@ -288,12 +340,12 @@ void Simulation::init()
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 40 * mBoard.cellSize() * SCALE_FACTOR;
 			int entities = 50;
-			int replicates = 4; // number of clones of each Entity
+			int replicates = 6; // number of clones of each Entity
 
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
 			for (int i = 0; i < entities; i++)
 			{
-				NeuralNetwork neuralNetwork;
+				NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(pNeuralNetwork);
 				std::vector<std::shared_ptr<Organism>> group = std::vector<std::shared_ptr<Organism>>();
 				for (int j = 0; j < replicates; j++)
 				{
@@ -320,12 +372,45 @@ void Simulation::init()
 
 void Simulation::outputCounts()
 {
-    QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
-    QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
-    redLabel->setProperty("text", "Red: " + QString::number(Red::mCount));
-    QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
-    greenLabel->setProperty("text", "Green: " + QString::number(Green::mCount));
-    QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
-    blueLabel->setProperty("text", "Blue: " + QString::number(Blue::mCount));
+	switch (mMode)
+	{
+		case Mode::debug:
+		{
+			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
+			QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
+			redLabel->setProperty("text", "Round: " + QString::number(mRound));
+			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
+			greenLabel->setProperty("text", "Score: " + QString::number(mScore));
+			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
+			blueLabel->setProperty("text", "Entities: " + QString::number(Red::mCount));
+			break;
+		}
+		case Mode::train:
+		{
+			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
+			QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
+			redLabel->setProperty("text", "Round: " + QString::number(mRound));
+			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
+			greenLabel->setProperty("text", "Score: " + QString::number(mScore));
+			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
+			blueLabel->setProperty("text", "Entities: " + QString::number(Red::mCount));
+			break;
+		}
+		case Mode::simulate:
+		{
+			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
+			QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
+			redLabel->setProperty("text", "Red: " + QString::number(Red::mCount));
+			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
+			greenLabel->setProperty("text", "Green: " + QString::number(Green::mCount));
+			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
+			blueLabel->setProperty("text", "Blue: " + QString::number(Blue::mCount));
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 }
 
