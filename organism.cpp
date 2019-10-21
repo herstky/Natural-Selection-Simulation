@@ -257,11 +257,11 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 				}
 			}
 
-			qreal delta;
+			qreal delta = 0;
 			if (!mScore)
 				delta = 1;
-			else
-				delta = 0.05;
+			/*else
+				delta = 0.05;*/
 			
 			mScore += delta;
 			pSimulation.mScore += delta;

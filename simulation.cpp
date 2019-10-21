@@ -1,6 +1,7 @@
 #include "simulation.h"
 
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QCheckBox>
 #include <QThreadPool>
 #include <QtConcurrent/QtConcurrent>
 #include <QRandomGenerator>
@@ -43,8 +44,9 @@ Simulation::Simulation(QQuickItem* pParent)
 {
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
-	QQuickItem* parent = dynamic_cast<QQuickItem*>(mContainer.findChild<QObject*>("buttonRow"));
-	QCheckBox* checkBox = dynamic_cast<QCheckBox*>(parent->findChild<QObject*>("animateCheckBox"));
+	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
+	QObject* obj = parent->findChild<QObject*>("animateCheckBox");
+	QCheckBox* checkBox = dynamic_cast<QCheckBox*>(obj);
 	connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(toggleAnimation()));
 	init(mBestNeuralNetwork.first);
 }
@@ -72,10 +74,11 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mScentQueue(coordMap())
 {
 	mTimer = new QTimer();
-	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
-	QQuickItem* parent = dynamic_cast<QQuickItem*>(mContainer.findChild<QObject*>("buttonRow"));
-	QCheckBox* checkBox = dynamic_cast<QCheckBox*>(parent->findChild<QObject*>("animateCheckBox"));
-	connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(toggleAnimation()));
+	QObject::connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
+	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
+	QQuickItem* obj = qobject_cast<QQuickItem*>(parent->findChild<QObject*>("animateCheckBox"));
+	QCheckBox* checkBox = qobject_cast<QCheckBox*>(obj);
+	QObject::connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(toggleAnimation()));
 	mMode = pMode;
 	init(mBestNeuralNetwork.first);
 }
@@ -359,8 +362,8 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 300;
-			int replicates = 1; // number of clones of each Entity
+			int entities = 50;
+			int replicates = 8; // number of clones of each Entity
 
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
 			for (int i = 0; i < entities; i++)

@@ -116,8 +116,14 @@ Page {
                 CheckBox {
                     id: animateCheckBox
                     text: qsTr("Animate")
+                    font.pointSize: 14
                     checkState: Qt.Checked
                     objectName: "animateCheckBox"
+                    signal qmlSignal()
+
+                    MouseArea {
+                        onStateChanged: animateCheckBox.qmlSignal()
+                    }
                 }
             }
         }

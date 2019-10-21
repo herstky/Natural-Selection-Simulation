@@ -6,7 +6,6 @@
 #include <QObject>
 #include <QRandomGenerator>
 #include <QFuture>
-#include <QtWidgets/QCheckBox>
 
 #include <vector>
 #include <unordered_set>
