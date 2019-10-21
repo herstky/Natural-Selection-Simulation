@@ -14,7 +14,6 @@ Page {
     property alias board: board
     property alias page: page
 
-
     Rectangle {
         id: container
         color: "#ffffff"
@@ -49,9 +48,11 @@ Page {
 
                 Label {
                     id: element2
-                    width: 100
+                    width: 130
                     height: 36
                     text: qsTr("Text")
+                    fontSizeMode: Text.HorizontalFit
+                    wrapMode: Text.NoWrap
                     font.pixelSize: 18
                     anchors.bottom: parent.bottom
                     verticalAlignment: Text.AlignBottom
@@ -61,9 +62,11 @@ Page {
 
                 Label {
                     id: element1
-                    width: 100
+                    width: 130
                     height: 36
                     text: qsTr("Text")
+                    fontSizeMode: Text.HorizontalFit
+                    wrapMode: Text.WordWrap
                     font.pixelSize: 18
                     anchors.bottom: parent.bottom
                     verticalAlignment: Text.AlignBottom
@@ -73,9 +76,11 @@ Page {
 
                 Label {
                     id: element
-                    width: 100
+                    width: 130
                     height: 36
                     text: qsTr("Text")
+                    fontSizeMode: Text.HorizontalFit
+                    wrapMode: Text.WordWrap
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 0
                     verticalAlignment: Text.AlignBottom

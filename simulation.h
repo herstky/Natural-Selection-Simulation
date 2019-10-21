@@ -56,6 +56,7 @@ private:
 	Mode mMode;
 	Board mBoard;
 	ScentSystem mScentSystem;
+	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;
 	QTimer* mTimer;
 	coordMap mScentMap;
 	QFuture<void> mDiffusionThread;
@@ -65,7 +66,7 @@ private:
     int mTicksRemaining;
 	int mStepsRemaining;
 	bool mResetScentSystem;
-	int mRound;
+	int mGeneration;
 	qreal mScore;
 	QTime mInitialTime; // time since previous step
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;

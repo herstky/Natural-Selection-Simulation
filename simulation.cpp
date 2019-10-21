@@ -19,10 +19,11 @@
 #include "neuralnetwork.h"
 
 Simulation::Simulation(QQuickItem* pParent)
-    : mMode(Mode::simulate),
+	: mMode(Mode::simulate),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
 	  mScentSystem(ScentSystem(*this)),
+	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), 0)),
 	  mScentMap(coordMap()),
 	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
@@ -30,7 +31,7 @@ Simulation::Simulation(QQuickItem* pParent)
 	  M_STEPS_PER_ROUND(300), 
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
-	  mRound(0),
+	  mGeneration(0),
 	  mScore(0),
 	  mResetScentSystem(false),
 	  mInitialTime(QTime::currentTime()),
@@ -41,7 +42,7 @@ Simulation::Simulation(QQuickItem* pParent)
 {
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
-	init(NeuralNetwork());
+	init(mBestNeuralNetwork.first);
 }
 
 Simulation::Simulation(QQuickItem* pParent, Mode pMode)
@@ -56,7 +57,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  M_STEPS_PER_ROUND(300),
 	  mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
-	  mRound(0),
+	  mGeneration(0),
 	  mScore(0),
 	  mResetScentSystem(false),
 	  mInitialTime(QTime::currentTime()),
@@ -68,7 +69,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 	mMode = pMode;
-	init(NeuralNetwork());
+	init(mBestNeuralNetwork.first);
 }
 
 void Simulation::addOrganism(std::shared_ptr<Organism> pOrganism)
@@ -158,8 +159,19 @@ void Simulation::train()
 		int first = groupResults[0].first;
 		int second = groupResults[1].first;
 
-		NeuralNetwork firstNN = mOrganismGroups[first][0]->mBrain;
-		NeuralNetwork secondNN = mOrganismGroups[second][0]->mBrain;
+		NeuralNetwork firstNN;
+		NeuralNetwork secondNN;
+		if (groupResults[0].second > mBestNeuralNetwork.second)
+		{
+			mBestNeuralNetwork = std::pair<NeuralNetwork, qreal>(mOrganismGroups[first][0]->mBrain, groupResults[0].second);
+			firstNN = mOrganismGroups[first][0]->mBrain;
+			secondNN = mOrganismGroups[second][0]->mBrain;
+		}
+		else
+		{
+			firstNN = mBestNeuralNetwork.first;
+			secondNN = mOrganismGroups[first][0]->mBrain;
+		}
 		NeuralNetwork newNN = NeuralNetwork::crossoverWeights(firstNN, secondNN);		
 
 		for (auto item : boardView().childItems())
@@ -321,7 +333,7 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 	mInitViewQueue.clear();
 	mScentMap.clear();
 	mScentQueue.clear();
-	mRound++;
+	mGeneration++;
 	mScore = 0;
 
 	mTicksRemaining = M_TICKS_PER_STEP;
@@ -339,8 +351,8 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 50;
-			int replicates = 6; // number of clones of each Entity
+			int entities = 80;
+			int replicates = 4; // number of clones of each Entity
 
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
 			for (int i = 0; i < entities; i++)
@@ -378,7 +390,7 @@ void Simulation::outputCounts()
 		{
 			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
 			QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
-			redLabel->setProperty("text", "Round: " + QString::number(mRound));
+			redLabel->setProperty("text", "Generation: " + QString::number(mGeneration));
 			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
 			greenLabel->setProperty("text", "Score: " + QString::number(mScore));
 			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
@@ -389,7 +401,7 @@ void Simulation::outputCounts()
 		{
 			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
 			QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
-			redLabel->setProperty("text", "Round: " + QString::number(mRound));
+			redLabel->setProperty("text", "Generation: " + QString::number(mGeneration));
 			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
 			greenLabel->setProperty("text", "Score: " + QString::number(mScore));
 			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
