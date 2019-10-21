@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QRandomGenerator>
 #include <QFuture>
+#include <QtWidgets/QCheckBox>
 
 #include <vector>
 #include <unordered_set>
@@ -69,9 +70,13 @@ private:
 	int mGeneration;
 	qreal mScore;
 	QTime mInitialTime; // time since previous step
+	bool mPrevAnimateState;
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;
 	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;
 	std::vector<std::shared_ptr<Entity>> mInitViewQueue;
 	coordMap mScentQueue;
 	void outputCounts();
+
+private slots:
+	void toggleAnimation();
 };

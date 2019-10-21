@@ -101,6 +101,25 @@ Page {
                 border.width: 0
                 objectName: "board"
             }
+
+            Row {
+                id: buttonRow
+                height: 50
+                anchors.top: board.bottom
+                anchors.topMargin: 0
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.left: parent.left
+                anchors.leftMargin: 0
+                objectName: "buttonRow"
+
+                CheckBox {
+                    id: animateCheckBox
+                    text: qsTr("Animate")
+                    checkState: Qt.Checked
+                    objectName: "animateCheckBox"
+                }
+            }
         }
     }
 }

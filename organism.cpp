@@ -247,6 +247,16 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 		}
 		case Simulation::Mode::train:
 		{
+			std::cout << "coords: (" << coords(pSimulation).first << ", " << coords(pSimulation).second << ")" << std::endl;
+			arma::mat scents = smell(pSimulation);
+			for (int i = 0; i < scents.n_rows; i++)
+			{
+				for (int j = 0; j < scents.n_cols; j++)
+				{
+					std::cout << "(" << i << ", " << j << "): " << scents.at(i, j) << std::endl;
+				}
+			}
+
 			qreal delta;
 			if (!mScore)
 				delta = 1;

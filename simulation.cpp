@@ -35,6 +35,7 @@ Simulation::Simulation(QQuickItem* pParent)
 	  mScore(0),
 	  mResetScentSystem(false),
 	  mInitialTime(QTime::currentTime()),
+	  mPrevAnimateState(true),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
@@ -42,6 +43,9 @@ Simulation::Simulation(QQuickItem* pParent)
 {
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
+	QQuickItem* parent = dynamic_cast<QQuickItem*>(mContainer.findChild<QObject*>("buttonRow"));
+	QCheckBox* checkBox = dynamic_cast<QCheckBox*>(parent->findChild<QObject*>("animateCheckBox"));
+	connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(toggleAnimation()));
 	init(mBestNeuralNetwork.first);
 }
 
@@ -61,6 +65,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mScore(0),
 	  mResetScentSystem(false),
 	  mInitialTime(QTime::currentTime()),
+	  mPrevAnimateState(true),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
@@ -68,6 +73,9 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 {
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
+	QQuickItem* parent = dynamic_cast<QQuickItem*>(mContainer.findChild<QObject*>("buttonRow"));
+	QCheckBox* checkBox = dynamic_cast<QCheckBox*>(parent->findChild<QObject*>("animateCheckBox"));
+	connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(toggleAnimation()));
 	mMode = pMode;
 	init(mBestNeuralNetwork.first);
 }
@@ -351,7 +359,7 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 80;
+			int entities = 300;
 			int replicates = 1; // number of clones of each Entity
 
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
@@ -426,3 +434,26 @@ void Simulation::outputCounts()
 	}
 }
 
+void Simulation::toggleAnimation()
+{
+	QQuickItem* parent = dynamic_cast<QQuickItem*>(mContainer.findChild<QObject*>("buttonRow"));
+	QCheckBox* checkBox = dynamic_cast<QCheckBox*>(parent->findChild<QObject*>("animateCheckBox"));
+	if (checkBox->checkState())
+	{
+		for (auto item : boardView().childItems())
+		{
+			item->setFlag(QQuickItem::ItemHasContents, true);
+		}
+		mTimer->start(M_TICK_DURATION);
+	}
+	else
+	{
+		for (auto item : boardView().childItems())
+		{
+			item->setFlag(QQuickItem::ItemHasContents, false);
+		}
+		mTimer->start(1);
+	}
+		
+
+}
