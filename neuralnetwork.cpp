@@ -12,7 +12,7 @@ qreal NeuralNetwork::mLargeVarianceMagnitude = 10;
 qreal NeuralNetwork::mLargeVarianceChance = 2;
 
 NeuralNetwork::NeuralNetwork()
-	: mLayers(std::vector<int>{ 9, 4, 2 })
+	: mLayers(std::vector<int>{ 9, 9, 2 })
 {
 	for (unsigned int i = 1; i < mLayers.size(); i++)
 	{

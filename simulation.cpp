@@ -352,7 +352,7 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
 			int entities = 80;
-			int replicates = 4; // number of clones of each Entity
+			int replicates = 1; // number of clones of each Entity
 
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
 			for (int i = 0; i < entities; i++)
