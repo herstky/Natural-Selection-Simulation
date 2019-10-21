@@ -10,7 +10,7 @@
 
 ScentSystem::ScentSystem(Simulation& pSimulation)
 	: mSimulation(pSimulation),
-	  mThreshhold(0.005),
+	  mThreshhold(0.015),
 	  mScentMap(coordMap()),
 	  mAdditionQueue(coordMap()),
 	  mSubtractionQueue(coordMap()),

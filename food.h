@@ -14,7 +14,6 @@ class Food : public Entity
 public:
 	Food(Simulation& pSimulation);
 	Food(Simulation& pSimulation, const QPointF& pPosition);
-	//~Food();
 
 	void detectCollisions(Simulation& pSimulation) override;
 	const qreal height() const override;

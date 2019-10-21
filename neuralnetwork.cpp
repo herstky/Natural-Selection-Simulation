@@ -6,7 +6,7 @@
 
 #include "utils.h"
 
-qreal NeuralNetwork::mMutationChance = 3;
+qreal NeuralNetwork::mMutationChance = 10;
 qreal NeuralNetwork::mSmallVarianceMagnitude = 1;
 qreal NeuralNetwork::mLargeVarianceMagnitude = 100;
 qreal NeuralNetwork::mLargeVarianceChance = 2;

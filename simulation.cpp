@@ -27,7 +27,7 @@ Simulation::Simulation(QQuickItem* pParent)
 	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
       M_TICKS_PER_STEP(5),
-	  M_STEPS_PER_ROUND(200), 
+	  M_STEPS_PER_ROUND(300), 
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
 	  mRound(0),
@@ -53,7 +53,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mDiffusionThread(QFuture<void>()),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
-	  M_STEPS_PER_ROUND(250),
+	  M_STEPS_PER_ROUND(300),
 	  mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
 	  mRound(0),
@@ -338,7 +338,7 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 		case Mode::train:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-			qreal radius = 40 * mBoard.cellSize() * SCALE_FACTOR;
+			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
 			int entities = 50;
 			int replicates = 6; // number of clones of each Entity
 

@@ -7,9 +7,9 @@
 
 Board::Board(QQuickItem& pQQuickItem) 
 	: mView(pQQuickItem),
-	  mCellSize(0.003), 
-	  mRows(150), 
-	  mColumns(300)
+	  mCellSize(0.0075), 
+	  mRows(50), 
+	  mColumns(100)
 {
 	init();
 }

@@ -62,10 +62,10 @@ void Food::simulate(Simulation& pSimulation)
 
 void Food::init(Simulation& pSimulation)
 {
-	mColor = Qt::green;
+	mColor = Qt::darkBlue;
 	mType = Entity::Type::prey;
 	mEnergyContent = 128;
-	mMass = 0.005;
+	mMass = 0.008;
 	mDensity = 2000;
 	mAspectRatio = 1;
 	mDepth = 0.1;

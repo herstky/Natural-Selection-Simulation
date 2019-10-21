@@ -251,7 +251,7 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 			if (!mScore)
 				delta = 1;
 			else
-				delta = 0.1;
+				delta = 0.05;
 			
 			mScore += delta;
 			pSimulation.mScore += delta;
