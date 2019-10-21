@@ -58,3 +58,9 @@ HEADERS += \
     entity.h \
     food.h \
     board.h 
+
+INCLUDEPATH += C:\bin\lib\armadillo\include
+LIBS += \
+    -LC:\bin\lib\armadillo\examples\lib_win64 \
+    -llapack_win64_MT \
+    -lblas_win64_MT

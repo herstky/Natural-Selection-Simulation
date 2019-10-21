@@ -438,12 +438,12 @@ void Simulation::outputCounts()
 
 void Simulation::toggleAnimation()
 {
-	QObject* s = sender();
+    QObject* s = sender();
 	QCheckBox* box = qobject_cast<QCheckBox*>(s);
 	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
 	QAbstractButton* checkBox = qobject_cast<QAbstractButton*>(parent->findChild<QObject*>("animateCheckBox"));
 	QAbstractButton* foo = dynamic_cast<QAbstractButton*>(s);
-	if (checkBox->isChecked())
+    if (checkBox->isChecked())
 	{
 		for (auto item : boardView().childItems())
 		{

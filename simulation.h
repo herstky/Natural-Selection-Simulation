@@ -19,7 +19,7 @@
 using coordPair = std::pair<int, int>;
 using coordMap = std::unordered_map<coordPair, qreal, pair_hash>;
 
-class Simulation : QObject
+class Simulation : public QObject
 {
 	Q_OBJECT
 public:

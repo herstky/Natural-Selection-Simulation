@@ -125,8 +125,6 @@ ApplicationWindow {
                         font.pointSize: 14
                         checkState: Qt.Checked
                         objectName: "animateCheckBox"
-//                        signal qmlToggleAnimation()
-
                     }
                 }
             }
