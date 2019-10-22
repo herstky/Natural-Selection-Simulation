@@ -119,9 +119,29 @@ ApplicationWindow {
                     anchors.leftMargin: 0
                     objectName: "buttonRow"
 
+
+                    Button {
+                        id: playPauseButton
+                        text: qsTr("Play")
+                        anchors.left: parent.left
+                        anchors.leftMargin: 0
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 10
+                        anchors.top: parent.top
+                        anchors.topMargin: 0
+                        font.pointSize: 14
+                        objectName: "playPauseButton"
+                    }
+
                     CheckBox {
                         id: animateCheckBox
                         text: qsTr("Animate")
+                        anchors.right: parent.right
+                        anchors.rightMargin: 0
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 10
+                        anchors.top: parent.top
+                        anchors.topMargin: 0
                         font.pointSize: 14
                         checkState: Qt.Checked
                         objectName: "animateCheckBox"
@@ -131,3 +151,9 @@ ApplicationWindow {
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/

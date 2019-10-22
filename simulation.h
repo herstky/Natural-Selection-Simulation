@@ -69,7 +69,7 @@ private:
 	int mGeneration;
 	qreal mScore;
 	QTime mInitialTime; // time since previous step
-	bool mPrevAnimateState;
+	bool mAnimate;
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;
 	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;
 	std::vector<std::shared_ptr<Entity>> mInitViewQueue;
@@ -78,4 +78,5 @@ private:
 
 private slots:
 	void toggleAnimation();
+	void playPause();
 };

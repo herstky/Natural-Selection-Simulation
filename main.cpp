@@ -14,7 +14,6 @@
 int main(int argc, char *argv[])
 {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    qmlRegisterType<Simulation>("Sim", 1, 0, "Foobar");
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

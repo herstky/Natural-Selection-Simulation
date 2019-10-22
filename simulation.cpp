@@ -2,9 +2,11 @@
 
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QPushButton>
 #include <QThreadPool>
 #include <QtConcurrent/QtConcurrent>
 #include <QRandomGenerator>
+#include <QtQml>
 
 #include <iostream>
 #include <algorithm>
@@ -36,7 +38,7 @@ Simulation::Simulation(QQuickItem* pParent)
 	  mScore(0),
 	  mResetScentSystem(false),
 	  mInitialTime(QTime::currentTime()),
-	  mPrevAnimateState(true),
+	  mAnimate(true),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
@@ -45,9 +47,10 @@ Simulation::Simulation(QQuickItem* pParent)
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
-	QObject* obj = parent->findChild<QObject*>("animateCheckBox");
-	QCheckBox* checkBox = dynamic_cast<QCheckBox*>(obj);
-	connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(toggleAnimation()));
+	QObject* checkBox = parent->findChild<QObject*>("animateCheckBox");
+	connect(checkBox, SIGNAL(clicked()), this, SLOT(toggleAnimation()));
+	QObject* playPauseButton = parent->findChild<QObject*>("playPauseButton");
+	connect(playPauseButton, SIGNAL(clicked()), this, SLOT(playPause()));
 	init(mBestNeuralNetwork.first);
 }
 
@@ -67,7 +70,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mScore(0),
 	  mResetScentSystem(false),
 	  mInitialTime(QTime::currentTime()),
-	  mPrevAnimateState(true),
+	  mAnimate(true),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
@@ -78,6 +81,8 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
 	QObject* checkBox = parent->findChild<QObject*>("animateCheckBox");
 	connect(checkBox, SIGNAL(clicked()), this, SLOT(toggleAnimation()));
+	QObject* playPauseButton = parent->findChild<QObject*>("playPauseButton");
+	connect(playPauseButton, SIGNAL(clicked()), this, SLOT(playPause()));
 	mMode = pMode;
 	init(mBestNeuralNetwork.first);
 }
@@ -438,18 +443,14 @@ void Simulation::outputCounts()
 
 void Simulation::toggleAnimation()
 {
-    QObject* s = sender();
-	QCheckBox* box = qobject_cast<QCheckBox*>(s);
-	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
-	QAbstractButton* checkBox = qobject_cast<QAbstractButton*>(parent->findChild<QObject*>("animateCheckBox"));
-	QAbstractButton* foo = dynamic_cast<QAbstractButton*>(s);
-    if (checkBox->isChecked())
+	if (mAnimate)
 	{
 		for (auto item : boardView().childItems())
 		{
 			item->setFlag(QQuickItem::ItemHasContents, true);
 		}
 		mTimer->start(M_TICK_DURATION);
+		mAnimate = false;
 	}
 	else
 	{
@@ -458,7 +459,11 @@ void Simulation::toggleAnimation()
 			item->setFlag(QQuickItem::ItemHasContents, false);
 		}
 		mTimer->start(1);
+		mAnimate = true;
 	}
-		
+}
 
+void Simulation::playPause()
+{
+	std::cout << "PlayPause pressed\n";
 }
