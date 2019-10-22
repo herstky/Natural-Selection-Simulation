@@ -26,7 +26,11 @@ Organism::Organism()
 	  mEnergyLevel(1e-7),
 	  mEnergyCapacity(1e-6),
 	  mEnergySpent(0),
-	  mScore(0) {}
+	  mHasEaten(false),
+	  mScore(0),
+      mOutOfBoundsPenalty(0.001),
+      mFoodReward(1),
+      mScentReward(0.1) {}
 
 Organism::Organism(const QPointF& pPosition)
     : Entity(pPosition),
@@ -46,7 +50,11 @@ Organism::Organism(const QPointF& pPosition)
       mEnergyLevel(1e-7),
       mEnergyCapacity(1e-6),
 	  mEnergySpent(0),
-	  mScore(0)
+	  mHasEaten(false),
+	  mScore(0),
+	  mOutOfBoundsPenalty(0.001),
+	  mFoodReward(1),
+	  mScentReward(0.1) 
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
@@ -70,7 +78,11 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	  mEnergyLevel(1e-7),
 	  mEnergyCapacity(1e-6),
 	  mEnergySpent(0),
-	  mScore(0)
+	  mHasEaten(false),
+	  mScore(0),
+	  mOutOfBoundsPenalty(0.001),
+	  mFoodReward(1),
+	  mScentReward(0.1)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
@@ -94,7 +106,11 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, Neur
 	  mEnergyLevel(1e-7),
 	  mEnergyCapacity(1e-6),
 	  mEnergySpent(0),
-	  mScore(0)
+	  mHasEaten(false),
+	  mScore(0),
+	  mOutOfBoundsPenalty(0.001),
+	  mFoodReward(1),
+	  mScentReward(0.1) 
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
@@ -108,10 +124,16 @@ void Organism::move(const Simulation& pSimulation)
     qreal dx = mVelocity * cos(mDirection);
     qreal dy = mVelocity * sin(mDirection);
 
-    if (x() + dx + width() > pSimulation.mBoard.width() || x() + dx < 0)
-        mDirection = M_PI - mDirection;
-    if (y() + dy + height() > pSimulation.mBoard.height() || y() + dy < 0)
-        mDirection = 2 * M_PI - mDirection;
+	if (x() + dx + width() > pSimulation.mBoard.width() || x() + dx < 0)
+	{
+		mDirection = M_PI - mDirection;
+		mScore -= mOutOfBoundsPenalty;
+	}
+	if (y() + dy + height() > pSimulation.mBoard.height() || y() + dy < 0)
+	{
+		mDirection = 2 * M_PI - mDirection;
+		mScore -= mOutOfBoundsPenalty;
+	}
 
     dx = mVelocity * cos(mDirection);
     dy = mVelocity * sin(mDirection);
@@ -257,14 +279,13 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 				}
 			}
 
-			qreal delta = 0;
-			if (!mScore)
-				delta = 1;
-			/*else
-				delta = 0.05;*/
-			
-			mScore += delta;
-			pSimulation.mScore += delta;
+			if (!mHasEaten)
+			{
+				mHasEaten = true;
+				mScore += mFoodReward;
+				pSimulation.mScore += mFoodReward;
+			}
+
 			break;
 		}
 		default:
@@ -278,19 +299,22 @@ arma::mat Organism::smell(Simulation& pSimulation)
 {
 	arma::mat scents(3, 3);
 	int offset = -1;
+	qreal sum = 0;
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			coordPair foobar = coords(pSimulation);
+			coordPair foobar = coords(pSimulation); // debug
 			int m = coords(pSimulation).first + i + offset;
 			int n = coords(pSimulation).second + j + offset;
 			bool invalid = m >= pSimulation.board().rows()
 				|| m < 0
 				|| n >= pSimulation.board().columns()
 				|| n < 0;
-			scents(i, j) = invalid ? -1 : pSimulation.getScent(coordPair(m, n));
+			scents.at(i, j) = invalid ? -1 : pSimulation.getScent(coordPair(m, n));
+			sum += scents.at(i, j);
 		}
+		mScore += sum > 0 ? mScentReward * deltaTime() * sum: 0;
 	}
 	scents.reshape(1, scents.n_rows * scents.n_cols);
 	return scents;

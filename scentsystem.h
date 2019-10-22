@@ -19,6 +19,7 @@ public:
 
 	ScentSystem(Simulation& pSimulation);
 
+	void init(Simulation& pSimulation);
 	void add(coordMap pCoordMap, coordPair pCoords, qreal pAmount);
 	void subtract(coordMap pCoordMap, coordPair pCoords, qreal pAmount);
 	void update();
@@ -27,7 +28,7 @@ public:
 	qreal getScent(coordPair pCoords);
 	qreal getThreshhold();
 	qreal getDiffusivity();
-	void reset();
+	void reset(Simulation& pSimulation);
 
 private:
 	Simulation& mSimulation;

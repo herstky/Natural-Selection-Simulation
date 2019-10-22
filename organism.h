@@ -25,8 +25,8 @@ public:
     qreal deltaTime();
     qreal acceleration();
 
-	void move(const Simulation& pSimulation) override;
-	void simulate(Simulation& pSimulation) override;
+	virtual void move(const Simulation& pSimulation) override;
+	virtual void simulate(Simulation& pSimulation) override;
 
 	arma::mat smell(Simulation& pSimulation);
 	void think(Simulation& pSimulation);
@@ -50,7 +50,11 @@ protected:
 	qreal mEnergyLevel;
 	qreal mEnergyCapacity;
 	qreal mEnergySpent;
+	bool mHasEaten;
 	qreal mScore;
+	qreal mOutOfBoundsPenalty;
+	qreal mFoodReward;
+	qreal mScentReward;
 
 	virtual void init(Simulation& pSimulation);
 

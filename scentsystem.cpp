@@ -17,6 +17,11 @@ ScentSystem::ScentSystem(Simulation& pSimulation)
 	  mDiffusivity(0.50),
 	  mDecayRate(0.0) 
 {
+	init(pSimulation);
+}
+
+void ScentSystem::init(Simulation& pSimulation)
+{
 	qreal scentStrength = -1;
 	int range = scentStrength * mDiffusivity / mThreshhold;
 	for (int i = 0; i < pSimulation.board().columns(); i++)
@@ -31,11 +36,12 @@ ScentSystem::ScentSystem(Simulation& pSimulation)
 	{
 		for (int j = 0; j < range; j++)
 		{
-			mScentMap[coordPair(i,j)] = scentStrength * mDiffusivity / (1 - j / range);
+			mScentMap[coordPair(i, j)] = scentStrength * mDiffusivity / (1 - j / range);
 			mScentMap[coordPair(i, pSimulation.board().columns() - 1 - j)] = scentStrength * mDiffusivity / (1 - j / range);
 		}
 	}
 }
+
 
 void ScentSystem::add(coordMap pCoordMap, coordPair pCoords, qreal pAmount)
 {
@@ -132,9 +138,10 @@ qreal ScentSystem::getDiffusivity()
 	return mDiffusivity;
 }
 
-void ScentSystem::reset()
+void ScentSystem::reset(Simulation& pSimulation)
 {
 	mScentMap.clear();
 	mAdditionQueue.clear();
 	mSubtractionQueue.clear();
+	init(pSimulation);
 }

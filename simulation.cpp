@@ -349,12 +349,12 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 50;
-			int replicates = 8                                                                                                                                                                                   ; // number of clones of each Entity
+			int entities = 10;
+			int replicates = 40; // number of clones of each Entity
 
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
 			mDiffusionThread.cancel();
-			mScentSystem.reset();
+			mScentSystem.reset(*this);
 			mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
 			mDiffusionThread.waitForFinished();
 			mScentMap = mScentSystem.mScentMap;
