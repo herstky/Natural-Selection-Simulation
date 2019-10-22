@@ -228,18 +228,11 @@ void Simulation::run()
 			std::cout << "Warning, ScentSystem thread still running!\n";
 		mDiffusionThread.waitForFinished();
 
-		if (mResetScentSystem)
-		{
-			mScentSystem.reset();
-			mResetScentSystem = false;
-		}
-		else
-		{
-			// Swap scent maps before starting concurrent thread
-			mScentMap = mScentSystem.mScentMap;
-			mScentSystem.mAdditionQueue = mScentQueue;
-			mScentQueue.clear();
-		}
+		// Swap scent maps before starting concurrent thread
+		mScentMap = mScentSystem.mScentMap;
+		mScentSystem.mAdditionQueue = mScentQueue;
+		mScentQueue.clear();
+
 		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
 
 		mInitialTime = QTime::currentTime();
@@ -357,9 +350,17 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
 			int entities = 50;
-			int replicates = 8; // number of clones of each Entity
+			int replicates = 8                                                                                                                                                                                   ; // number of clones of each Entity
 
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
+			mDiffusionThread.cancel();
+			mScentSystem.reset();
+			mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
+			mDiffusionThread.waitForFinished();
+			mScentMap = mScentSystem.mScentMap;
+			mScentSystem.mAdditionQueue = mScentQueue;
+			mScentQueue.clear();
+
 			for (int i = 0; i < entities; i++)
 			{
 				NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(pNeuralNetwork);
