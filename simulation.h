@@ -75,8 +75,4 @@ private:
 	std::vector<std::shared_ptr<Entity>> mInitViewQueue;
 	coordMap mScentQueue;
 	void outputCounts();
-
-private slots:
-	void toggleAnimation();
-	void playPause();
 };

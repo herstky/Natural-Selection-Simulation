@@ -46,11 +46,6 @@ Simulation::Simulation(QQuickItem* pParent)
 {
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
-	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
-	QObject* checkBox = parent->findChild<QObject*>("animateCheckBox");
-	connect(checkBox, SIGNAL(clicked()), this, SLOT(toggleAnimation()));
-	QObject* playPauseButton = parent->findChild<QObject*>("playPauseButton");
-	connect(playPauseButton, SIGNAL(clicked()), this, SLOT(playPause()));
 	init(mBestNeuralNetwork.first);
 }
 
@@ -78,11 +73,6 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 {
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
-	QObject* parent = mContainer.findChild<QObject*>("buttonRow");
-	QObject* checkBox = parent->findChild<QObject*>("animateCheckBox");
-	connect(checkBox, SIGNAL(clicked()), this, SLOT(toggleAnimation()));
-	QObject* playPauseButton = parent->findChild<QObject*>("playPauseButton");
-	connect(playPauseButton, SIGNAL(clicked()), this, SLOT(playPause()));
 	mMode = pMode;
 	init(mBestNeuralNetwork.first);
 }
@@ -172,7 +162,7 @@ void Simulation::train()
 			});
 
 		int first = groupResults[0].first;
-		int second = groupResults[1].first;
+		int second = groupResults.size() > 1 ? groupResults[1].first : -1;
 
 		NeuralNetwork firstNN;
 		NeuralNetwork secondNN;
@@ -180,7 +170,7 @@ void Simulation::train()
 		{
 			mBestNeuralNetwork = std::pair<NeuralNetwork, qreal>(mOrganismGroups[first][0]->mBrain, groupResults[0].second);
 			firstNN = mOrganismGroups[first][0]->mBrain;
-			secondNN = mOrganismGroups[second][0]->mBrain;
+			secondNN = second == -1 ? NeuralNetwork() : mOrganismGroups[second][0]->mBrain;
 		}
 		else
 		{
@@ -439,31 +429,4 @@ void Simulation::outputCounts()
 			break;
 		}
 	}
-}
-
-void Simulation::toggleAnimation()
-{
-	if (mAnimate)
-	{
-		for (auto item : boardView().childItems())
-		{
-			item->setFlag(QQuickItem::ItemHasContents, true);
-		}
-		mTimer->start(M_TICK_DURATION);
-		mAnimate = false;
-	}
-	else
-	{
-		for (auto item : boardView().childItems())
-		{
-			item->setFlag(QQuickItem::ItemHasContents, false);
-		}
-		mTimer->start(1);
-		mAnimate = true;
-	}
-}
-
-void Simulation::playPause()
-{
-	std::cout << "PlayPause pressed\n";
 }

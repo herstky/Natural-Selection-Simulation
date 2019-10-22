@@ -299,6 +299,27 @@ arma::mat Organism::smell(Simulation& pSimulation)
 void Organism::think(Simulation& pSimulation)
 {
 	arma::mat scents = smell(pSimulation);
+
+	// normalize scent matrix
+	qreal maxScent = 0;
+	for (int i = 0; i < scents.n_rows; i++)
+	{
+		for (int j = 0; j < scents.n_cols; j++)
+		{
+			maxScent = std::max(maxScent, scents.at(i, j));
+		}
+	}
+	if (maxScent > 0)
+	{
+		for (int i = 0; i < scents.n_rows; i++)
+		{
+			for (int j = 0; j < scents.n_cols; j++)
+			{
+				scents(i, j) = scents(i, j) / maxScent;
+			}
+		}
+	}
+
 	arma::mat decision = mBrain.forwardPropagate(scents);
 	mVelocity = mMaxSpeed * decision(0, 0);
 	mDirection = 2 * M_PI * decision(0, 1);
