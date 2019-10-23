@@ -12,11 +12,11 @@
 
 // TODO: consider diminishing returns for certain rewards
 
-qreal Organism::mStarvationPenalty = 5; 
+qreal Organism::mStarvationPenalty = 1; 
 qreal Organism::mOutOfBoundsPenalty = 0; // 1
 qreal Organism::mNoScentsPenalty = 0; // 0.1
-qreal Organism::mFoodReward = 200; 
-qreal Organism::mScentReward = 5; 
+qreal Organism::mFoodReward = 100; 
+qreal Organism::mScentReward = 1; 
 
 Organism::Organism()
 	: mBrain(NeuralNetwork()),
@@ -32,7 +32,7 @@ Organism::Organism()
 	  mMutationChance(0),
 	  mDeathChance(0),
 	  mScentStrength(1.0),
-	  mSmellRadius(diameter()),
+	  mSmellRadius(diameter() / 2.0),
 	  mScentThreshhold(0.02),
 	  mEnergyLevel(1e-7),
 	  mEnergyCapacity(1e-6),
@@ -246,7 +246,7 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 arma::mat Organism::smell(Simulation& pSimulation)
 {
 	int divisions = mBrain.mLayers[0];
-	arma::mat scents(1, divisions);
+	arma::mat scents = arma::zeros(1, divisions);
 	qreal sum = 0;
 
 	for (int i = 0; i < divisions; i++)
@@ -285,6 +285,7 @@ arma::mat Organism::smell(Simulation& pSimulation)
 		}
 	}
 
+	mScore += mScentReward * sum * pSimulation.M_TICK_DURATION / 1000.0;
 	return scents;
 }
 

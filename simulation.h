@@ -29,8 +29,7 @@ public:
 	friend class Food;
 	friend class Organism;
     
-	Simulation(QQuickItem* pParent);
-    Simulation(QQuickItem* pParent, Mode pMode);
+    Simulation(QQuickItem* pParent, Mode pMode = Mode::simulate);
 	
 	QQuickItem& mContainer;
 

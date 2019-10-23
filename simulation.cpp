@@ -22,15 +22,15 @@
 #include "food.h"
 #include "neuralnetwork.h"
 
-Simulation::Simulation(QQuickItem* pParent)
-	: mMode(Mode::simulate),
+Simulation::Simulation(QQuickItem* pParent, Mode pMode)
+	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
 	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), 0)),
-      M_TICK_DURATION(50),
-      M_TICKS_PER_STEP(5),
-	  M_STEPS_PER_ROUND(500), 
-      mTicksRemaining(M_TICKS_PER_STEP),
+	  M_TICK_DURATION(50),
+	  M_TICKS_PER_STEP(5),
+	  M_STEPS_PER_ROUND(500),
+	  mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
 	  mGeneration(0),
 	  mScore(0),
@@ -40,13 +40,6 @@ Simulation::Simulation(QQuickItem* pParent)
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
 {
-	init(mBestNeuralNetwork.first);
-}
-
-Simulation::Simulation(QQuickItem* pParent, Mode pMode)
-	: Simulation(pParent)
-{
-	mMode = pMode;
 	init(mBestNeuralNetwork.first);
 }
 
@@ -187,7 +180,7 @@ void Simulation::run()
 		{
 			View* view = dynamic_cast<View*>(item);
 			std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
-			//entity->move(*this);
+			entity->move(*this);
 		}
 		catch (const std::exception & e)
 		{
@@ -309,7 +302,7 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 		case Mode::debug:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-			QPointF org = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2 + 18);
+			QPointF org = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2 + 9);
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
 			addOrganism(std::shared_ptr<Organism>(new Red(org)));
 			break;

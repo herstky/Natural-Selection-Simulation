@@ -11,7 +11,7 @@
 unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 5;
 const qreal Food::M_SCENT_STRENGTH = 1.0;
-const qreal Food::M_SCENT_DIFFUSIVITY = 0.008;
+const qreal Food::M_SCENT_DIFFUSIVITY = 0.007;
 
 Food::Food(Simulation& pSimulation)
 	: mContainer(pSimulation.mFoodSet)
