@@ -23,13 +23,15 @@ public:
 	virtual void simulate(Simulation& pSimulation) override;
 	virtual void die(const Simulation& pSimulation) override;
 
+	static const qreal M_SCENT_STRENGTH;
+	static const qreal M_SCENT_DIFFUSIVITY;
+
 protected:
 	virtual void init(Simulation& pSimulation);
 
 private:	
 	static unsigned int mCount;
 	static qreal mCreationChance;
-	qreal mScentStrength;
 	std::unordered_set<std::shared_ptr<Food>>& mContainer;
 };
 

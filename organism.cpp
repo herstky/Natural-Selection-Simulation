@@ -8,8 +8,9 @@
 #include "simulation.h"
 #include "constants.h"
 #include "view.h"
+#include "food.h"
 
-// TODO: diminishing returns for certain rewards
+// TODO: consider diminishing returns for certain rewards
 
 qreal Organism::mStarvationPenalty = 5; 
 qreal Organism::mOutOfBoundsPenalty = 0; // 1
@@ -29,6 +30,7 @@ Organism::Organism()
 	  mMutationChance(0),
 	  mDeathChance(0),
 	  mScentStrength(1.0),
+	  mSmellRadius(3),
 	  mMass(0.0005),
 	  mDensity(WATER_DENSITY),
 	  mEnergyLevel(1e-7),
@@ -50,6 +52,7 @@ Organism::Organism(const QPointF& pPosition)
       mMutationChance(0),
       mDeathChance(0),
 	  mScentStrength(1.0),
+	  mSmellRadius(3),
       mMass(0.0005),
       mDensity(WATER_DENSITY),
       mEnergyLevel(1e-7),
@@ -75,6 +78,7 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	  mMutationChance(0),
 	  mDeathChance(0),
 	  mScentStrength(1.0),
+	  mSmellRadius(3),
 	  mMass(0.0005),
 	  mDensity(WATER_DENSITY),
 	  mEnergyLevel(1e-7),
@@ -100,6 +104,7 @@ Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, Neur
 	  mMutationChance(0),
 	  mDeathChance(0),
 	  mScentStrength(1.0),
+	  mSmellRadius(3),
 	  mMass(0.0005),
 	  mDensity(WATER_DENSITY),
 	  mEnergyLevel(1e-7),
@@ -296,13 +301,34 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 
 arma::mat Organism::smell(Simulation& pSimulation)
 {
-	arma::mat scents(3, 3);
-	int offset = -1;
+	arma::mat scents(mSmellRadius, mSmellRadius);
+	int offset = -1 * mSmellRadius / 2;
 	qreal sum = 0;
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < scents.n_rows; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < scents.n_cols; j++)
 		{
+			for (auto food : pSimulation.mFoodSet)
+			{
+				coordPair foodCoords = food->coords(pSimulation);
+				qreal dx = x() + (offset + i) * pSimulation.board().M_CELL_SIZE - food->x();
+				qreal dy = y() + (offset + j) * pSimulation.board().M_CELL_SIZE - food->y();
+				qreal distance = std::sqrt(pow(dx, 2) + pow(dy, 2));
+				scents.at(i, j) += Food::M_SCENT_DIFFUSIVITY * Food::M_SCENT_STRENGTH / distance;
+				sum += scents.at(i, j);
+			}
+
+
+
+
+
+
+
+
+
+
+
+
 			coordPair foobar = coords(pSimulation); // debug
 			int m = coords(pSimulation).first + i + offset;
 			int n = coords(pSimulation).second + j + offset;

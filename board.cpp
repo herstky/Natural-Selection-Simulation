@@ -7,7 +7,7 @@
 
 Board::Board(QQuickItem& pQQuickItem) 
 	: mView(pQQuickItem),
-	  mCellSize(0.0075), 
+	  M_CELL_SIZE(0.0075), 
 	  mRows(50), 
 	  mColumns(50)
 {
@@ -21,12 +21,12 @@ QQuickItem& Board::view()
 
 qreal Board::cellSize() const
 {
-	return mCellSize;
+	return M_CELL_SIZE;
 }
 
 qreal Board::scaledCellSize() const
 {
-	return SCALE_FACTOR * mCellSize;
+	return SCALE_FACTOR * M_CELL_SIZE;
 }
 
 int Board::rows() const

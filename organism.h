@@ -44,6 +44,7 @@ protected:
 	qreal mMutationChance;
 	qreal mDeathChance;
 	qreal mScentStrength;
+	int mSmellRadius;
 
 	qreal mMass; // [kg]
 	qreal mDensity; // [kg/m^3]

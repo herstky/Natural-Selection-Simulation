@@ -10,9 +10,11 @@
 
 unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 5;
+const qreal Food::M_SCENT_STRENGTH = 1.0;
+const qreal Food::M_SCENT_DIFFUSIVITY = 0.5;
 
 Food::Food(Simulation& pSimulation)
-	: mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
+	: mContainer(pSimulation.mFoodSet)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
@@ -20,7 +22,7 @@ Food::Food(Simulation& pSimulation)
 }
 
 Food::Food(Simulation& pSimulation, const QPointF& pPosition)
-	: Entity(pPosition), mScentStrength(1.0), mContainer(pSimulation.mFoodSet)
+	: Entity(pPosition), mContainer(pSimulation.mFoodSet)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
@@ -52,7 +54,7 @@ const qreal Food::volume() const
 
 void Food::emanateScent(Simulation& pSimulation)
 {
-	pSimulation.mScentQueue.emplace(coords(pSimulation), mScentStrength);
+	pSimulation.mScentQueue.emplace(coords(pSimulation), M_SCENT_STRENGTH);
 }
 
 void Food::simulate(Simulation& pSimulation)

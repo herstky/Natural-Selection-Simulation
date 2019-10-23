@@ -26,9 +26,10 @@ public:
 	qreal width() const;
 	qreal scaledWidth() const;
 
+	const qreal M_CELL_SIZE; // [m]
+
 private:
 	QQuickItem& mView;
-	qreal mCellSize; // [m]
 	int mRows;
 	int mColumns;
 

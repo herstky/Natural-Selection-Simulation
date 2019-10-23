@@ -7,8 +7,9 @@
 #include "utils.h"
 #include "board.h"
 
-// TODO: ScentSystem needs to be overhauled. Each Food instance should have an unordered map of coord, scent intensity pairs.
-// Organism.smell will iterate over all food instances and check each of their scent maps.
+// TODO: ScentSystem needs to be overhauled. Organism.smell will iterate over simulation's food container and 
+// generate a scent matrix based on the equation intensity[cell] += sourceStrength * diffusivity / distance from 
+// source to cell
 
 using coordPair = std::pair<int, int>;
 using coordMap = std::unordered_map<coordPair, qreal, pair_hash>;
