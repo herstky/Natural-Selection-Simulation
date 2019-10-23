@@ -16,6 +16,8 @@
 #include "board.h"
 #include "scentsystem.h"
 
+// TODO: Need to be able to turn off animation and run sim as fast as possible.
+
 using coordPair = std::pair<int, int>;
 using coordMap = std::unordered_map<coordPair, qreal, pair_hash>;
 

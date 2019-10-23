@@ -7,13 +7,10 @@
 #include <algorithm>
 
 #include "simulation.h"
-
-// TODO: might want to lower range on scent so that organisms must search for a scent, to stop them from staying
-// in one place or moving too slowly. 
-
+ 
 ScentSystem::ScentSystem(Simulation& pSimulation)
 	: mSimulation(pSimulation),
-	  mThreshhold(0.025), 
+	  mThreshhold(0.012), 
 	  mScentMap(coordMap()),
 	  mAdditionQueue(coordMap()),
 	  mSubtractionQueue(coordMap()),

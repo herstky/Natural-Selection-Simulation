@@ -9,6 +9,8 @@
 
 #include "constants.h"
 
+// TODO: Consolidate constructors using delegating constructors.
+
 class Simulation;
 class View;
 

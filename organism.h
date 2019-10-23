@@ -52,6 +52,7 @@ protected:
 	qreal mEnergySpent;
 	bool mHasEaten;
 	qreal mScore;
+	static qreal mStarvationPenalty;
 	static qreal mOutOfBoundsPenalty;
 	static qreal mNoScentsPenalty;
 	static qreal mFoodReward;

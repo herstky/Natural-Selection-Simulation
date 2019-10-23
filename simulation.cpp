@@ -162,10 +162,10 @@ void Simulation::train()
 				return (a.second > b.second);
 			});
 
-		std::cout << "-------------------------------------\n";
+		std::cout << "\n-------------------------------------";
 		for (auto group : groupResults)
 		{
-			std::cout << group.second << '\n';
+			std::cout << '\n' << group.second;
 		}
 
 		int first = groupResults[0].first;

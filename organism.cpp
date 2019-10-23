@@ -9,13 +9,14 @@
 #include "constants.h"
 #include "view.h"
 
+qreal Organism::mStarvationPenalty = 100;
 qreal Organism::mOutOfBoundsPenalty = 1;
-qreal Organism::mNoScentsPenalty = 0.5;
-qreal Organism::mFoodReward = 200;
-qreal Organism::mScentReward = 10;
+qreal Organism::mNoScentsPenalty = 0.1;
+qreal Organism::mFoodReward = 250;
+qreal Organism::mScentReward = 3;
 
 Organism::Organism()
-	: mBrain(NeuralNetwork(std::vector<int>{ 9, 20, 8, 2 })),
+	: mBrain(NeuralNetwork(std::vector<int>{ 9, 12, 20, 8, 2 })),
 	  mMaxSpeed(.01),
 	  mVelocity(0.0),
 	  mInitialVelocity(mVelocity),
@@ -231,6 +232,8 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 		case Simulation::Mode::train:
 		{
 			mEnergySpent += work;
+			if (!mHasEaten)
+				mScore -= mStarvationPenalty * deltaTime();
 			break;
 		}
 		default:
