@@ -9,11 +9,13 @@
 #include "constants.h"
 #include "view.h"
 
-qreal Organism::mStarvationPenalty = 100;
-qreal Organism::mOutOfBoundsPenalty = 1;
-qreal Organism::mNoScentsPenalty = 0.1;
-qreal Organism::mFoodReward = 250;
-qreal Organism::mScentReward = 3;
+// TODO: diminishing returns for certain rewards
+
+qreal Organism::mStarvationPenalty = 5; 
+qreal Organism::mOutOfBoundsPenalty = 0; // 1
+qreal Organism::mNoScentsPenalty = 0; // 0.1
+qreal Organism::mFoodReward = 200; 
+qreal Organism::mScentReward = 5; 
 
 Organism::Organism()
 	: mBrain(NeuralNetwork(std::vector<int>{ 9, 12, 20, 8, 2 })),
@@ -121,17 +123,20 @@ void Organism::move(const Simulation& pSimulation)
 	if (x() + dx + width() > pSimulation.mBoard.width() || x() + dx < 0)
 	{
 		mDirection = M_PI - mDirection;
-		mScore -= mOutOfBoundsPenalty * deltaTime();
+		mScore -= mOutOfBoundsPenalty * pSimulation.M_TICK_DURATION / 1000.0;
 	}
 	if (y() + dy + height() > pSimulation.mBoard.height() || y() + dy < 0)
 	{
 		mDirection = 2 * M_PI - mDirection;
-		mScore -= mOutOfBoundsPenalty * deltaTime();
+		mScore -= mOutOfBoundsPenalty * pSimulation.M_TICK_DURATION / 1000.0;
 	}
 
     dx = mVelocity * cos(mDirection);
     dy = mVelocity * sin(mDirection);
     mDeltaDistance = std::sqrt(pow(dx, 2) + pow(dy, 2));
+
+	if (!mHasEaten)
+		mScore -= mStarvationPenalty * pSimulation.M_TICK_DURATION / 1000.0;
 
     expendEnergy(pSimulation);
 
@@ -232,8 +237,6 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 		case Simulation::Mode::train:
 		{
 			mEnergySpent += work;
-			if (!mHasEaten)
-				mScore -= mStarvationPenalty * deltaTime();
 			break;
 		}
 		default:
@@ -310,7 +313,10 @@ arma::mat Organism::smell(Simulation& pSimulation)
 			scents.at(i, j) = invalid ? -1 : pSimulation.getScent(coordPair(m, n));
 			sum += scents.at(i, j);
 		}
-		mScore += sum > 0 ? mScentReward * deltaTime() * sum: -1 * mNoScentsPenalty * deltaTime();
+		if (sum > 0)
+			mScore += mScentReward* pSimulation.M_TICK_DURATION / 1000.0 * sum;
+		else
+			mScore -= mNoScentsPenalty * pSimulation.M_TICK_DURATION / 1000.0;
 	}
 	scents.reshape(1, scents.n_rows * scents.n_cols);
 	return scents;
