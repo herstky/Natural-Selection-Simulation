@@ -6,6 +6,7 @@ training neural networks with genetic algorithms.pdf
 *.stash
 *.sln
 
+/output
 /debug
 /release
 /win32
