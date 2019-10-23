@@ -17,13 +17,11 @@ Entity::Entity()
 	  mDepth(0.1) {}
 
 Entity::Entity(const QPointF& pPosition)
-	: Model(pPosition),
-	  mType(Entity::Type::none),
-   	  mEnergyContent(100),
-	  mMass(0.005),
-	  mDensity(1500),
-	  mAspectRatio(1),
-	  mDepth(0.1) {}
+	: Entity()
+{
+	mX = pPosition.x() / SCALE_FACTOR;
+	mY = pPosition.y() / SCALE_FACTOR;
+}
 
 void Entity::simulate(Simulation& pSimulation) 
 {

@@ -19,7 +19,9 @@ qreal Organism::mFoodReward = 200;
 qreal Organism::mScentReward = 5; 
 
 Organism::Organism()
-	: mBrain(NeuralNetwork(std::vector<int>{ 9, 12, 20, 8, 2 })),
+	: mBrain(NeuralNetwork()),
+	  mMass(0.0005),
+	  mDensity(WATER_DENSITY),
 	  mMaxSpeed(.01),
 	  mVelocity(0.0),
 	  mInitialVelocity(mVelocity),
@@ -30,9 +32,8 @@ Organism::Organism()
 	  mMutationChance(0),
 	  mDeathChance(0),
 	  mScentStrength(1.0),
-	  mSmellRadius(3),
-	  mMass(0.0005),
-	  mDensity(WATER_DENSITY),
+	  mSmellRadius(diameter()),
+	  mScentThreshhold(0.02),
 	  mEnergyLevel(1e-7),
 	  mEnergyCapacity(1e-6),
 	  mEnergySpent(0),
@@ -40,81 +41,24 @@ Organism::Organism()
 	  mScore(0) {}
 
 Organism::Organism(const QPointF& pPosition)
-    : Entity(pPosition),
-	  mBrain(NeuralNetwork()),
-	  mMaxSpeed(0.01),
-      mVelocity(0.0),
-      mInitialVelocity(mVelocity),
-      mInitialTime(QTime::currentTime()),
-      mDeltaDistance(0),
-      mDirection(0.0),
-      mReplicationChance(0),
-      mMutationChance(0),
-      mDeathChance(0),
-	  mScentStrength(1.0),
-	  mSmellRadius(3),
-      mMass(0.0005),
-      mDensity(WATER_DENSITY),
-      mEnergyLevel(1e-7),
-      mEnergyCapacity(1e-6),
-	  mEnergySpent(0),
-	  mHasEaten(false),
-	  mScore(0)
+    : Organism()
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 }
 
 Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
-	: Entity(),
-	  mBrain(pBrain),
-	  mMaxSpeed(.01),
-	  mVelocity(0.0),
-	  mInitialVelocity(mVelocity),
-	  mInitialTime(QTime::currentTime()),
-	  mDeltaDistance(0),
-	  mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
-	  mReplicationChance(0),
-	  mMutationChance(0),
-	  mDeathChance(0),
-	  mScentStrength(1.0),
-	  mSmellRadius(3),
-	  mMass(0.0005),
-	  mDensity(WATER_DENSITY),
-	  mEnergyLevel(1e-7),
-	  mEnergyCapacity(1e-6),
-	  mEnergySpent(0),
-	  mHasEaten(false),
-	  mScore(0)
+	: Organism()
 {
+	mBrain = pBrain;
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
 }
 
-Organism::Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain)
-	: Entity(pPosition),
-	  mBrain(pBrain),
-	  mMaxSpeed(0.01),
-	  mVelocity(0.0),
-	  mInitialVelocity(mVelocity),
-	  mInitialTime(QTime::currentTime()),
-	  mDeltaDistance(0),
-	  mDirection(QRandomGenerator::global()->bounded(2 * M_PI)),
-	  mReplicationChance(0),
-	  mMutationChance(0),
-	  mDeathChance(0),
-	  mScentStrength(1.0),
-	  mSmellRadius(3),
-	  mMass(0.0005),
-	  mDensity(WATER_DENSITY),
-	  mEnergyLevel(1e-7),
-	  mEnergyCapacity(1e-6),
-	  mEnergySpent(0),
-	  mHasEaten(false),
-	  mScore(0)
+Organism::Organism(const QPointF& pPosition, NeuralNetwork pBrain)
+	: Organism(pPosition)
 {
-	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
-	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
+	mBrain = pBrain;
 }
 
 void Organism::move(const Simulation& pSimulation)
@@ -301,50 +245,80 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 
 arma::mat Organism::smell(Simulation& pSimulation)
 {
-	arma::mat scents(mSmellRadius, mSmellRadius);
-	int offset = -1 * mSmellRadius / 2;
+	int divisions = mBrain.mLayers[0];
+	arma::mat scents(1, divisions);
 	qreal sum = 0;
-	for (int i = 0; i < scents.n_rows; i++)
+
+	for (int i = 0; i < divisions; i++)
 	{
-		for (int j = 0; j < scents.n_cols; j++)
+		qreal angle = i * 2.0 * M_PI / divisions;
+		for (auto food : pSimulation.mFoodSet)
 		{
-			for (auto food : pSimulation.mFoodSet)
-			{
-				coordPair foodCoords = food->coords(pSimulation);
-				qreal dx = x() + (offset + i) * pSimulation.board().M_CELL_SIZE - food->x();
-				qreal dy = y() + (offset + j) * pSimulation.board().M_CELL_SIZE - food->y();
-				qreal distance = std::sqrt(pow(dx, 2) + pow(dy, 2));
-				scents.at(i, j) += Food::M_SCENT_DIFFUSIVITY * Food::M_SCENT_STRENGTH / distance;
-				sum += scents.at(i, j);
-			}
-
-
-
-
-
-
-
-
-
-
-
-
-			coordPair foobar = coords(pSimulation); // debug
-			int m = coords(pSimulation).first + i + offset;
-			int n = coords(pSimulation).second + j + offset;
-			bool invalid = m >= pSimulation.board().rows()
-				|| m < 0
-				|| n >= pSimulation.board().columns()
-				|| n < 0;
-			scents.at(i, j) = invalid ? -1 : pSimulation.getScent(coordPair(m, n));
-			sum += scents.at(i, j);
+			qreal scentPositionX = x() + mSmellRadius * cos(angle);
+			qreal scentPositionY = y() - mSmellRadius * sin(angle); // invert because y decreases in the up direction
+			qreal dx = scentPositionX - food->x();
+			qreal dy = scentPositionY - food->y(); 
+			bool validPosition = !(scentPositionX >= pSimulation.board().width()
+				|| scentPositionX < 0
+				|| scentPositionY >= pSimulation.board().height()
+				|| scentPositionY < 0);
+			qreal distance = std::sqrt(pow(dx, 2) + pow(dy, 2));
+			qreal intensity = std::min(Food::M_SCENT_DIFFUSIVITY * Food::M_SCENT_STRENGTH / distance, Food::M_SCENT_STRENGTH);
+			if (validPosition && intensity >= mScentThreshhold)
+				scents.at(1, i) += intensity;
+			else
+				scents.at(1, i) = 0;
+			sum += scents.at(1, i);
 		}
-		if (sum > 0)
-			mScore += mScentReward* pSimulation.M_TICK_DURATION / 1000.0 * sum;
-		else
-			mScore -= mNoScentsPenalty * pSimulation.M_TICK_DURATION / 1000.0;
 	}
-	scents.reshape(1, scents.n_rows * scents.n_cols);
+
+
+
+
+
+
+	//int offset = -1 * mSmellRadius / 2;
+	//for (int i = 0; i < scents.n_rows; i++)
+	//{
+	//	for (int j = 0; j < scents.n_cols; j++)
+	//	{
+	//		for (auto food : pSimulation.mFoodSet)
+	//		{
+	//			coordPair foodCoords = food->coords(pSimulation);
+	//			qreal dx = x() + (offset + i) / pSimulation.board().M_CELL_SIZE - food->x();
+	//			qreal dy = y() + (offset + j) / pSimulation.board().M_CELL_SIZE - food->y();
+	//			qreal distance = std::sqrt(pow(dx, 2) + pow(dy, 2));
+	//			scents.at(i, j) += Food::M_SCENT_DIFFUSIVITY * Food::M_SCENT_STRENGTH / distance;
+	//			sum += scents.at(i, j);
+	//		}
+
+
+
+
+
+
+
+
+
+
+
+
+	//		coordPair foobar = coords(pSimulation); // debug
+	//		int m = coords(pSimulation).first + i + offset;
+	//		int n = coords(pSimulation).second + j + offset;
+	//		bool invalid = m >= pSimulation.board().rows()
+	//			|| m < 0
+	//			|| n >= pSimulation.board().columns()
+	//			|| n < 0;
+	//		scents.at(i, j) = invalid ? -1 : pSimulation.getScent(coordPair(m, n));
+	//		sum += scents.at(i, j);
+	//	}
+	//	if (sum > 0)
+	//		mScore += mScentReward* pSimulation.M_TICK_DURATION / 1000.0 * sum;
+	//	else
+	//		mScore -= mNoScentsPenalty * pSimulation.M_TICK_DURATION / 1000.0;
+	//}
+	//scents.reshape(1, scents.n_rows * scents.n_cols);
 	return scents;
 }
 

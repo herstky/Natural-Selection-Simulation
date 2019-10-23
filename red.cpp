@@ -12,9 +12,8 @@ Red::Red()
 }
 
 Red::Red(const Simulation& pSimulation)
+	: Organism(pSimulation, NeuralNetwork())
 {
-	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
-	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
 	init();
 }
 
@@ -31,8 +30,8 @@ Red::Red(const Simulation& pSimulation, NeuralNetwork pBrain)
 }
 
 
-Red::Red(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain)
-	: Organism(pSimulation, pPosition, pBrain)
+Red::Red(const QPointF& pPosition, NeuralNetwork pBrain)
+	: Organism(pPosition, pBrain)
 {
 	init();
 }

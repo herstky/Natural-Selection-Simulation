@@ -11,7 +11,7 @@ public:
 	Red(const Simulation& pSimulation);
     Red(const QPointF& pPosition);
 	Red(const Simulation& pSimulation, NeuralNetwork pBrain);
-	Red(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain);
+	Red(const QPointF& pPosition, NeuralNetwork pBrain);
     ~Red();
 
     void replicate(const Simulation& pSimulation) override;

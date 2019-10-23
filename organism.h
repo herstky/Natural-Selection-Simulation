@@ -17,7 +17,7 @@ public:
 	Organism();
     Organism(const QPointF& pPosition);
 	Organism(const Simulation& pSimulation, NeuralNetwork pBrain);
-	Organism(const Simulation& pSimulation, const QPointF& pPosition, NeuralNetwork pBrain);
+	Organism(const QPointF& pPosition, NeuralNetwork pBrain);
 
     const qreal volume() const;
     const qreal diameter() const;
@@ -34,6 +34,8 @@ public:
 
 protected:
 	NeuralNetwork mBrain;
+	qreal mMass; // [kg]
+	qreal mDensity; // [kg/m^3]
 	qreal mMaxSpeed; // [m/s]
 	qreal mVelocity; // [m/s]
 	qreal mInitialVelocity; // [m/s]
@@ -44,10 +46,8 @@ protected:
 	qreal mMutationChance;
 	qreal mDeathChance;
 	qreal mScentStrength;
-	int mSmellRadius;
-
-	qreal mMass; // [kg]
-	qreal mDensity; // [kg/m^3]
+	qreal mSmellRadius; // [m]
+	qreal mScentThreshhold;
 	qreal mEnergyLevel;
 	qreal mEnergyCapacity;
 	qreal mEnergySpent;

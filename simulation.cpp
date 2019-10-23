@@ -26,10 +26,7 @@ Simulation::Simulation(QQuickItem* pParent)
 	: mMode(Mode::simulate),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mScentSystem(ScentSystem(*this)),
 	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), 0)),
-	  mScentMap(coordMap()),
-	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
       M_TICKS_PER_STEP(5),
 	  M_STEPS_PER_ROUND(500), 
@@ -37,43 +34,18 @@ Simulation::Simulation(QQuickItem* pParent)
 	  mStepsRemaining(M_STEPS_PER_ROUND),
 	  mGeneration(0),
 	  mScore(0),
-	  mResetScentSystem(false),
 	  mInitialTime(QTime::currentTime()),
 	  mAnimate(true),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
-	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
-	  mScentQueue(coordMap())
+	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
 {
-	mTimer = new QTimer();
-	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 	init(mBestNeuralNetwork.first);
 }
 
 Simulation::Simulation(QQuickItem* pParent, Mode pMode)
-	: mMode(Mode::simulate),
-	  mContainer(*pParent),
-	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mScentSystem(ScentSystem(*this)),
-	  mScentMap(coordMap()),
-	  mDiffusionThread(QFuture<void>()),
-	  M_TICK_DURATION(50),
-	  M_TICKS_PER_STEP(5),
-	  M_STEPS_PER_ROUND(500),
-	  mTicksRemaining(M_TICKS_PER_STEP),
-	  mStepsRemaining(M_STEPS_PER_ROUND),
-	  mGeneration(0),
-	  mScore(0),
-	  mResetScentSystem(false),
-	  mInitialTime(QTime::currentTime()),
-	  mAnimate(true),
-	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
-	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
-	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>()),
-	  mScentQueue(coordMap())
+	: Simulation(pParent)
 {
-	mTimer = new QTimer();
-	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 	mMode = pMode;
 	init(mBestNeuralNetwork.first);
 }
@@ -102,11 +74,6 @@ void Simulation::addFood(std::shared_ptr<Food> pFood)
 void Simulation::removeFood(std::shared_ptr<Food> pFood)
 {
 	mFoodSet.erase(pFood);
-}
-
-qreal Simulation::getScent(coordPair pCoords)
-{
-	return mScentMap.count(pCoords) ? mScentMap.at(pCoords) : 0;
 }
 
 QQuickItem& Simulation::boardView() const
@@ -238,17 +205,6 @@ void Simulation::run()
 	}
 	else
 	{
-		if (mDiffusionThread.isRunning())
-			std::cout << "Warning, ScentSystem thread still running!\n";
-		mDiffusionThread.waitForFinished();
-
-		// Swap scent maps before starting concurrent thread
-		mScentMap = mScentSystem.mScentMap;
-		mScentSystem.mAdditionQueue = mScentQueue;
-		mScentQueue.clear();
-
-		mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
-
 		mInitialTime = QTime::currentTime();
 		mTicksRemaining = M_TICKS_PER_STEP;
 	}
@@ -336,15 +292,12 @@ void Simulation::run()
 	outputCounts();
 }
 
-void Simulation::init(const NeuralNetwork& pNeuralNetwork)
+void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 {
 	View::mDeletionQueue.clear();
-	mResetScentSystem = true;
 	mFoodSet.clear();
 	mOrganismGroups.clear();
 	mInitViewQueue.clear();
-	mScentMap.clear();
-	mScentQueue.clear();
 	mGeneration++;
 	mScore = 0;
 
@@ -366,17 +319,8 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 			int entities = 40;
 			int replicates = 10; // number of clones of each Entity
 
-			mDiffusionThread.cancel();
-			mScentSystem.reset(*this);
-			mScentMap = mScentSystem.mScentMap;
 			std::shared_ptr<Food> food(new Food(*this, center));
 			addFood(std::shared_ptr<Food>(food));
-			food->emanateScent(*this);
-			mScentSystem.mAdditionQueue = mScentQueue;
-			mScentQueue.clear();
-			mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
-			mDiffusionThread.waitForFinished();
-			mScentMap = mScentSystem.mScentMap;
 
 			for (int i = 0; i < entities; i++)
 			{
@@ -387,7 +331,7 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 				{
 					qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / replicates) + j * 2 * M_PI / replicates;
 					QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
-					group.push_back(std::shared_ptr<Organism>(new Red(*this, pos, neuralNetwork)));
+					group.push_back(std::shared_ptr<Organism>(new Red(pos, neuralNetwork)));
 				}
 				addOrganismGroup(group);
 			}
@@ -404,6 +348,14 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 	}
 
 	mTimer->start(M_TICK_DURATION);
+}
+
+void Simulation::init(const NeuralNetwork& pNeuralNetwork)
+{
+	mTimer = new QTimer();
+	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
+
+	start(pNeuralNetwork);
 }
 
 void Simulation::outputCounts()

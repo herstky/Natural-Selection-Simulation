@@ -11,7 +11,7 @@
 unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 5;
 const qreal Food::M_SCENT_STRENGTH = 1.0;
-const qreal Food::M_SCENT_DIFFUSIVITY = 0.5;
+const qreal Food::M_SCENT_DIFFUSIVITY = 0.003;
 
 Food::Food(Simulation& pSimulation)
 	: mContainer(pSimulation.mFoodSet)
@@ -50,11 +50,6 @@ const qreal Food::width() const
 const qreal Food::volume() const
 {
 	return mMass / mDensity;
-}
-
-void Food::emanateScent(Simulation& pSimulation)
-{
-	pSimulation.mScentQueue.emplace(coords(pSimulation), M_SCENT_STRENGTH);
 }
 
 void Food::simulate(Simulation& pSimulation)

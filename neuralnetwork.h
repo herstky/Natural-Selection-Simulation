@@ -6,11 +6,13 @@
 #include <armadillo>
 
 class Simulation;
+class Organism;
 
 class NeuralNetwork
 {
 public:
 	friend Simulation;
+	friend Organism;
 
 	NeuralNetwork();
 	NeuralNetwork(std::vector<int> pLayers);
@@ -21,7 +23,7 @@ public:
 	static NeuralNetwork crossoverBasisWeights(const NeuralNetwork& pFirst, const NeuralNetwork& pSecond);
 	static NeuralNetwork mutateWeights(const NeuralNetwork& pNeuralNetwork);
 	static NeuralNetwork mutateBasisWeights(const NeuralNetwork& pNeuralNetwork);
-
+	
 private:
 	std::vector<int> mLayers;
 	std::vector<arma::mat> mWeights;
