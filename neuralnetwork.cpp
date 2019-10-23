@@ -6,13 +6,13 @@
 
 #include "utils.h"
 
-qreal NeuralNetwork::mMutationChance = 8;
+qreal NeuralNetwork::mMutationChance = 5;
 qreal NeuralNetwork::mSmallVarianceMagnitude = 1;
 qreal NeuralNetwork::mLargeVarianceMagnitude = 20;
-qreal NeuralNetwork::mLargeVarianceChance = 3;
+qreal NeuralNetwork::mLargeVarianceChance = 0;
 
 NeuralNetwork::NeuralNetwork()
-	: mLayers(std::vector<int>{ 9, 20, 20, 2 })
+	: mLayers(std::vector<int>{ 9, 20, 8, 2 })
 {
 	for (unsigned int i = 1; i < mLayers.size(); i++)
 	{

@@ -8,9 +8,12 @@
 
 #include "simulation.h"
 
+// TODO: might want to lower range on scent so that organisms must search for a scent, to stop them from staying
+// in one place or moving too slowly. 
+
 ScentSystem::ScentSystem(Simulation& pSimulation)
 	: mSimulation(pSimulation),
-	  mThreshhold(0.01),
+	  mThreshhold(0.025), 
 	  mScentMap(coordMap()),
 	  mAdditionQueue(coordMap()),
 	  mSubtractionQueue(coordMap()),
@@ -22,26 +25,25 @@ ScentSystem::ScentSystem(Simulation& pSimulation)
 
 void ScentSystem::init(Simulation& pSimulation)
 {
-	qreal scentStrength = -1;
+	qreal scentStrength = 1;
 	int range = scentStrength * mDiffusivity / mThreshhold;
 	for (int i = 0; i < pSimulation.board().columns(); i++)
 	{
 		for (int j = 0; j < range; j++)
 		{
-			mScentMap[coordPair(j, i)] = scentStrength * mDiffusivity / (1 - j / range);
-			mScentMap[coordPair(pSimulation.board().rows() - 1 - j, i)] = scentStrength * mDiffusivity / (1 - j / range);
+			mScentMap[coordPair(j, i)] = -1 * scentStrength * mDiffusivity / (1 - j / range);
+			mScentMap[coordPair(pSimulation.board().rows() - 1 - j, i)] = -1 * scentStrength * mDiffusivity / (1 - j / range);
 		}
 	}
 	for (int i = 0; i < pSimulation.board().rows(); i++)
 	{
 		for (int j = 0; j < range; j++)
 		{
-			mScentMap[coordPair(i, j)] = scentStrength * mDiffusivity / (1 - j / range);
-			mScentMap[coordPair(i, pSimulation.board().columns() - 1 - j)] = scentStrength * mDiffusivity / (1 - j / range);
+			mScentMap[coordPair(i, j)] = -1 * scentStrength * mDiffusivity / (1 - j / range);
+			mScentMap[coordPair(i, pSimulation.board().columns() - 1 - j)] = -1 * scentStrength * mDiffusivity / (1 - j / range);
 		}
 	}
 }
-
 
 void ScentSystem::add(coordMap pCoordMap, coordPair pCoords, qreal pAmount)
 {

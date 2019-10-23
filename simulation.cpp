@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <string>
 
 #include "constants.h"
 #include "view.h"
@@ -31,7 +32,7 @@ Simulation::Simulation(QQuickItem* pParent)
 	  mDiffusionThread(QFuture<void>()),
       M_TICK_DURATION(50),
       M_TICKS_PER_STEP(5),
-	  M_STEPS_PER_ROUND(300), 
+	  M_STEPS_PER_ROUND(500), 
       mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
 	  mGeneration(0),
@@ -58,7 +59,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mDiffusionThread(QFuture<void>()),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
-	  M_STEPS_PER_ROUND(300),
+	  M_STEPS_PER_ROUND(500),
 	  mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
 	  mGeneration(0),
@@ -161,6 +162,12 @@ void Simulation::train()
 				return (a.second > b.second);
 			});
 
+		std::cout << "-------------------------------------\n";
+		for (auto group : groupResults)
+		{
+			std::cout << group.second << '\n';
+		}
+
 		int first = groupResults[0].first;
 		int second = groupResults.size() > 1 ? groupResults[1].first : -1;
 
@@ -169,6 +176,12 @@ void Simulation::train()
 		if (groupResults[0].second > mBestNeuralNetwork.second)
 		{
 			mBestNeuralNetwork = std::pair<NeuralNetwork, qreal>(mOrganismGroups[first][0]->mBrain, groupResults[0].second);
+			int i = 0;
+			for (auto weightMatrix : mBestNeuralNetwork.first.mWeights)
+			{
+				weightMatrix.save("output\\Theta" + std::to_string(i) + ".txt", arma::arma_ascii);
+				i++;
+			}
 			firstNN = mOrganismGroups[first][0]->mBrain;
 			secondNN = second == -1 ? NeuralNetwork() : mOrganismGroups[second][0]->mBrain;
 		}
@@ -177,7 +190,8 @@ void Simulation::train()
 			firstNN = mBestNeuralNetwork.first;
 			secondNN = mOrganismGroups[first][0]->mBrain;
 		}
-		NeuralNetwork newNN = NeuralNetwork::crossoverWeights(firstNN, secondNN);		
+		NeuralNetwork newNN = NeuralNetwork::crossoverWeights(firstNN, secondNN);
+		newNN = NeuralNetwork::crossoverBasisWeights(newNN, secondNN);
 
 		for (auto item : boardView().childItems())
 		{
@@ -348,22 +362,26 @@ void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 		case Mode::train:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-			qreal radius = 20 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 10;
-			int replicates = 40; // number of clones of each Entity
+			qreal radius = 15 * mBoard.cellSize() * SCALE_FACTOR;
+			int entities = 40;
+			int replicates = 10; // number of clones of each Entity
 
-			addFood(std::shared_ptr<Food>(new Food(*this, center)));
 			mDiffusionThread.cancel();
 			mScentSystem.reset(*this);
+			mScentMap = mScentSystem.mScentMap;
+			std::shared_ptr<Food> food(new Food(*this, center));
+			addFood(std::shared_ptr<Food>(food));
+			food->emanateScent(*this);
+			mScentSystem.mAdditionQueue = mScentQueue;
+			mScentQueue.clear();
 			mDiffusionThread = QtConcurrent::run(QThreadPool::globalInstance(), &mScentSystem, &ScentSystem::update);
 			mDiffusionThread.waitForFinished();
 			mScentMap = mScentSystem.mScentMap;
-			mScentSystem.mAdditionQueue = mScentQueue;
-			mScentQueue.clear();
 
 			for (int i = 0; i < entities; i++)
 			{
 				NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(pNeuralNetwork);
+				neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
 				std::vector<std::shared_ptr<Organism>> group = std::vector<std::shared_ptr<Organism>>();
 				for (int j = 0; j < replicates; j++)
 				{
