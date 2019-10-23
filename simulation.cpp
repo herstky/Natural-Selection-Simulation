@@ -187,7 +187,7 @@ void Simulation::run()
 		{
 			View* view = dynamic_cast<View*>(item);
 			std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
-			entity->move(*this);
+			//entity->move(*this);
 		}
 		catch (const std::exception & e)
 		{
@@ -271,6 +271,7 @@ void Simulation::run()
 	{
 		case Mode::debug:
 		{
+			train();
 			break;
 		}
 		case Mode::train:
@@ -308,8 +309,9 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 		case Mode::debug:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
+			QPointF org = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2 + 18);
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
-			addOrganism(std::shared_ptr<Organism>(new Red(center)));
+			addOrganism(std::shared_ptr<Organism>(new Red(org)));
 			break;
 		}
 		case Mode::train:
