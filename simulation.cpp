@@ -10,6 +10,7 @@
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include <limits>
 
 #include "constants.h"
 #include "view.h"
@@ -23,7 +24,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), 0)),
+	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), -std::numeric_limits<double>::infinity())),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
 	  M_STEPS_PER_ROUND(500),
@@ -133,6 +134,7 @@ void Simulation::train()
 		NeuralNetwork secondNN;
 		if (groupResults[0].second > mBestNeuralNetwork.second)
 		{
+			std::cout << "\nNew best neural network found\n";
 			mBestNeuralNetwork = std::pair<NeuralNetwork, qreal>(mOrganismGroups[first][0]->mBrain, groupResults[0].second);
 			int i = 0;
 			for (auto weightMatrix : mBestNeuralNetwork.first.mWeights)

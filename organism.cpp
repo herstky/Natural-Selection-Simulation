@@ -15,10 +15,10 @@
 qreal Organism::mStarvationPenalty = 5; // 5
 qreal Organism::mOutOfBoundsPenalty = 0; // 1
 qreal Organism::mNoScentsPenalty = 0; // 0.1
-qreal Organism::mFoodReward = 0; // 250
-qreal Organism::mScentReward = 0; // 1
+qreal Organism::mFoodReward = 100; // 250
+qreal Organism::mScentReward = 1; // 1
 qreal Organism::mScentIncreaseReward = 10; // 10
-qreal Organism::mScentDecreasePenalty = 0; // 100
+qreal Organism::mScentDecreasePenalty = 10; // 100
 
 Organism::Organism()
 	: mBrain(NeuralNetwork()),
