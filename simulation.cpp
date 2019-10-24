@@ -16,9 +16,7 @@
 #include "view.h"
 #include "model.h"
 #include "entity.h"
-#include "red.h"
-#include "green.h"
-#include "blue.h"
+#include "creature.h"
 #include "food.h"
 #include "neuralnetwork.h"
 
@@ -86,9 +84,9 @@ Board& Simulation::board()
 
 void Simulation::simulate()
 {
-	if (QRandomGenerator::global()->bounded(100) < Red::mCreationChance)
+	if (QRandomGenerator::global()->bounded(100) < Creature::mCreationChance)
 	{
-		addOrganism(std::shared_ptr<Organism>(new Red(*this)));
+		addOrganism(std::shared_ptr<Organism>(new Creature(*this)));
 	}
 	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
 	{
@@ -157,9 +155,7 @@ void Simulation::train()
 		{
 			item->deleteLater();
 		}
-		Red::mCount = 0;
-		Blue::mCount = 0;
-		Green::mCount = 0;
+		Creature::mCount = 0;
 		mTimer->stop();
 		mStepsRemaining = M_STEPS_PER_ROUND;
 		init(newNN);
@@ -304,15 +300,15 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			QPointF org = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2 + 9);
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
-			addOrganism(std::shared_ptr<Organism>(new Red(org)));
+			addOrganism(std::shared_ptr<Organism>(new Creature(org)));
 			break;
 		}
 		case Mode::train:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 15 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 40;
-			int replicates = 10; // number of clones of each Entity
+			int entities = 20;
+			int replicates = 20; // number of clones of each Entity
 
 			std::shared_ptr<Food> food(new Food(*this, center));
 			addFood(std::shared_ptr<Food>(food));
@@ -322,11 +318,12 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 				NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(pNeuralNetwork);
 				neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
 				std::vector<std::shared_ptr<Organism>> group = std::vector<std::shared_ptr<Organism>>();
+				QColor groupColor = QColor(QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255));
 				for (int j = 0; j < replicates; j++)
 				{
 					qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / replicates) + j * 2 * M_PI / replicates;
 					QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
-					group.push_back(std::shared_ptr<Organism>(new Red(pos, neuralNetwork)));
+					group.push_back(std::shared_ptr<Organism>(new Creature(pos, neuralNetwork, groupColor)));
 				}
 				addOrganismGroup(group);
 			}
@@ -365,7 +362,7 @@ void Simulation::outputCounts()
 			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
 			greenLabel->setProperty("text", "Score: " + QString::number(mScore));
 			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
-			blueLabel->setProperty("text", "Entities: " + QString::number(Red::mCount));
+			blueLabel->setProperty("text", "Entities: " + QString::number(Creature::mCount));
 			break;
 		}
 		case Mode::train:
@@ -376,18 +373,14 @@ void Simulation::outputCounts()
 			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
 			greenLabel->setProperty("text", "Score: " + QString::number(mScore));
 			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
-			blueLabel->setProperty("text", "Entities: " + QString::number(Red::mCount));
+			blueLabel->setProperty("text", "Entities: " + QString::number(Creature::mCount));
 			break;
 		}
 		case Mode::simulate:
 		{
 			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
 			QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
-			redLabel->setProperty("text", "Red: " + QString::number(Red::mCount));
-			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
-			greenLabel->setProperty("text", "Green: " + QString::number(Green::mCount));
-			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
-			blueLabel->setProperty("text", "Blue: " + QString::number(Blue::mCount));
+			redLabel->setProperty("text", "Red: " + QString::number(Creature::mCount));
 			break;
 		}
 		default:

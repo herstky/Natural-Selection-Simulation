@@ -18,6 +18,7 @@ public:
     Organism(const QPointF& pPosition);
 	Organism(const Simulation& pSimulation, NeuralNetwork pBrain);
 	Organism(const QPointF& pPosition, NeuralNetwork pBrain);
+	Organism(const QPointF& pPosition, NeuralNetwork pBrain, QColor pColor);
 
     const qreal volume() const;
     const qreal diameter() const;

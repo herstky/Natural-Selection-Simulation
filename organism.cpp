@@ -12,12 +12,12 @@
 
 // TODO: consider diminishing returns for certain rewards
 
-qreal Organism::mStarvationPenalty = 1; // 1
+qreal Organism::mStarvationPenalty = 3; // 1
 qreal Organism::mOutOfBoundsPenalty = 0; // 1
-qreal Organism::mNoScentsPenalty = 0; // 0.1
-qreal Organism::mFoodReward = 100; // 100
-qreal Organism::mScentReward = 0; // 1
-qreal Organism::mScentIncreaseReward = 5;
+qreal Organism::mNoScentsPenalty = 0.1; // 0.1
+qreal Organism::mFoodReward = 200; // 100
+qreal Organism::mScentReward = 1; // 1
+qreal Organism::mScentIncreaseReward = 10;
 qreal Organism::mScentDecreasePenalty = 100;
 
 Organism::Organism()
@@ -46,6 +46,7 @@ Organism::Organism()
 Organism::Organism(const QPointF& pPosition)
     : Organism()
 {
+	mColor = Qt::red;
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 }
@@ -54,6 +55,7 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	: Organism()
 {
 	mBrain = pBrain;
+	mColor = Qt::red;
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
 }
@@ -61,7 +63,15 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 Organism::Organism(const QPointF& pPosition, NeuralNetwork pBrain)
 	: Organism(pPosition)
 {
+	mColor = Qt::red;
 	mBrain = pBrain;
+}
+
+Organism::Organism(const QPointF& pPosition, NeuralNetwork pBrain, QColor pColor)
+	: Organism(pPosition)
+{
+	mBrain = pBrain;
+	mColor = pColor;
 }
 
 void Organism::move(const Simulation& pSimulation)
