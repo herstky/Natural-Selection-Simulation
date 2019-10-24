@@ -1,6 +1,7 @@
 #include "organism.h"
 
 #include <algorithm>
+#include <limits>
 
 #include <QtMath>
 #include <QRandomGenerator>
@@ -12,13 +13,13 @@
 
 // TODO: consider diminishing returns for certain rewards
 
-qreal Organism::mStarvationPenalty = 1; // 1
+qreal Organism::mStarvationPenalty = 5; // 1
 qreal Organism::mOutOfBoundsPenalty = 0; // 1
 qreal Organism::mNoScentsPenalty = 0.1; // 0.1
-qreal Organism::mFoodReward = 150; // 100
-qreal Organism::mScentReward = 0.25; // 1
-qreal Organism::mScentIncreaseReward = 100;
-qreal Organism::mScentDecreasePenalty = 1000;
+qreal Organism::mFoodReward = 250; // 100
+qreal Organism::mScentReward = 1; // 1
+qreal Organism::mScentIncreaseReward = 10;
+qreal Organism::mScentDecreasePenalty = 100;
 
 Organism::Organism()
 	: mBrain(NeuralNetwork()),
@@ -312,23 +313,22 @@ void Organism::think(Simulation& pSimulation)
 {
 	arma::mat scents = smell(pSimulation);
 
-	// normalize scent matrix
-	qreal maxScent = 0;
+	// normalize and mean-center scent matrix
+	qreal maxScent = -std::numeric_limits<qreal>::infinity();
+	qreal minScent = std::numeric_limits<qreal>::infinity();
 	for (int i = 0; i < scents.n_rows; i++)
 	{
 		for (int j = 0; j < scents.n_cols; j++)
 		{
 			maxScent = std::max(maxScent, scents.at(i, j));
+			minScent = std::min(minScent, scents.at(i, j));
 		}
 	}
-	if (maxScent > 0)
+	for (int i = 0; i < scents.n_rows; i++)
 	{
-		for (int i = 0; i < scents.n_rows; i++)
+		for (int j = 0; j < scents.n_cols; j++)
 		{
-			for (int j = 0; j < scents.n_cols; j++)
-			{
-				scents.at(i, j) = scents.at(i, j) / maxScent;
-			}
+			scents.at(i, j) = (scents.at(i, j) - minScent) / (maxScent - minScent);
 		}
 	}
 

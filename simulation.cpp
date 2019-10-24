@@ -6,11 +6,11 @@
 #include <QThreadPool>
 #include <QtConcurrent/QtConcurrent>
 #include <QRandomGenerator>
-#include <QtQml>
 
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include <limits>
 
 #include "constants.h"
 #include "view.h"
@@ -24,7 +24,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), 0)),
+	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), -std::numeric_limits<qreal>::infinity())),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
 	  M_STEPS_PER_ROUND(500),
@@ -33,7 +33,8 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mGeneration(0),
 	  mScore(0),
 	  mInitialTime(QTime::currentTime()),
-	  mAnimate(true),
+	  mAnimateCheckBox(mContainer.findChild<QObject*>("animateCheckBox")),
+      mAnimated(true),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
@@ -133,6 +134,7 @@ void Simulation::train()
 		NeuralNetwork secondNN;
 		if (groupResults[0].second > mBestNeuralNetwork.second)
 		{
+			std::cout << "\nNew best neural network found\n";
 			mBestNeuralNetwork = std::pair<NeuralNetwork, qreal>(mOrganismGroups[first][0]->mBrain, groupResults[0].second);
 			int i = 0;
 			for (auto weightMatrix : mBestNeuralNetwork.first.mWeights)
@@ -158,7 +160,7 @@ void Simulation::train()
 		Creature::mCount = 0;
 		mTimer->stop();
 		mStepsRemaining = M_STEPS_PER_ROUND;
-		init(newNN);
+		start(newNN);
 	}
 }
 
@@ -167,8 +169,32 @@ void Simulation::run()
 	for (auto entity : mInitViewQueue)
 	{
 		entity->initView(*this);
+		if (mAnimated)
+			entity->mView->setVisible(true);
+		else
+			entity->mView->setVisible(false);
 	}
 	mInitViewQueue.clear();
+
+	bool animate = mAnimateCheckBox->property("checked") == true;
+	if (!animate && mAnimated)
+	{
+		for (auto item : boardView().childItems())
+		{
+			item->setVisible(false);
+		}
+		mTimer->setInterval(0);
+		mAnimated = false;
+	}
+	else if (animate && !mAnimated)
+	{
+		for (auto item : boardView().childItems())
+		{
+			item->setVisible(true);
+		}
+		mTimer->setInterval(M_TICK_DURATION);
+		mAnimated = true;
+	}
 
 	for (auto item : boardView().childItems())
 	{
@@ -342,11 +368,23 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 		}
 	}
 
-	mTimer->start(M_TICK_DURATION);
+	mTimer->start();
+	if (mAnimated)
+	{
+		mAnimateCheckBox->setProperty("checked", Qt::Checked);
+		mTimer->setInterval(M_TICK_DURATION);
+	}
+	else
+	{
+		mAnimateCheckBox->setProperty("checked", Qt::Unchecked);
+		mTimer->setInterval(0);
+	}
 }
 
 void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 {
+	mAnimateCheckBox->setProperty("checked", Qt::Checked);
+	mAnimated = true;
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 
