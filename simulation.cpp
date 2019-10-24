@@ -24,7 +24,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), -std::numeric_limits<double>::infinity())),
+	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), -std::numeric_limits<qreal>::infinity())),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
 	  M_STEPS_PER_ROUND(500),

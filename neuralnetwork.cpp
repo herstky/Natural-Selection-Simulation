@@ -2,10 +2,12 @@
 
 #include <QRandomGenerator>
 
-#include <iostream>
+#include <random>
 
 #include "utils.h"
 
+std::default_random_engine NeuralNetwork::mGenerator(std::chrono::system_clock::now().time_since_epoch().count());
+std::normal_distribution<qreal> NeuralNetwork::mDistribution;
 qreal NeuralNetwork::mMutationChance = 5;
 qreal NeuralNetwork::mSmallVarianceMagnitude = 1;
 qreal NeuralNetwork::mLargeVarianceMagnitude = 100;
@@ -16,10 +18,8 @@ NeuralNetwork::NeuralNetwork()
 {
 	for (unsigned int i = 1; i < mLayers.size(); i++)
 	{
-		mWeights.push_back(2 * arma::randu<arma::mat>(mLayers[i - 1] + 1, mLayers[i]) - 1);
+		mWeights.push_back(arma::randn<arma::mat>(mLayers[i - 1] + 1, mLayers[i]));
 	}
-	mutateBasisWeights(*this);
-	mutateWeights(*this);
 	init();
 }
 
@@ -28,10 +28,8 @@ NeuralNetwork::NeuralNetwork(std::vector<int> pLayers)
 {
 	for (unsigned int i = 1; i < mLayers.size(); i++)
 	{
-		mWeights.push_back(2 * arma::randu<arma::mat>(mLayers[i - 1] + 1, mLayers[i]) - 1);
+		mWeights.push_back(arma::randn<arma::mat>(mLayers[i - 1] + 1, mLayers[i]));
 	}
-	mutateBasisWeights(*this);
-	mutateWeights(*this);
 	init();
 }
 
@@ -54,6 +52,11 @@ arma::mat NeuralNetwork::forwardPropagate(arma::mat input)
 }
 
 void NeuralNetwork::init() {}
+
+qreal NeuralNetwork::randn()
+{
+	return mDistribution(mGenerator);
+}
 
 NeuralNetwork NeuralNetwork::crossoverWeights(const NeuralNetwork& pFirst, const NeuralNetwork& pSecond)
 {
@@ -103,9 +106,9 @@ NeuralNetwork NeuralNetwork::mutateWeights(const NeuralNetwork& pNeuralNetwork)
 				{
 					qreal delta;
 					if (QRandomGenerator::global()->bounded(100.0) < mLargeVarianceChance)
-						delta = (2 * QRandomGenerator::global()->bounded(1) - 1) * mLargeVarianceMagnitude;
+						delta = randn() * mLargeVarianceMagnitude;
 					else
-						delta = (2 * QRandomGenerator::global()->bounded(1) - 1) * mSmallVarianceMagnitude;
+						delta = randn() * mSmallVarianceMagnitude;
 					nn.mWeights[i].at(j, k) += delta;
 				}
 			}
@@ -125,9 +128,9 @@ NeuralNetwork NeuralNetwork::mutateBasisWeights(const NeuralNetwork& pNeuralNetw
 			{
 				qreal delta;
 				if (QRandomGenerator::global()->bounded(100.0) < mLargeVarianceChance)
-					delta = (2 * QRandomGenerator::global()->bounded(1) - 1) * mLargeVarianceMagnitude;
+					delta = randn() * mLargeVarianceMagnitude;
 				else
-					delta = (2 * QRandomGenerator::global()->bounded(1) - 1) * mSmallVarianceMagnitude;
+					delta = randn() * mSmallVarianceMagnitude;
 				nn.mWeights[i].at(0, k) += delta;
 			}
 		}
