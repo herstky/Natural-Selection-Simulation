@@ -59,7 +59,8 @@ private:
 	int mGeneration;
 	qreal mScore;
 	QTime mInitialTime; // time since previous step
-	bool mAnimate;
+	QObject* mAnimateCheckBox;
+	bool mAnimated;
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;
 	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;
 	std::vector<std::shared_ptr<Entity>> mInitViewQueue;

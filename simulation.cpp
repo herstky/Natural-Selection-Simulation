@@ -6,7 +6,6 @@
 #include <QThreadPool>
 #include <QtConcurrent/QtConcurrent>
 #include <QRandomGenerator>
-#include <QtQml>
 
 #include <iostream>
 #include <algorithm>
@@ -33,7 +32,8 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mGeneration(0),
 	  mScore(0),
 	  mInitialTime(QTime::currentTime()),
-	  mAnimate(true),
+	  mAnimateCheckBox(mContainer.findChild<QObject*>("animateCheckBox")),
+      mAnimated(true),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
@@ -158,7 +158,7 @@ void Simulation::train()
 		Creature::mCount = 0;
 		mTimer->stop();
 		mStepsRemaining = M_STEPS_PER_ROUND;
-		init(newNN);
+		start(newNN);
 	}
 }
 
@@ -167,8 +167,32 @@ void Simulation::run()
 	for (auto entity : mInitViewQueue)
 	{
 		entity->initView(*this);
+		if (mAnimated)
+			entity->mView->setVisible(true);
+		else
+			entity->mView->setVisible(false);
 	}
 	mInitViewQueue.clear();
+
+	bool animate = mAnimateCheckBox->property("checked") == true;
+	if (!animate && mAnimated)
+	{
+		for (auto item : boardView().childItems())
+		{
+			item->setVisible(false);
+		}
+		mTimer->setInterval(0);
+		mAnimated = false;
+	}
+	else if (animate && !mAnimated)
+	{
+		for (auto item : boardView().childItems())
+		{
+			item->setVisible(true);
+		}
+		mTimer->setInterval(M_TICK_DURATION);
+		mAnimated = true;
+	}
 
 	for (auto item : boardView().childItems())
 	{
@@ -342,11 +366,23 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 		}
 	}
 
-	mTimer->start(M_TICK_DURATION);
+	mTimer->start();
+	if (mAnimated)
+	{
+		mAnimateCheckBox->setProperty("checked", Qt::Checked);
+		mTimer->setInterval(M_TICK_DURATION);
+	}
+	else
+	{
+		mAnimateCheckBox->setProperty("checked", Qt::Unchecked);
+		mTimer->setInterval(0);
+	}
 }
 
 void Simulation::init(const NeuralNetwork& pNeuralNetwork)
 {
+	mAnimateCheckBox->setProperty("checked", Qt::Checked);
+	mAnimated = true;
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 
