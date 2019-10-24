@@ -298,17 +298,20 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 		case Mode::debug:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-			QPointF org = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2 + 9);
+			NeuralNetwork nn;
+			QPointF left = QPointF(mBoard.scaledWidth() / 2 - 60, mBoard.scaledHeight() / 2);
+			QPointF right = QPointF(mBoard.scaledWidth() / 2 + 60, mBoard.scaledHeight() / 2);
 			addFood(std::shared_ptr<Food>(new Food(*this, center)));
-			addOrganism(std::shared_ptr<Organism>(new Creature(org)));
+			addOrganism(std::shared_ptr<Organism>(new Creature(left, nn)));
+			addOrganism(std::shared_ptr<Organism>(new Creature(right, nn)));
 			break;
 		}
 		case Mode::train:
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 15 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 20;
-			int replicates = 20; // number of clones of each Entity
+			int entities = 40;
+			int replicates = 10; // number of clones of each Entity
 
 			std::shared_ptr<Food> food(new Food(*this, center));
 			addFood(std::shared_ptr<Food>(food));
@@ -316,7 +319,7 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 			for (int i = 0; i < entities; i++)
 			{
 				NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(pNeuralNetwork);
-				neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
+				//neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
 				std::vector<std::shared_ptr<Organism>> group = std::vector<std::shared_ptr<Organism>>();
 				QColor groupColor = QColor(QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255));
 				for (int j = 0; j < replicates; j++)

@@ -12,10 +12,10 @@
 
 // TODO: consider diminishing returns for certain rewards
 
-qreal Organism::mStarvationPenalty = 3; // 1
+qreal Organism::mStarvationPenalty = 5; // 1
 qreal Organism::mOutOfBoundsPenalty = 0; // 1
 qreal Organism::mNoScentsPenalty = 0.1; // 0.1
-qreal Organism::mFoodReward = 200; // 100
+qreal Organism::mFoodReward = 250; // 100
 qreal Organism::mScentReward = 1; // 1
 qreal Organism::mScentIncreaseReward = 10;
 qreal Organism::mScentDecreasePenalty = 100;
@@ -327,7 +327,7 @@ void Organism::think(Simulation& pSimulation)
 		{
 			for (int j = 0; j < scents.n_cols; j++)
 			{
-				scents(i, j) = scents(i, j) / maxScent;
+				scents.at(i, j) = scents.at(i, j) / maxScent;
 			}
 		}
 	}
