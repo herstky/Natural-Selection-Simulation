@@ -10,7 +10,7 @@ qreal NeuralNetwork::mMutationChance = 5;
 qreal NeuralNetwork::mSmallVarianceMagnitude = 1;
 qreal NeuralNetwork::mLargeVarianceMagnitude = 100;
 qreal NeuralNetwork::mLargeVarianceChance = 0;
-
+			
 NeuralNetwork::NeuralNetwork()
 	: mLayers(std::vector<int>{ 8, 40, 2 })
 {
