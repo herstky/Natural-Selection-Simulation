@@ -97,6 +97,8 @@ void Simulation::simulate()
 
 void Simulation::train()
 {
+	qreal progress = 1.0 - mStepsRemaining / static_cast<qreal>(M_STEPS_PER_ROUND);
+	mContainer.findChild<QObject*>("progressBar")->setProperty("value", progress);
 	if (mStepsRemaining)
 	{
 		mStepsRemaining--;

@@ -3,6 +3,8 @@ import QtQuick.Controls 2.5
 import QtQuick.Window 2.2
 
 ApplicationWindow {
+    width: 800
+    height: 600
     visible: true
     visibility: "Maximized"
 
@@ -43,12 +45,6 @@ ApplicationWindow {
                     id: row
                     y: 50
                     height: 50
-                    anchors.bottom: board.top
-                    anchors.bottomMargin: 0
-                    anchors.right: parent.right
-                    anchors.rightMargin: 0
-                    anchors.left: parent.left
-                    anchors.leftMargin: 0
                     transformOrigin: Item.Top
                     objectName: "textRow"
 
@@ -57,6 +53,8 @@ ApplicationWindow {
                         width: 130
                         height: 36
                         text: qsTr("Text")
+                        anchors.left: parent.left
+                        anchors.leftMargin: 0
                         fontSizeMode: Text.HorizontalFit
                         wrapMode: Text.NoWrap
                         font.pixelSize: 18
@@ -71,6 +69,8 @@ ApplicationWindow {
                         width: 130
                         height: 36
                         text: qsTr("Text")
+                        anchors.left: element2.right
+                        anchors.leftMargin: 0
                         fontSizeMode: Text.HorizontalFit
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
@@ -85,6 +85,8 @@ ApplicationWindow {
                         width: 130
                         height: 36
                         text: qsTr("Text")
+                        anchors.left: element1.right
+                        anchors.leftMargin: 0
                         fontSizeMode: Text.HorizontalFit
                         wrapMode: Text.WordWrap
                         anchors.bottom: parent.bottom
@@ -133,6 +135,40 @@ ApplicationWindow {
                         objectName: "playPauseButton"
                     }
 
+                    Column {
+                        id: column1
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 0
+                        anchors.top: parent.top
+                        anchors.topMargin: 0
+                        anchors.right: animateCheckBox.left
+                        anchors.rightMargin: 0
+                        anchors.left: playPauseButton.right
+                        anchors.leftMargin: 0
+
+                        ProgressBar {
+                            id: progressBar
+                            height: 36
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 0
+                            anchors.top: progressBarLabel.bottom
+                            anchors.topMargin: 0
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            value: 0
+                            objectName: "progressBar"
+                        }
+
+                        Text {
+                            id: progressBarLabel
+                            text: qsTr("Generation Progress")
+                            font.weight: Font.Normal
+                            anchors.top: parent.top
+                            anchors.topMargin: 0
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            font.pixelSize: 16
+                        }
+                    }
+
                     CheckBox {
                         id: animateCheckBox
                         text: qsTr("Animate")
@@ -146,14 +182,17 @@ ApplicationWindow {
                         checkState: Qt.Checked
                         objectName: "animateCheckBox"
                     }
+
+
                 }
             }
         }
     }
 }
 
+
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}
+    D{i:11;anchors_height:400;anchors_width:200}
 }
 ##^##*/
