@@ -53,11 +53,14 @@ protected:
 	qreal mEnergySpent;
 	bool mHasEaten;
 	qreal mScore;
+	qreal mPrevScentSum;
 	static qreal mStarvationPenalty;
 	static qreal mOutOfBoundsPenalty;
 	static qreal mNoScentsPenalty;
 	static qreal mFoodReward;
 	static qreal mScentReward;
+	static qreal mScentIncreaseReward;
+	static qreal mScentDecreasePenalty;
 
 	virtual void init(Simulation& pSimulation);
 

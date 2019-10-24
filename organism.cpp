@@ -12,11 +12,13 @@
 
 // TODO: consider diminishing returns for certain rewards
 
-qreal Organism::mStarvationPenalty = 1; 
+qreal Organism::mStarvationPenalty = 1; // 1
 qreal Organism::mOutOfBoundsPenalty = 0; // 1
 qreal Organism::mNoScentsPenalty = 0; // 0.1
-qreal Organism::mFoodReward = 100; 
-qreal Organism::mScentReward = 1; 
+qreal Organism::mFoodReward = 100; // 100
+qreal Organism::mScentReward = 0; // 1
+qreal Organism::mScentIncreaseReward = 5;
+qreal Organism::mScentDecreasePenalty = 100;
 
 Organism::Organism()
 	: mBrain(NeuralNetwork()),
@@ -38,7 +40,8 @@ Organism::Organism()
 	  mEnergyCapacity(1e-6),
 	  mEnergySpent(0),
 	  mHasEaten(false),
-	  mScore(0) {}
+	  mScore(0),
+	  mPrevScentSum(0) {}
 
 Organism::Organism(const QPointF& pPosition)
     : Organism()
@@ -123,7 +126,7 @@ qreal Organism::deltaVelocity()
 
 qreal Organism::deltaTime()
 {
-    return - 1 * QTime::currentTime().msecsTo(mInitialTime) / 1000.0;
+    return -1 * QTime::currentTime().msecsTo(mInitialTime) / 1000.0;
 }
 
 qreal Organism::acceleration()
@@ -284,6 +287,12 @@ arma::mat Organism::smell(Simulation& pSimulation)
 			sum += scents.at(0, i);
 		}
 	}
+	qreal scentDelta = sum - mPrevScentSum;
+	if (scentDelta > 0)
+		mScore += mScentIncreaseReward * scentDelta * pSimulation.M_TICK_DURATION / 1000.0;
+	else
+		mScore += mScentDecreasePenalty * scentDelta * pSimulation.M_TICK_DURATION / 1000.0;
+	mPrevScentSum = sum;
 
 	mScore += mScentReward * sum * pSimulation.M_TICK_DURATION / 1000.0;
 	return scents;
