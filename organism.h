@@ -2,8 +2,11 @@
 
 #include "entity.h"
 
+#include <string>
+
 #include <QPainter>
 #include <QTime>
+
 #include <armadillo>
 
 #include "neuralnetwork.h"
@@ -73,5 +76,6 @@ protected:
 	virtual void replicate(const Simulation& pSimulation);
 	virtual QRectF hitbox() override;
 	virtual void collide(Simulation& pSimulation, Entity& pOther) override;
+	NeuralNetwork loadBrain(std::string pPath);
 };
 

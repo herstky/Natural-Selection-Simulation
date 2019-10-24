@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <filesystem>
 
 #include <QtMath>
 #include <QRandomGenerator>
@@ -341,4 +342,13 @@ void Organism::eat(const Simulation& pSimulation, Entity& pOther)
 {
 	mEnergyLevel += pOther.getMass() * pOther.getEnergyContent();
 	pOther.die(pSimulation);
+}
+
+NeuralNetwork Organism::loadBrain(std::string pPath)
+{
+	std::vector<NeuralNetwork> weights;
+	for (const auto& dirEntry : std::filesystem::directory_iterator(pPath))
+	{
+
+	}
 }
