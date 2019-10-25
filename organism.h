@@ -36,6 +36,8 @@ public:
 	void think(Simulation& pSimulation);
 	void eat(const Simulation& pSimulation, Entity& pOther);
 
+	static NeuralNetwork loadBrain(std::string pPath);
+
 protected:
 	NeuralNetwork mBrain;
 	qreal mMass; // [kg]
@@ -76,6 +78,5 @@ protected:
 	virtual void replicate(const Simulation& pSimulation);
 	virtual QRectF hitbox() override;
 	virtual void collide(Simulation& pSimulation, Entity& pOther) override;
-	NeuralNetwork loadBrain(std::string pPath);
 };
 

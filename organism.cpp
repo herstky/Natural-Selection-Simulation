@@ -7,6 +7,8 @@
 #include <QtMath>
 #include <QRandomGenerator>
 
+#include <armadillo>
+
 #include "simulation.h"
 #include "constants.h"
 #include "view.h"
@@ -260,7 +262,7 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 
 arma::mat Organism::smell(Simulation& pSimulation)
 {
-	int divisions = mBrain.mLayers[0];
+	int divisions = mBrain.mWeights[0].n_rows - 1;
 	arma::mat scents = arma::zeros(1, divisions);
 	qreal sum = 0;
 
@@ -346,9 +348,12 @@ void Organism::eat(const Simulation& pSimulation, Entity& pOther)
 
 NeuralNetwork Organism::loadBrain(std::string pPath)
 {
-	std::vector<NeuralNetwork> weights;
-	for (const auto& dirEntry : std::filesystem::directory_iterator(pPath))
+	std::vector<arma::mat> weights;
+	for (const auto& file : std::filesystem::directory_iterator(pPath))
 	{
-
+		arma::mat matrix;
+		matrix.load(file.path().generic_string());
+		weights.push_back(matrix);
 	}
+	return weights;
 }

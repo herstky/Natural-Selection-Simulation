@@ -14,35 +14,31 @@ qreal NeuralNetwork::mLargeVarianceMagnitude = 100;
 qreal NeuralNetwork::mLargeVarianceChance = 0;
 			
 NeuralNetwork::NeuralNetwork()
-	: mLayers(std::vector<int>{ 8, 40, 2 })
 {
-	for (unsigned int i = 1; i < mLayers.size(); i++)
+	arma::arma_rng::set_seed_random();
+	std::vector<int> layers{ 8, 40, 2 };
+	for (unsigned int i = 1; i < layers.size(); i++)
 	{
-		mWeights.push_back(arma::randn<arma::mat>(mLayers[i - 1] + 1, mLayers[i]));
+		mWeights.push_back(arma::randn<arma::mat>(layers[i - 1] + 1, layers[i]));
 	}
-	init();
 }
 
 NeuralNetwork::NeuralNetwork(std::vector<int> pLayers)
-	: mLayers(pLayers)
 {
-	for (unsigned int i = 1; i < mLayers.size(); i++)
+	arma::arma_rng::set_seed_random();
+	for (unsigned int i = 1; i < pLayers.size(); i++)
 	{
-		mWeights.push_back(arma::randn<arma::mat>(mLayers[i - 1] + 1, mLayers[i]));
+		mWeights.push_back(arma::randn<arma::mat>(pLayers[i - 1] + 1, pLayers[i]));
 	}
-	init();
 }
 
-NeuralNetwork::NeuralNetwork(std::vector<int> pLayers, std::vector<arma::mat> pWeights)
-	: mLayers(pLayers), mWeights(pWeights)
-{
-	init();
-}
+NeuralNetwork::NeuralNetwork(std::vector<arma::mat> pWeights)
+	: mWeights(pWeights) {}
 
 arma::mat NeuralNetwork::forwardPropagate(arma::mat input)
 {
 	arma::mat a = input;
-	for (int i = 0; i < mLayers.size() - 1; i++)
+	for (int i = 0; i < mWeights.size() - 1; i++)
 	{
 		a = arma::join_rows(arma::mat{ 1 }, a);
 		arma::mat z = a * mWeights[i];
@@ -51,8 +47,6 @@ arma::mat NeuralNetwork::forwardPropagate(arma::mat input)
 	return a;
 }
 
-void NeuralNetwork::init() {}
-
 qreal NeuralNetwork::randn()
 {
 	return mDistribution(mGenerator);
@@ -60,7 +54,7 @@ qreal NeuralNetwork::randn()
 
 NeuralNetwork NeuralNetwork::crossoverWeights(const NeuralNetwork& pFirst, const NeuralNetwork& pSecond)
 {
-	NeuralNetwork nn(pFirst.mLayers, pFirst.mWeights);
+	NeuralNetwork nn(pFirst.mWeights);
 	for (int i = 0; i < nn.mWeights.size(); i++)
 	{
 		for (int j = 1; j < nn.mWeights[i].n_rows; j++) // skip row of basis weights
@@ -79,7 +73,7 @@ NeuralNetwork NeuralNetwork::crossoverWeights(const NeuralNetwork& pFirst, const
 
 NeuralNetwork NeuralNetwork::crossoverBasisWeights(const NeuralNetwork& pFirst, const NeuralNetwork& pSecond)
 {
-	NeuralNetwork nn(pFirst.mLayers, pFirst.mWeights);
+	NeuralNetwork nn(pFirst.mWeights);
 	for (int i = 0; i < nn.mWeights.size(); i++)
 	{
 		for (int k = 0; k < nn.mWeights[i].n_cols; k++)
@@ -95,7 +89,7 @@ NeuralNetwork NeuralNetwork::crossoverBasisWeights(const NeuralNetwork& pFirst, 
 
 NeuralNetwork NeuralNetwork::mutateWeights(const NeuralNetwork& pNeuralNetwork)
 {
-	NeuralNetwork nn(pNeuralNetwork.mLayers, pNeuralNetwork.mWeights);
+	NeuralNetwork nn(pNeuralNetwork.mWeights);
 	for (int i = 0; i < nn.mWeights.size(); i++)
 	{
 		for (int j = 1; j < nn.mWeights[i].n_rows; j++) // skip row of basis weights
@@ -119,7 +113,7 @@ NeuralNetwork NeuralNetwork::mutateWeights(const NeuralNetwork& pNeuralNetwork)
 
 NeuralNetwork NeuralNetwork::mutateBasisWeights(const NeuralNetwork& pNeuralNetwork)
 {
-	NeuralNetwork nn(pNeuralNetwork.mLayers, pNeuralNetwork.mWeights);
+	NeuralNetwork nn(pNeuralNetwork.mWeights);
 	for (int i = 0; i < nn.mWeights.size(); i++)
 	{
 		for (int k = 0; k < nn.mWeights[i].n_cols; k++)
