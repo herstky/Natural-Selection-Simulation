@@ -32,7 +32,7 @@ private:
 	QQuickItem& mView;
 	int mRows;
 	int mColumns;
-
+	
 	void init();
 };
 

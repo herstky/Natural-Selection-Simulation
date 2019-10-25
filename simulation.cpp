@@ -24,7 +24,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(Organism::loadBrain("output\\G10_270"), -std::numeric_limits<qreal>::infinity())),
+	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), -std::numeric_limits<qreal>::infinity())),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
 	  M_STEPS_PER_ROUND(500),
@@ -400,30 +400,30 @@ void Simulation::outputCounts()
 		case Mode::debug:
 		{
 			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
-			QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
-			redLabel->setProperty("text", "Generation: " + QString::number(mGeneration));
-			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
-			greenLabel->setProperty("text", "Score: " + QString::number(mScore));
-			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
-			blueLabel->setProperty("text", "Entities: " + QString::number(Creature::mCount));
+			QObject* generationLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
+			generationLabel->setProperty("text", "Generation: " + QString::number(mGeneration));
+			QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
+			scoreLabel->setProperty("text", "Score: " + QString::number(mScore));
+			QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
+			countLabel->setProperty("text", "Entities: " + QString::number(Creature::mCount));
 			break;
 		}
 		case Mode::train:
 		{
 			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
-			QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
-			redLabel->setProperty("text", "Generation: " + QString::number(mGeneration));
-			QObject* greenLabel = static_cast<QObject*>(parent->findChild<QObject*>("greenCountText"));
-			greenLabel->setProperty("text", "Score: " + QString::number(mScore));
-			QObject* blueLabel = static_cast<QObject*>(parent->findChild<QObject*>("blueCountText"));
-			blueLabel->setProperty("text", "Entities: " + QString::number(Creature::mCount));
+			QObject* generationLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
+			generationLabel->setProperty("text", "Generation: " + QString::number(mGeneration));
+			QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
+			scoreLabel->setProperty("text", "Score: " + QString::number(mScore));
+			QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
+			countLabel->setProperty("text", "Entities: " + QString::number(Creature::mCount));
 			break;
 		}
 		case Mode::simulate:
 		{
 			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
-			QObject* redLabel = static_cast<QObject*>(parent->findChild<QObject*>("redCountText"));
-			redLabel->setProperty("text", "Red: " + QString::number(Creature::mCount));
+			QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
+			countLabel->setProperty("text", "Red: " + QString::number(Creature::mCount));
 			break;
 		}
 		default:

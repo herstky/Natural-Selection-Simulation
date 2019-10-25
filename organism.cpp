@@ -17,12 +17,12 @@
 // TODO: consider diminishing returns for certain rewards
 
 qreal Organism::mStarvationPenalty = 5; // 5
-qreal Organism::mOutOfBoundsPenalty = 0; // 1
-qreal Organism::mNoScentsPenalty = 0; // 0.1
-qreal Organism::mFoodReward = 200; // 250
-qreal Organism::mScentReward = 1; // 1
+qreal Organism::mOutOfBoundsPenalty = 0; // 0
+qreal Organism::mNoScentsPenalty = 0; // 0
+qreal Organism::mFoodReward = 300; // 200
+qreal Organism::mScentReward = 0; // 1
 qreal Organism::mScentIncreaseReward = 10; // 10
-qreal Organism::mScentDecreasePenalty = 20; // 100
+qreal Organism::mScentDecreasePenalty = 20; // 20
 
 Organism::Organism()
 	: mBrain(NeuralNetwork()),

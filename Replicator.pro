@@ -15,14 +15,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        blue.cpp \
-        green.cpp \
+        creature.cpp \
         main.cpp \
-        red.cpp \
         simulation.cpp \
         organism.cpp \
         utils.cpp \
-        scentsystem.cpp \
         neuralnetwork.cpp \
         view.cpp \
         model.cpp \
@@ -44,14 +41,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    blue.h \
+    creature.h \
     constants.h \
-    green.h \
-    red.h \
     simulation.h \
     organism.h \
     utils.h \
-    scentsystem.h \
     neuralnetwork.h \
     view.h \
     model.h \

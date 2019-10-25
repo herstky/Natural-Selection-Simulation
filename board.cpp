@@ -63,4 +63,8 @@ void Board::init()
 {
 	mView.setHeight(scaledHeight());
 	dynamic_cast<QQuickItem*>(mView.parent())->setWidth(scaledWidth());
+	for (auto child : dynamic_cast<QQuickItem*>(mView.parent())->childItems())
+	{
+		child->setWidth(scaledWidth());
+	}
 }

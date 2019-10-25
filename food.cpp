@@ -59,7 +59,7 @@ void Food::simulate(Simulation& pSimulation)
 
 void Food::init(Simulation& pSimulation)
 {
-	mColor = Qt::darkBlue;
+	mColor = QColor(124, 252, 0);
 	mType = Entity::Type::prey;
 	mEnergyContent = 128;
 	mMass = 0.008;
