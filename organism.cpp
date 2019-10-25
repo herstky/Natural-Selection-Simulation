@@ -40,8 +40,8 @@ Organism::Organism()
 	  mScentStrength(1.0),
 	  mSmellRadius(diameter() / 2.0),
 	  mScentThreshhold(0.02),
-	  mEnergyLevel(1e-7),
-	  mEnergyCapacity(1e-6),
+	  mEnergyLevel(5e-6),
+	  mEnergyCapacity(1e-5),
 	  mEnergySpent(0),
 	  mHasEaten(false),
 	  mScore(0),
@@ -50,7 +50,9 @@ Organism::Organism()
 Organism::Organism(const QPointF& pPosition)
     : Organism()
 {
-	mColor = Qt::red;
+	mColor = QColor(QRandomGenerator::global()->bounded(255), 
+		QRandomGenerator::global()->bounded(255), 
+		QRandomGenerator::global()->bounded(255));
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 }
@@ -59,7 +61,9 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 	: Organism()
 {
 	mBrain = pBrain;
-	mColor = Qt::red;
+	mColor = QColor(QRandomGenerator::global()->bounded(255),
+		QRandomGenerator::global()->bounded(255),
+		QRandomGenerator::global()->bounded(255));
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
 }
@@ -67,7 +71,9 @@ Organism::Organism(const Simulation& pSimulation, NeuralNetwork pBrain)
 Organism::Organism(const QPointF& pPosition, NeuralNetwork pBrain)
 	: Organism(pPosition)
 {
-	mColor = Qt::red;
+	mColor = QColor(QRandomGenerator::global()->bounded(255),
+		QRandomGenerator::global()->bounded(255),
+		QRandomGenerator::global()->bounded(255));
 	mBrain = pBrain;
 }
 
@@ -185,6 +191,9 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 	qreal force = std::max(mMass * acceleration(), 0.0) + drag;
     qreal work = force * mDeltaDistance;
 
+	qreal basalMetabolicRate = 0.004 * mMass * deltaTime();
+
+
 	mInitialTime = QTime::currentTime();
 	mInitialVelocity = mVelocity;
 
@@ -192,14 +201,14 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 	{
 		case Simulation::Mode::simulate:
 		{
-			mEnergyLevel -= work;
+			mEnergyLevel -= work + basalMetabolicRate;
 			if (mEnergyLevel <= 0)
 				die(pSimulation);
 			break;
 		}
 		case Simulation::Mode::train:
 		{
-			mEnergySpent += work;
+			mEnergySpent += work + basalMetabolicRate;
 			break;
 		}
 		default:
@@ -289,6 +298,9 @@ arma::mat Organism::smell(Simulation& pSimulation)
 					intensity = Food::M_SCENT_STRENGTH;
 				else
 					intensity = std::min(Food::M_SCENT_DIFFUSIVITY * Food::M_SCENT_STRENGTH / distance, Food::M_SCENT_STRENGTH);
+
+				if (intensity == sqrt(-2))
+					std::cout << "foobar\n";
 				if (!validPosition)
 				{
 					scents.at(0, i) = -1;
@@ -334,18 +346,24 @@ void Organism::think(Simulation& pSimulation)
 	{
 		for (int j = 0; j < scents.n_cols; j++)
 		{
-			scents.at(i, j) = (scents.at(i, j) - minScent) / (maxScent - minScent);
+			if (maxScent - minScent == 0)
+				scents.at(i, j) = 0;
+			else
+				scents.at(i, j) = (scents.at(i, j) - minScent) / (maxScent - minScent);
 		}
 	}
 
 	arma::mat decision = mBrain.forwardPropagate(scents);
 	mVelocity = mMaxSpeed * decision(0, 0);
+	if (mVelocity == sqrt(-2))
+		std::cout << "foobar\n";
 	mDirection = 2 * M_PI * decision(0, 1);
 }
 
 void Organism::eat(const Simulation& pSimulation, Entity& pOther)
 {
 	mEnergyLevel += pOther.getMass() * pOther.getEnergyContent();
+	mEnergyLevel = std::min(mEnergyLevel, mEnergyCapacity);
 	pOther.die(pSimulation);
 }
 

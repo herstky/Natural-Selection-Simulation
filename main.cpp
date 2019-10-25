@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 
     QQuickItem* container = engine.rootObjects().first()->findChild<QQuickItem*>("container");
 
-    Simulation sim(container->findChild<QQuickItem*>("column"), Simulation::Mode::train);
+    Simulation sim(container->findChild<QQuickItem*>("column"), Simulation::Mode::simulate);
 
     return app.exec();
 }

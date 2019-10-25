@@ -3,7 +3,7 @@
 #include "simulation.h"
 
 unsigned int Creature::mCount = 0;
-qreal Creature::mCreationChance = 50;
+qreal Creature::mCreationChance = 2;
 
 Creature::Creature()
 {
@@ -59,7 +59,6 @@ void Creature::init()
 {
 	mType = Entity::Type::predator;
 	mShape = Model::Shape::ellipse;
-	mCreationChance = 50;
 	mReplicationChance = 7;
 	mMutationChance = 10;
 	mDeathChance = 8;

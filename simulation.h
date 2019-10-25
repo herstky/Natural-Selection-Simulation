@@ -19,7 +19,9 @@
 
 using coordPair = std::pair<int, int>;
 
-class Simulation : public QObject
+class Scenario;
+
+class Simulation : public QObject, public std::enable_shared_from_this<Simulation>
 {
 	Q_OBJECT
 public:
@@ -49,6 +51,7 @@ public slots:
 private:
 	Mode mMode;
 	Board mBoard;
+	std::shared_ptr<Scenario> mScenario;
 	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;
 	QTimer* mTimer;
     const int M_TICK_DURATION; // [ms]

@@ -13,6 +13,7 @@
 #include <limits>
 
 #include "constants.h"
+#include "scenario.h"
 #include "view.h"
 #include "model.h"
 #include "entity.h"
@@ -24,7 +25,8 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(NeuralNetwork(), -std::numeric_limits<qreal>::infinity())),
+	  mScenario(nullptr),
+	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(Organism::loadBrain("output\\saved\\366"), -std::numeric_limits<qreal>::infinity())),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
 	  M_STEPS_PER_ROUND(500),
@@ -87,7 +89,8 @@ void Simulation::simulate()
 {
 	if (QRandomGenerator::global()->bounded(100) < Creature::mCreationChance)
 	{
-		addOrganism(std::shared_ptr<Organism>(new Creature(*this)));
+		NeuralNetwork newNeuralNetwork = NeuralNetwork::mutateWeights(mBestNeuralNetwork.first);
+		addOrganism(std::shared_ptr<Organism>(new Creature(*this, newNeuralNetwork)));
 	}
 	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
 	{
