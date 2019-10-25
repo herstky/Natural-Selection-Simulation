@@ -338,8 +338,8 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 		{
 			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
 			qreal radius = 15 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 40;
-			int replicates = 10; // number of clones of each Entity
+			int entities = 100;
+			int replicates = 4; // number of clones of each Entity
 
 			std::shared_ptr<Food> food(new Food(*this, center));
 			addFood(std::shared_ptr<Food>(food));
@@ -405,7 +405,7 @@ void Simulation::outputCounts()
 			QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
 			scoreLabel->setProperty("text", "Score: " + QString::number(mScore));
 			QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
-			countLabel->setProperty("text", "Entities: " + QString::number(Creature::mCount));
+			countLabel->setProperty("text", "Creatures: " + QString::number(Creature::mCount));
 			break;
 		}
 		case Mode::train:
@@ -416,7 +416,7 @@ void Simulation::outputCounts()
 			QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
 			scoreLabel->setProperty("text", "Score: " + QString::number(mScore));
 			QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
-			countLabel->setProperty("text", "Entities: " + QString::number(Creature::mCount));
+			countLabel->setProperty("text", "Creatures: " + QString::number(Creature::mCount));
 			break;
 		}
 		case Mode::simulate:

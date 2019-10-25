@@ -8,7 +8,7 @@
 
 std::default_random_engine NeuralNetwork::mGenerator(std::chrono::system_clock::now().time_since_epoch().count());
 std::normal_distribution<qreal> NeuralNetwork::mDistribution;
-qreal NeuralNetwork::mMutationChance = 5;
+qreal NeuralNetwork::mMutationChance = 15;
 qreal NeuralNetwork::mSmallVarianceMagnitude = 1;
 qreal NeuralNetwork::mLargeVarianceMagnitude = 100;
 qreal NeuralNetwork::mLargeVarianceChance = 0;

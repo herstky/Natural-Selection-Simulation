@@ -16,7 +16,7 @@
 
 // TODO: consider diminishing returns for certain rewards
 
-qreal Organism::mStarvationPenalty = 5; // 5
+qreal Organism::mStarvationPenalty = 15; // 5
 qreal Organism::mOutOfBoundsPenalty = 0; // 0
 qreal Organism::mNoScentsPenalty = 0; // 0
 qreal Organism::mFoodReward = 300; // 200
@@ -108,9 +108,6 @@ void Organism::move(const Simulation& pSimulation)
 
 	setX(x() + dx);
 	setY(y() + dy);
-
-	qreal x = mView->x();
-	qreal y = mView->y();
 }
 
 void Organism::simulate(Simulation& pSimulation)
@@ -292,10 +289,16 @@ arma::mat Organism::smell(Simulation& pSimulation)
 					intensity = Food::M_SCENT_STRENGTH;
 				else
 					intensity = std::min(Food::M_SCENT_DIFFUSIVITY * Food::M_SCENT_STRENGTH / distance, Food::M_SCENT_STRENGTH);
-				if (validPosition && intensity >= mScentThreshhold)
+				if (!validPosition)
+				{
+					scents.at(0, i) = -1;
+					mScore -= mOutOfBoundsPenalty * pSimulation.M_TICK_DURATION / 1000.0;
+				}
+				else if (intensity >= mScentThreshhold)
+				{
 					scents.at(0, i) += intensity;
-				else
-					scents.at(0, i) = 0;
+				}
+
 			}
 
 			sum += scents.at(0, i);
