@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entity.h"
+#include "Entity.h"
 
 #include <string>
 
@@ -9,13 +9,14 @@
 
 #include <armadillo>
 
-#include "neuralnetwork.h"
+#include "NeuralNetwork.h"
 
 class Simulation;
 
 class Organism : public Entity 
 {
 	friend class Simulation;
+	friend class CircleTrainingScenario;
 public:
 	Organism();
     Organism(const QPointF& pPosition);

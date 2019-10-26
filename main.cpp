@@ -1,15 +1,15 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-
 #include <QQuickPaintedItem>
 #include <QPainter>
 #include <QtQuick>
 #include <QObject>
 
 #include <iostream>
+#include <memory>
 
-#include "simulation.h"
+#include "Simulation.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
     engine.load(url);
 
     QQuickItem* container = engine.rootObjects().first()->findChild<QQuickItem*>("container");
-
-    Simulation sim(container->findChild<QQuickItem*>("column"), Simulation::Mode::simulate);
+	
+    Simulation sim(container->findChild<QQuickItem*>("column"));
 
     return app.exec();
 }

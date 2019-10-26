@@ -1,0 +1,29 @@
+#pragma once
+
+#include "Scenario.h"
+
+#include <utility>
+#include <memory>
+
+#include <QtGlobal>
+
+#include "NeuralNetwork.h"
+
+class Simulation;
+
+class CircleTrainingScenario : public Scenario
+{
+public:
+	CircleTrainingScenario(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork);
+
+	virtual void startRound() override;
+	virtual void endRound() override;
+	virtual void simulateStep() override;
+	virtual void simulateTick() override;
+	virtual void updateUI() override;
+
+private:
+	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;
+	NeuralNetwork mNextNeuralNetwork;
+};
+

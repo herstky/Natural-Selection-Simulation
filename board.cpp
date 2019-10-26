@@ -1,9 +1,7 @@
-#include "board.h"
+#include "Board.h"
 
-#include "simulation.h"
+#include "Simulation.h"
 #include "constants.h"
-
-#include <iostream>
 
 Board::Board(QQuickItem& pQQuickItem) 
 	: mView(pQQuickItem),

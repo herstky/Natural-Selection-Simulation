@@ -4,15 +4,17 @@
 
 #include <vector>
 
-#include "view.h"
+#include "View.h"
 
 class Simulation;
+class CircleTrainingScenario;
 
 class Board
 {
 public:
 	friend class Food;
 	friend class Simulation;
+	friend class Scenario;
 
 	Board(QQuickItem& pView);
 

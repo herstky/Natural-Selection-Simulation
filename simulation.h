@@ -12,16 +12,16 @@
 #include <memory>
 
 #include "utils.h"
-#include "organism.h"
-#include "board.h"
+#include "Organism.h"
+#include "Board.h"
+#include "NeuralNetwork.h"
 
 // TODO: Need to be able to turn off animation and run sim as fast as possible.
 
 using coordPair = std::pair<int, int>;
+using nnScorePair = std::pair<NeuralNetwork, qreal>;
 
-class Scenario;
-
-class Simulation : public QObject, public std::enable_shared_from_this<Simulation>
+class Simulation : public QObject
 {
 	Q_OBJECT
 public:
@@ -30,10 +30,14 @@ public:
 	friend class Entity;
 	friend class Food;
 	friend class Organism;
-    
-    Simulation(QQuickItem* pParent, Mode pMode = Mode::simulate);
-	
+
+	Simulation(QQuickItem* pParent, Mode pMode = Mode::simulate);
+
+	Mode mMode;
 	QQuickItem& mContainer;
+	const int M_TICK_DURATION; // [ms]
+	const int M_TICKS_PER_STEP; // simulate only called every step
+	const int M_STEPS_PER_ROUND;
 
 	void addOrganism(std::shared_ptr<Organism> pOrganism);
 	void addOrganismGroup(std::vector<std::shared_ptr<Organism>> pGroup);
@@ -45,19 +49,21 @@ public:
 	void simulate();
 	void train();
 
+	QTimer* timer();
+	const int ticksRemaining();
+	const int stepsRemaining();
+	const int generation();
+	const int score();
+	std::vector<std::vector<std::shared_ptr<Organism>>>& organismGroups();
+
 public slots:
-    void run();
+	void run();
 
 private:
-	Mode mMode;
 	Board mBoard;
 	std::shared_ptr<Scenario> mScenario;
-	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;
 	QTimer* mTimer;
-    const int M_TICK_DURATION; // [ms]
-    const int M_TICKS_PER_STEP; // simulate only called every step
-	const int M_STEPS_PER_ROUND;
-    int mTicksRemaining;
+	int mTicksRemaining;
 	int mStepsRemaining;
 	int mGeneration;
 	qreal mScore;
@@ -68,7 +74,7 @@ private:
 	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;
 	std::vector<std::shared_ptr<Entity>> mInitViewQueue;
 
-	void start(const NeuralNetwork& pNeuralNetwork);
-	void init(const NeuralNetwork& pNeuralNetwork);
+	void start();
+	void init();
 	void outputCounts();
 };

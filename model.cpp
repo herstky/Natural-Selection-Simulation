@@ -1,7 +1,7 @@
-#include "model.h"
+#include "Model.h"
 
-#include "simulation.h"
-#include "view.h"
+#include "Simulation.h"
+#include "View.h"
 #include "constants.h"
 
 Model::Model()

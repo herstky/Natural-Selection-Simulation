@@ -14,8 +14,9 @@ class Organism;
 class NeuralNetwork
 {
 public:
-	friend Simulation;
-	friend Organism;
+	friend class Simulation;
+	friend class Organism;
+	friend class CircleTrainingScenario;
 
 	NeuralNetwork();
 	NeuralNetwork(std::vector<int> pLayers);

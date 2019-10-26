@@ -3,14 +3,14 @@
 #include <unordered_set>
 #include <memory>
 
-#include "entity.h"
+#include "Entity.h"
 
 class Simulation;
 
 class Food : public Entity
 {
 	friend class Simulation;
-
+	friend class SimTrainingScenario;
 public:
 	Food(Simulation& pSimulation);
 	Food(Simulation& pSimulation, const QPointF& pPosition);

@@ -1,12 +1,12 @@
-#include "entity.h"
+#include "Entity.h"
 
 #include <iostream>
 
 #include <QQuickItem>
 
-#include "simulation.h"
-#include "view.h"
-#include "food.h"
+#include "Simulation.h"
+#include "View.h"
+#include "Food.h"
 
 Entity::Entity()
     : mType(Entity::Type::none),

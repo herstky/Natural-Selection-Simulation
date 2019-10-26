@@ -1,4 +1,4 @@
-#include "simulation.h"
+#include "Simulation.h"
 
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QCheckBox>
@@ -13,20 +13,22 @@
 #include <limits>
 
 #include "constants.h"
-#include "scenario.h"
-#include "view.h"
-#include "model.h"
-#include "entity.h"
-#include "creature.h"
-#include "food.h"
-#include "neuralnetwork.h"
+#include "Scenario.h"
+#include "CircleTrainingScenario.h"
+#include "View.h"
+#include "Model.h"
+#include "Entity.h"
+#include "Creature.h"
+#include "Food.h"
+#include "NeuralNetwork.h"
 
 Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mScenario(nullptr),
-	  mBestNeuralNetwork(std::pair<NeuralNetwork, qreal>(Organism::loadBrain("output\\saved\\366"), -std::numeric_limits<qreal>::infinity())),
+	  mScenario(std::make_shared<CircleTrainingScenario>(CircleTrainingScenario(this,
+		  nnScorePair(Organism::loadBrain("output\\saved\\366"),
+		  -std::numeric_limits<qreal>::infinity())))),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
 	  M_STEPS_PER_ROUND(500),
@@ -41,7 +43,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
 {
-	init(mBestNeuralNetwork.first);
+	init();
 }
 
 void Simulation::addOrganism(std::shared_ptr<Organism> pOrganism)
@@ -85,92 +87,44 @@ Board& Simulation::board()
 	return mBoard;
 }
 
-void Simulation::simulate()
+void Simulation::simulate() {}
+
+void Simulation::train() {}
+
+QTimer* Simulation::timer()
 {
-	if (QRandomGenerator::global()->bounded(100) < Creature::mCreationChance)
-	{
-		NeuralNetwork newNeuralNetwork = NeuralNetwork::mutateWeights(mBestNeuralNetwork.first);
-		addOrganism(std::shared_ptr<Organism>(new Creature(*this, newNeuralNetwork)));
-	}
-	if (QRandomGenerator::global()->bounded(100) < Food::mCreationChance)
-	{
-		addFood(std::shared_ptr<Food>(new Food(*this)));
-	}
+	return mTimer;
 }
 
-void Simulation::train()
+const int Simulation::ticksRemaining()
 {
-	qreal progress = 1.0 - mStepsRemaining / static_cast<qreal>(M_STEPS_PER_ROUND);
-	mContainer.findChild<QObject*>("progressBar")->setProperty("value", progress);
-	if (mStepsRemaining)
-	{
-		mStepsRemaining--;
-	}
-	else
-	{
-		std::vector<std::pair<int, qreal>> groupResults;
-		int i = 0;
-		for (auto group : mOrganismGroups)
-		{
-			qreal sum = 0;
-			for (auto organism : group)
-			{
-				sum += organism->mScore;
-			}
-			groupResults.push_back(std::pair<int, qreal>(i, sum));
-			i++;
-		}
-		std::sort(groupResults.begin(), groupResults.end(), 
-			[](const std::pair<int, qreal>& a, const std::pair<int, qreal>& b)
-			{
-				return (a.second > b.second);
-			});
+	return mTicksRemaining;
+}
 
-		std::cout << "\n-------------------------------------";
-		for (auto group : groupResults)
-		{
-			std::cout << '\n' << group.second;
-		}
+const int Simulation::stepsRemaining()
+{
+	return mStepsRemaining;
+}
 
-		int first = groupResults[0].first;
-		int second = groupResults.size() > 1 ? groupResults[1].first : -1;
+const int Simulation::generation()
+{
+	return mGeneration;
+}
 
-		NeuralNetwork firstNN;
-		NeuralNetwork secondNN;
-		if (groupResults[0].second > mBestNeuralNetwork.second)
-		{
-			std::cout << "\nNew best neural network found\n";
-			mBestNeuralNetwork = std::pair<NeuralNetwork, qreal>(mOrganismGroups[first][0]->mBrain, groupResults[0].second);
-			int i = 0;
-			for (auto weightMatrix : mBestNeuralNetwork.first.mWeights)
-			{
-				weightMatrix.save("output\\Theta" + std::to_string(i) + ".txt", arma::arma_ascii);
-				i++;
-			}
-			firstNN = mOrganismGroups[first][0]->mBrain;
-			secondNN = second == -1 ? NeuralNetwork() : mOrganismGroups[second][0]->mBrain;
-		}
-		else
-		{
-			firstNN = mBestNeuralNetwork.first;
-			secondNN = mOrganismGroups[first][0]->mBrain;
-		}
-		NeuralNetwork newNN = NeuralNetwork::crossoverWeights(firstNN, secondNN);
-		newNN = NeuralNetwork::crossoverBasisWeights(newNN, secondNN);
+const int Simulation::score()
+{
+	return mScore;
+}
 
-		for (auto item : boardView().childItems())
-		{
-			item->deleteLater();
-		}
-		Creature::mCount = 0;
-		mTimer->stop();
-		mStepsRemaining = M_STEPS_PER_ROUND;
-		start(newNN);
-	}
+std::vector<std::vector<std::shared_ptr<Organism>>>& Simulation::organismGroups()
+{
+	return mOrganismGroups; 
 }
 
 void Simulation::run()
 {
+	mScenario->updateUI();
+
 	for (auto entity : mInitViewQueue)
 	{
 		entity->initView(*this);
@@ -219,12 +173,15 @@ void Simulation::run()
 		}
 	}
 
+	mScenario->simulateTick();
+
 	if (mTicksRemaining)
 	{
 		mTicksRemaining--;
 	}
 	else
 	{
+		mScenario->simulateStep();
 		mInitialTime = QTime::currentTime();
 		mTicksRemaining = M_TICKS_PER_STEP;
 	}
@@ -287,33 +244,18 @@ void Simulation::run()
 	}
 	View::mDeletionQueue.clear();
 
-	switch (mMode)
+	if (mStepsRemaining)
 	{
-		case Mode::debug:
-		{
-			train();
-			break;
-		}
-		case Mode::train:
-		{
-			train();
-			break;
-		}
-		case Mode::simulate:
-		{
-			simulate();
-			break;
-		}
-		default:
-		{
-			break;
-		}
+		mStepsRemaining--;
 	}
-
-	outputCounts();
+	else
+	{
+		mScenario->endRound();
+		start();
+	}
 }
 
-void Simulation::start(const NeuralNetwork& pNeuralNetwork)
+void Simulation::start()
 {
 	View::mDeletionQueue.clear();
 	mFoodSet.clear();
@@ -323,55 +265,8 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 	mScore = 0;
 
 	mTicksRemaining = M_TICKS_PER_STEP;
-
-	switch (mMode)
-	{
-		case Mode::debug:
-		{
-			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-			NeuralNetwork nn;
-			QPointF left = QPointF(mBoard.scaledWidth() / 2 - 60, mBoard.scaledHeight() / 2);
-			QPointF right = QPointF(mBoard.scaledWidth() / 2 + 60, mBoard.scaledHeight() / 2);
-			addFood(std::shared_ptr<Food>(new Food(*this, center)));
-			addOrganism(std::shared_ptr<Organism>(new Creature(left, nn)));
-			addOrganism(std::shared_ptr<Organism>(new Creature(right, nn)));
-			break;
-		}
-		case Mode::train:
-		{
-			QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-			qreal radius = 15 * mBoard.cellSize() * SCALE_FACTOR;
-			int entities = 100;
-			int replicates = 4; // number of clones of each Entity
-
-			std::shared_ptr<Food> food(new Food(*this, center));
-			addFood(std::shared_ptr<Food>(food));
-
-			for (int i = 0; i < entities; i++)
-			{
-				NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(pNeuralNetwork);
-				//neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
-				std::vector<std::shared_ptr<Organism>> group = std::vector<std::shared_ptr<Organism>>();
-				QColor groupColor = QColor(QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255));
-				for (int j = 0; j < replicates; j++)
-				{
-					qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / replicates) + j * 2 * M_PI / replicates;
-					QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
-					group.push_back(std::shared_ptr<Organism>(new Creature(pos, neuralNetwork, groupColor)));
-				}
-				addOrganismGroup(group);
-			}
-			break;
-		}
-		case Mode::simulate:
-		{
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
+	mStepsRemaining = M_STEPS_PER_ROUND;
+	mScenario->startRound();
 
 	mTimer->start();
 	if (mAnimated)
@@ -384,21 +279,73 @@ void Simulation::start(const NeuralNetwork& pNeuralNetwork)
 		mAnimateCheckBox->setProperty("checked", Qt::Unchecked);
 		mTimer->setInterval(0);
 	}
+
+
+	//switch (mMode)
+	//{
+	//	case Mode::debug:
+	//	{
+	//		QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
+	//		NeuralNetwork nn;
+	//		QPointF left = QPointF(mBoard.scaledWidth() / 2 - 60, mBoard.scaledHeight() / 2);
+	//		QPointF right = QPointF(mBoard.scaledWidth() / 2 + 60, mBoard.scaledHeight() / 2);
+	//		addFood(std::shared_ptr<Food>(new Food(*this, center)));
+	//		addOrganism(std::shared_ptr<Organism>(new Creature(left, nn)));
+	//		addOrganism(std::shared_ptr<Organism>(new Creature(right, nn)));
+	//		break;
+	//	}
+	//	case Mode::train:
+	//	{
+	//		QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
+	//		qreal radius = 15 * mBoard.cellSize() * SCALE_FACTOR;
+	//		int entities = 100;
+	//		int replicates = 4; // number of clones of each Entity
+
+	//		std::shared_ptr<Food> food(new Food(*this, center));
+	//		addFood(std::shared_ptr<Food>(food));
+
+	//		for (int i = 0; i < entities; i++)
+	//		{
+	//			NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(pNeuralNetwork);
+	//			//neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
+	//			std::vector<std::shared_ptr<Organism>> group = std::vector<std::shared_ptr<Organism>>();
+	//			QColor groupColor = QColor(QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255));
+	//			for (int j = 0; j < replicates; j++)
+	//			{
+	//				qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / replicates) + j * 2 * M_PI / replicates;
+	//				QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
+	//				group.push_back(std::shared_ptr<Organism>(new Creature(pos, neuralNetwork, groupColor)));
+	//			}
+	//			addOrganismGroup(group);
+	//		}
+	//		break;
+	//	}
+	//	case Mode::simulate:
+	//	{
+	//		break;
+	//	}
+	//	default:
+	//	{
+	//		break;
+	//	}
+	//}
+
+
 }
 
-void Simulation::init(const NeuralNetwork& pNeuralNetwork)
+void Simulation::init()
 {
 	mAnimateCheckBox->setProperty("checked", Qt::Checked);
 	mAnimated = true;
 	mTimer = new QTimer();
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 
-	start(pNeuralNetwork);
+	start();
 }
 
 void Simulation::outputCounts()
 {
-	switch (mMode)
+	/*switch (mMode)
 	{
 		case Mode::debug:
 		{
@@ -433,5 +380,5 @@ void Simulation::outputCounts()
 		{
 			break;
 		}
-	}
+	}*/
 }

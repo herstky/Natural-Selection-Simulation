@@ -1,4 +1,4 @@
-#include "neuralnetwork.h"
+#include "NeuralNetwork.h"
 
 #include <QRandomGenerator>
 

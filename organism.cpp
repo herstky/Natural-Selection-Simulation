@@ -1,4 +1,4 @@
-#include "organism.h"
+#include "Organism.h"
 
 #include <algorithm>
 #include <limits>
@@ -9,10 +9,10 @@
 
 #include <armadillo>
 
-#include "simulation.h"
+#include "Simulation.h"
 #include "constants.h"
-#include "view.h"
-#include "food.h"
+#include "View.h"
+#include "Food.h"
 
 // TODO: consider diminishing returns for certain rewards
 
@@ -232,7 +232,7 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 {
 	switch (pSimulation.mMode)
 	{
-		case Simulation::Mode::simulate:
+	case Simulation::Mode::debug:
 		{
 			if (pOther.getType() == Entity::Type::prey)
 				eat(pSimulation, pOther);
@@ -240,23 +240,18 @@ void Organism::collide(Simulation& pSimulation, Entity& pOther)
 		}
 		case Simulation::Mode::train:
 		{
-			//std::cout << "coords: (" << coords(pSimulation).first << ", " << coords(pSimulation).second << ")" << std::endl;
-			arma::mat scents = smell(pSimulation);
-			for (int i = 0; i < scents.n_rows; i++)
-			{
-				for (int j = 0; j < scents.n_cols; j++)
-				{
-					//std::cout << "(" << i << ", " << j << "): " << scents.at(i, j) << std::endl;
-				}
-			}
-
 			if (!mHasEaten)
 			{
 				mHasEaten = true;
 				mScore += mFoodReward;
 				pSimulation.mScore += 1;
 			}
-
+			break;
+		}
+		case Simulation::Mode::simulate:
+		{
+			if (pOther.getType() == Entity::Type::prey)
+				eat(pSimulation, pOther);
 			break;
 		}
 		default:
@@ -299,8 +294,6 @@ arma::mat Organism::smell(Simulation& pSimulation)
 				else
 					intensity = std::min(Food::M_SCENT_DIFFUSIVITY * Food::M_SCENT_STRENGTH / distance, Food::M_SCENT_STRENGTH);
 
-				if (intensity == sqrt(-2))
-					std::cout << "foobar\n";
 				if (!validPosition)
 				{
 					scents.at(0, i) = -1;
@@ -355,8 +348,6 @@ void Organism::think(Simulation& pSimulation)
 
 	arma::mat decision = mBrain.forwardPropagate(scents);
 	mVelocity = mMaxSpeed * decision(0, 0);
-	if (mVelocity == sqrt(-2))
-		std::cout << "foobar\n";
 	mDirection = 2 * M_PI * decision(0, 1);
 }
 

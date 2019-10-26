@@ -1,6 +1,6 @@
-#include "creature.h"
+#include "Creature.h"
 
-#include "simulation.h"
+#include "Simulation.h"
 
 unsigned int Creature::mCount = 0;
 qreal Creature::mCreationChance = 2;

@@ -1,4 +1,4 @@
-#include "food.h"
+#include "Food.h"
 
 #include <QPainter>
 #include <QtMath>
@@ -6,7 +6,7 @@
 #include <cmath>
 
 #include "constants.h"
-#include "simulation.h"
+#include "Simulation.h"
 
 unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 5;
@@ -31,6 +31,7 @@ Food::Food(Simulation& pSimulation, const QPointF& pPosition)
 
 void Food::die(const Simulation& pSimulation)
 {
+
 	Model::die(pSimulation);
 	mCount--;
 }
@@ -52,10 +53,7 @@ const qreal Food::volume() const
 	return mMass / mDensity;
 }
 
-void Food::simulate(Simulation& pSimulation)
-{
-	emanateScent(pSimulation);
-}
+void Food::simulate(Simulation& pSimulation) {}
 
 void Food::init(Simulation& pSimulation)
 {
@@ -67,5 +65,4 @@ void Food::init(Simulation& pSimulation)
 	mAspectRatio = 1;
 	mDepth = 0.1;
 	mCount++;
-	emanateScent(pSimulation);
 }

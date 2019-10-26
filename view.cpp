@@ -1,8 +1,8 @@
-#include "view.h"
+#include "View.h"
 
 #include <QPainter>
 
-#include "model.h"
+#include "Model.h"
 #include "constants.h"
 
 std::vector<View*> View::mDeletionQueue = std::vector<View*>();
