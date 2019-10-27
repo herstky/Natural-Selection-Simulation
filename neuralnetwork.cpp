@@ -131,3 +131,8 @@ NeuralNetwork NeuralNetwork::mutateBasisWeights(const NeuralNetwork& pNeuralNetw
 	}
 	return nn;
 }
+
+std::vector<arma::mat> NeuralNetwork::weights()
+{
+	return mWeights;
+}

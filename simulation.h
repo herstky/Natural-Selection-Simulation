@@ -39,6 +39,10 @@ public:
 	const int M_TICKS_PER_STEP; // simulate only called every step
 	const int M_STEPS_PER_ROUND;
 
+	int mTicksRemaining;
+	int mStepsRemaining;
+	QTime mInitialTime; // time since previous step
+
 	void addOrganism(std::shared_ptr<Organism> pOrganism);
 	void addOrganismGroup(std::vector<std::shared_ptr<Organism>> pGroup);
 	void addFood(std::shared_ptr<Food> pFood);
@@ -49,11 +53,13 @@ public:
 	void simulate();
 	void train();
 
+	void start();
 	QTimer* timer();
 	const int ticksRemaining();
 	const int stepsRemaining();
 	const int generation();
 	const int score();
+	void scorePoint();
 	std::vector<std::vector<std::shared_ptr<Organism>>>& organismGroups();
 
 public slots:
@@ -63,18 +69,13 @@ private:
 	Board mBoard;
 	std::shared_ptr<Scenario> mScenario;
 	QTimer* mTimer;
-	int mTicksRemaining;
-	int mStepsRemaining;
 	int mGeneration;
 	qreal mScore;
-	QTime mInitialTime; // time since previous step
 	QObject* mAnimateCheckBox;
 	bool mAnimated;
 	std::unordered_set<std::shared_ptr<Food>> mFoodSet;
 	std::vector<std::vector<std::shared_ptr<Organism>>> mOrganismGroups;
 	std::vector<std::shared_ptr<Entity>> mInitViewQueue;
 
-	void start();
 	void init();
-	void outputCounts();
 };

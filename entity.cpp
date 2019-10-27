@@ -10,6 +10,7 @@
 
 Entity::Entity()
     : mType(Entity::Type::none),
+	  mPersistent(false),
 	  mEnergyContent(100),
 	  mMass(0.005),
 	  mDensity(1500),
@@ -23,15 +24,19 @@ Entity::Entity(const QPointF& pPosition)
 	mY = pPosition.y() / SCALE_FACTOR;
 }
 
-void Entity::simulate(Simulation& pSimulation) 
+Entity::~Entity() {}
+
+Entity::Entity(const Entity& pOther)
+	: Entity() {}
+
+Entity& Entity::operator=(const Entity& pOther) 
 {
-	emanateScent(pSimulation);
+	return *this;
 }
 
-void Entity::train(Simulation& pSimulation)
-{
-	
-}
+void Entity::simulate(Simulation& pSimulation) {}
+
+void Entity::train(Simulation& pSimulation) {}
 
 void Entity::move(const Simulation& pSimulation) {}
 
@@ -61,11 +66,19 @@ void Entity::detectCollisions(Simulation& pSimulation)
 
 void Entity::collide(Simulation& pSimulation, Entity& pOther) {}
 
-void Entity::emanateScent(Simulation& pSimulation) {}
-
 Entity::Type Entity::getType()
 {
 	return mType;
+}
+
+void Entity::setPersistent(bool pPersistent)
+{
+	mPersistent = pPersistent;
+}
+
+bool Entity::persistent()
+{
+	return mPersistent;
 }
 
 qreal Entity::getEnergyContent()

@@ -29,6 +29,8 @@ public:
 	static NeuralNetwork mutateWeights(const NeuralNetwork& pNeuralNetwork);
 	static NeuralNetwork mutateBasisWeights(const NeuralNetwork& pNeuralNetwork);
 	
+	std::vector<arma::mat> weights();
+
 private:
 	std::vector<arma::mat> mWeights;
 	static std::default_random_engine mGenerator;

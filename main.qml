@@ -105,6 +105,7 @@ ApplicationWindow {
 
                 ColumnLayout {
                     id: progressColumn
+                    objectName: "progressColumn"
 
                     ProgressBar {
                         id: progressBar

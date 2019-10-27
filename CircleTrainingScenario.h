@@ -4,6 +4,10 @@
 
 #include <utility>
 #include <memory>
+#include <vector>
+#include <unordered_map>
+
+#include <armadillo>
 
 #include <QtGlobal>
 
@@ -18,12 +22,15 @@ public:
 
 	virtual void startRound() override;
 	virtual void endRound() override;
-	virtual void simulateStep() override;
 	virtual void simulateTick() override;
+	virtual void simulateStep() override;
 	virtual void updateUI() override;
-
+	virtual void eat(Organism& pPredator, Entity& pPrey) override;
+	virtual void die(Organism& pOrganism) override;
+	
 private:
 	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;
 	NeuralNetwork mNextNeuralNetwork;
+	std::unordered_map<int, NeuralNetwork> mGroupMap;
+	std::vector<std::pair<int, qreal>> mGroupScores;
 };
-

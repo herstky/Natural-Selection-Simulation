@@ -15,23 +15,27 @@
 #include "constants.h"
 #include "Scenario.h"
 #include "CircleTrainingScenario.h"
+#include "CircleTrainingScenario2.h"
+#include "SimScenario.h"
+#include "DebugScenario.h"
 #include "View.h"
 #include "Model.h"
 #include "Entity.h"
 #include "Creature.h"
 #include "Food.h"
 #include "NeuralNetwork.h"
+#include "Organism.h"
 
 Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mScenario(std::make_shared<CircleTrainingScenario>(CircleTrainingScenario(this,
+	  mScenario(std::make_shared<SimScenario>(SimScenario(this,
 		  nnScorePair(Organism::loadBrain("output\\saved\\366"),
 		  -std::numeric_limits<qreal>::infinity())))),
 	  M_TICK_DURATION(50),
 	  M_TICKS_PER_STEP(5),
-	  M_STEPS_PER_ROUND(500),
+	  M_STEPS_PER_ROUND(100),
 	  mTicksRemaining(M_TICKS_PER_STEP),
 	  mStepsRemaining(M_STEPS_PER_ROUND),
 	  mGeneration(0),
@@ -116,6 +120,11 @@ const int Simulation::score()
 	return mScore;
 }
 
+void Simulation::scorePoint()
+{
+	mScore++;
+}
+
 std::vector<std::vector<std::shared_ptr<Organism>>>& Simulation::organismGroups()
 {
 	return mOrganismGroups; 
@@ -157,62 +166,33 @@ void Simulation::run()
 
 	for (auto item : boardView().childItems())
 	{
-		try
-		{
-			View* view = dynamic_cast<View*>(item);
-			std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
-			entity->move(*this);
-		}
-		catch (const std::exception & e)
-		{
-			std::cout << "An exception was caught with message '" << e.what() << "'\n";
-		}
-		catch (...)
-		{
-			std::cout << "An exception was caught while attempting to move an Entity\n";
-		}
+		View* view = dynamic_cast<View*>(item);
+		std::shared_ptr<Organism> organism = std::dynamic_pointer_cast<Organism>(view->mModel);
+		if (organism)
+			mScenario->move(*organism);
 	}
 
+	if (!mTicksRemaining)
+		mInitialTime = QTime::currentTime();
 	mScenario->simulateTick();
 
-	if (mTicksRemaining)
+	for (auto item : boardView().childItems())
 	{
-		mTicksRemaining--;
-	}
-	else
-	{
-		mScenario->simulateStep();
-		mInitialTime = QTime::currentTime();
-		mTicksRemaining = M_TICKS_PER_STEP;
+		View* view = dynamic_cast<View*>(item);
+		std::shared_ptr<Organism> organism = std::dynamic_pointer_cast<Organism>(view->mModel);
+		if (organism)
+			mScenario->simulate(*organism);
 	}
 
 	for (auto item : boardView().childItems())
 	{
-		try
-		{
-			View* view = dynamic_cast<View*>(item);
-			std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
-			entity->simulate(*this);
-		}
-		catch (const std::exception & e)
-		{
-			std::cout << "An exception was caught with message '" << e.what() << "'\n";
-		}
+		View* view = dynamic_cast<View*>(item);
+		std::shared_ptr<Organism> organism = std::dynamic_pointer_cast<Organism>(view->mModel);
+		if (organism)
+			organism->detectCollisions(*this);
 	}
 
-	for (auto item : boardView().childItems())
-	{
-		try
-		{
-			View* view = dynamic_cast<View*>(item);
-			std::shared_ptr<Entity> entity = std::dynamic_pointer_cast<Entity>(view->mModel);
-			entity->detectCollisions(*this);
-		}
-		catch (const std::exception & e)
-		{
-			std::cout << "An exception was caught with message '" << e.what() << "'\n";
-		}
-	}
+	mScenario->simulateStep();
 
 	for (auto view : View::mDeletionQueue)
 	{
@@ -223,36 +203,25 @@ void Simulation::run()
 		else
 		{
 			int i = 0;
-			for (auto group : mOrganismGroups)
+			for (auto& group : mOrganismGroups)
 			{
 				int j = 0;
-				for (auto organism : group)
+				for (auto& organism : group)
 				{
 					if (organism == std::dynamic_pointer_cast<Organism>(view->mModel))
-					{
 						group.erase(group.begin() + j);
-						if (!group.size())
-							mOrganismGroups.erase(mOrganismGroups.begin() + i);
-						break;
-					}
-					i++;
+					else
+						j++;
 				}
-				j++;
+				if (!group.size())
+					mOrganismGroups.erase(mOrganismGroups.begin() + i);
+				else
+					i++;
 			}
 		}
 		view->deleteLater();
 	}
 	View::mDeletionQueue.clear();
-
-	if (mStepsRemaining)
-	{
-		mStepsRemaining--;
-	}
-	else
-	{
-		mScenario->endRound();
-		start();
-	}
 }
 
 void Simulation::start()
@@ -279,58 +248,6 @@ void Simulation::start()
 		mAnimateCheckBox->setProperty("checked", Qt::Unchecked);
 		mTimer->setInterval(0);
 	}
-
-
-	//switch (mMode)
-	//{
-	//	case Mode::debug:
-	//	{
-	//		QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-	//		NeuralNetwork nn;
-	//		QPointF left = QPointF(mBoard.scaledWidth() / 2 - 60, mBoard.scaledHeight() / 2);
-	//		QPointF right = QPointF(mBoard.scaledWidth() / 2 + 60, mBoard.scaledHeight() / 2);
-	//		addFood(std::shared_ptr<Food>(new Food(*this, center)));
-	//		addOrganism(std::shared_ptr<Organism>(new Creature(left, nn)));
-	//		addOrganism(std::shared_ptr<Organism>(new Creature(right, nn)));
-	//		break;
-	//	}
-	//	case Mode::train:
-	//	{
-	//		QPointF center = QPointF(mBoard.scaledWidth() / 2, mBoard.scaledHeight() / 2);
-	//		qreal radius = 15 * mBoard.cellSize() * SCALE_FACTOR;
-	//		int entities = 100;
-	//		int replicates = 4; // number of clones of each Entity
-
-	//		std::shared_ptr<Food> food(new Food(*this, center));
-	//		addFood(std::shared_ptr<Food>(food));
-
-	//		for (int i = 0; i < entities; i++)
-	//		{
-	//			NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(pNeuralNetwork);
-	//			//neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
-	//			std::vector<std::shared_ptr<Organism>> group = std::vector<std::shared_ptr<Organism>>();
-	//			QColor groupColor = QColor(QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255));
-	//			for (int j = 0; j < replicates; j++)
-	//			{
-	//				qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / replicates) + j * 2 * M_PI / replicates;
-	//				QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
-	//				group.push_back(std::shared_ptr<Organism>(new Creature(pos, neuralNetwork, groupColor)));
-	//			}
-	//			addOrganismGroup(group);
-	//		}
-	//		break;
-	//	}
-	//	case Mode::simulate:
-	//	{
-	//		break;
-	//	}
-	//	default:
-	//	{
-	//		break;
-	//	}
-	//}
-
-
 }
 
 void Simulation::init()
@@ -341,44 +258,4 @@ void Simulation::init()
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 
 	start();
-}
-
-void Simulation::outputCounts()
-{
-	/*switch (mMode)
-	{
-		case Mode::debug:
-		{
-			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
-			QObject* generationLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
-			generationLabel->setProperty("text", "Generation: " + QString::number(mGeneration));
-			QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
-			scoreLabel->setProperty("text", "Score: " + QString::number(mScore));
-			QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
-			countLabel->setProperty("text", "Creatures: " + QString::number(Creature::mCount));
-			break;
-		}
-		case Mode::train:
-		{
-			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
-			QObject* generationLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
-			generationLabel->setProperty("text", "Generation: " + QString::number(mGeneration));
-			QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
-			scoreLabel->setProperty("text", "Score: " + QString::number(mScore));
-			QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
-			countLabel->setProperty("text", "Creatures: " + QString::number(Creature::mCount));
-			break;
-		}
-		case Mode::simulate:
-		{
-			QQuickItem* parent = static_cast<QQuickItem*>(mContainer.findChild<QObject*>("textRow"));
-			QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
-			countLabel->setProperty("text", "Red: " + QString::number(Creature::mCount));
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}*/
 }

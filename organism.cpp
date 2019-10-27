@@ -10,6 +10,7 @@
 #include <armadillo>
 
 #include "Simulation.h"
+#include "Scenario.h"
 #include "constants.h"
 #include "View.h"
 #include "Food.h"
@@ -19,7 +20,7 @@
 qreal Organism::mStarvationPenalty = 15; // 5
 qreal Organism::mOutOfBoundsPenalty = 0; // 0
 qreal Organism::mNoScentsPenalty = 0; // 0
-qreal Organism::mFoodReward = 300; // 200
+qreal Organism::mFoodReward = 400; // 200
 qreal Organism::mScentReward = 0; // 1
 qreal Organism::mScentIncreaseReward = 10; // 10
 qreal Organism::mScentDecreasePenalty = 20; // 20
@@ -40,7 +41,7 @@ Organism::Organism()
 	  mScentStrength(1.0),
 	  mSmellRadius(diameter() / 2.0),
 	  mScentThreshhold(0.02),
-	  mEnergyLevel(5e-6),
+	  mEnergyLevel(5e-5),
 	  mEnergyCapacity(1e-5),
 	  mEnergySpent(0),
 	  mHasEaten(false),
@@ -82,6 +83,21 @@ Organism::Organism(const QPointF& pPosition, NeuralNetwork pBrain, QColor pColor
 {
 	mBrain = pBrain;
 	mColor = pColor;
+}
+
+Organism::~Organism() {}
+
+Organism::Organism(const Organism& pOther)
+	: Organism() {}
+	
+Organism& Organism::operator=(const Organism& pOther)
+{
+	return *this;
+}
+
+void Organism::die(const Simulation& pSimulation)
+{
+	Model::die(pSimulation);
 }
 
 void Organism::move(const Simulation& pSimulation)
@@ -151,24 +167,7 @@ qreal Organism::acceleration()
     return deltaVelocity() / deltaTime();
 }
 
-void Organism::init(Simulation& pSimulation) 
-{
-	switch (pSimulation.mMode)
-	{
-		case Simulation::Mode::simulate:
-		{
-			break;
-		}
-		case Simulation::Mode::train:
-		{
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
-}
+void Organism::init(Simulation& pSimulation) {}
 
 const qreal Organism::height() const
 {
@@ -184,6 +183,27 @@ const qreal Organism::width() const
 
 void Organism::setWidth(qreal pWidth) {}
 
+qreal& Organism::score()
+{
+	return mScore;
+}
+
+qreal& Organism::energyLevel()
+{
+	return mEnergyLevel;
+}
+
+qreal Organism::energyCapacity()
+{
+	return mEnergyCapacity;
+}
+
+qreal Organism::foodReward()
+{
+	return mFoodReward;
+}
+
+
 void Organism::expendEnergy(const Simulation& pSimulation)
 {
     qreal drag = 1.0 / 2.0 * SPHERE_WATER_DRAG_COEFFICIENT * WATER_DENSITY * M_PI * pow((diameter() / 2), 2) * pow(mVelocity, 2);
@@ -192,30 +212,13 @@ void Organism::expendEnergy(const Simulation& pSimulation)
     qreal work = force * mDeltaDistance;
 
 	qreal basalMetabolicRate = 0.004 * mMass * deltaTime();
-
-
+	
+	mEnergySpent += work + basalMetabolicRate;
+	mEnergyLevel -= work + basalMetabolicRate;
+	if (mEnergyLevel <= 0)
+		pSimulation.mScenario->die(*this);
 	mInitialTime = QTime::currentTime();
 	mInitialVelocity = mVelocity;
-
-	switch (pSimulation.mMode)
-	{
-		case Simulation::Mode::simulate:
-		{
-			mEnergyLevel -= work + basalMetabolicRate;
-			if (mEnergyLevel <= 0)
-				die(pSimulation);
-			break;
-		}
-		case Simulation::Mode::train:
-		{
-			mEnergySpent += work + basalMetabolicRate;
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
 }
 
 QRectF Organism::hitbox()
@@ -230,34 +233,9 @@ QRectF Organism::hitbox()
 
 void Organism::collide(Simulation& pSimulation, Entity& pOther)
 {
-	switch (pSimulation.mMode)
+	if (pOther.getType() == Entity::Type::prey)
 	{
-	case Simulation::Mode::debug:
-		{
-			if (pOther.getType() == Entity::Type::prey)
-				eat(pSimulation, pOther);
-			break;
-		}
-		case Simulation::Mode::train:
-		{
-			if (!mHasEaten)
-			{
-				mHasEaten = true;
-				mScore += mFoodReward;
-				pSimulation.mScore += 1;
-			}
-			break;
-		}
-		case Simulation::Mode::simulate:
-		{
-			if (pOther.getType() == Entity::Type::prey)
-				eat(pSimulation, pOther);
-			break;
-		}
-		default:
-		{
-			break;
-		}
+		pSimulation.mScenario->eat(*this, pOther);
 	}
 }
 
@@ -351,11 +329,19 @@ void Organism::think(Simulation& pSimulation)
 	mDirection = 2 * M_PI * decision(0, 1);
 }
 
-void Organism::eat(const Simulation& pSimulation, Entity& pOther)
+void Organism::eat(Simulation& pSimulation, Entity& pOther)
 {
+	mScore += mFoodReward;
+	pSimulation.scorePoint();
+	
 	mEnergyLevel += pOther.getMass() * pOther.getEnergyContent();
 	mEnergyLevel = std::min(mEnergyLevel, mEnergyCapacity);
 	pOther.die(pSimulation);
+}
+
+NeuralNetwork Organism::loadBrain()
+{
+	return NeuralNetwork();
 }
 
 NeuralNetwork Organism::loadBrain(std::string pPath)

@@ -6,8 +6,6 @@ class Simulation;
 
 class Creature : public Organism
 {
-	friend class Simulation;
-	friend class SimTrainingScenario;
 public:
     Creature();
 	Creature(const Simulation& pSimulation);
@@ -15,12 +13,13 @@ public:
 	Creature(const Simulation& pSimulation, NeuralNetwork pBrain);
 	Creature(const QPointF& pPosition, NeuralNetwork pBrain);
 	Creature(const QPointF& pPosition, NeuralNetwork pBrain, QColor pColor);
-    ~Creature();
+    virtual ~Creature() override;
 
     void replicate(const Simulation& pSimulation) override;
 	virtual void die(const Simulation& pSimulation) override;
-
-	static unsigned int mCount;
+	static const qreal creationChance();
+	static void setCreationChance(qreal pCreationChance);
+	static const int count();
 
 protected:
 	virtual void init() override;
@@ -28,7 +27,9 @@ protected:
 private:
 	Creature(const Creature& pOther) {}
 	Creature& operator=(const Creature& pOther);
-
 	static qreal mCreationChance;
+	static int mCount;
+
+
 };
 

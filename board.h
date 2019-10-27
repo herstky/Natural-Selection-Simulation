@@ -24,9 +24,9 @@ public:
 	int rows() const;
 	int columns() const;
 	qreal height() const;
-	qreal scaledHeight() const;
+	qreal heightP() const;
 	qreal width() const;
-	qreal scaledWidth() const;
+	qreal widthP() const;
 
 	const qreal M_CELL_SIZE; // [m]
 

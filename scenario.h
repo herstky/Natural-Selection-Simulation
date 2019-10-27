@@ -3,6 +3,8 @@
 #include <memory>
 
 class Simulation; 
+class Organism;
+class Entity;
 
 class Scenario
 {
@@ -15,6 +17,11 @@ public:
 	virtual void simulateTick() = 0;
 	virtual void updateUI() = 0;
 
+	virtual void eat(Organism& pPredator, Entity& pPrey);
+	virtual void die(Organism& pOrganism);
+	virtual void move(Organism& pOrganism);
+	virtual void simulate(Organism& pOrganism);
+	
 protected:
 	Simulation* mSimulation;
 };

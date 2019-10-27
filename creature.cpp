@@ -2,8 +2,8 @@
 
 #include "Simulation.h"
 
-unsigned int Creature::mCount = 0;
 qreal Creature::mCreationChance = 2;
+int Creature::mCount = 0;
 
 Creature::Creature()
 {
@@ -45,14 +45,31 @@ Creature& Creature::operator=(const Creature& pOther)
 	return *this;
 }
 
-Creature::~Creature() {}
+Creature::~Creature() 
+{
+	mCount--;
+}
 
 void Creature::replicate(const Simulation& pSimulation) {}
 
 void Creature::die(const Simulation& pSimulation)
 {
 	Model::die(pSimulation);
-	mCount--;
+}
+
+const qreal Creature::creationChance()
+{
+	return mCreationChance;
+}
+
+void Creature::setCreationChance(qreal pCreationChance)
+{
+	mCreationChance = pCreationChance;
+}
+
+const int Creature::count()
+{
+	return mCount;
 }
 
 void Creature::init()

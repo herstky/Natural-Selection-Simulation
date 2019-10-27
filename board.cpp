@@ -42,7 +42,7 @@ qreal Board::height() const
 	return cellSize() * rows();
 }
 
-qreal Board::scaledHeight() const
+qreal Board::heightP() const
 {
 	return scaledCellSize() * rows();
 }
@@ -52,17 +52,17 @@ qreal Board::width() const
 	return cellSize() * columns();
 }
 
-qreal Board::scaledWidth() const
+qreal Board::widthP() const
 {
 	return scaledCellSize() * columns();
 }
 
 void Board::init()
 {
-	mView.setHeight(scaledHeight());
-	dynamic_cast<QQuickItem*>(mView.parent())->setWidth(scaledWidth());
+	mView.setHeight(heightP());
+	dynamic_cast<QQuickItem*>(mView.parent())->setWidth(widthP());
 	for (auto child : dynamic_cast<QQuickItem*>(mView.parent())->childItems())
 	{
-		child->setWidth(scaledWidth());
+		child->setWidth(widthP());
 	}
 }

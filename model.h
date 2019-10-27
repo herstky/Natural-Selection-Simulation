@@ -24,11 +24,13 @@ public:
 
 	Model();
 	Model(const QPointF& pPosition);
+	virtual ~Model();
 
 	Status mStatus;
 	QColor mColor;
 	Shape mShape;
 	View* mView; // Raw pointer to allow for nullptr and because QT handles memory
+	int mKey;
 
 	virtual const qreal height() const;
 	virtual const qreal heightP() const;
@@ -57,6 +59,9 @@ protected:
 	virtual void init();
 
 private:
+	Model(const Model& pOther);
+	Model& operator=(const Model& pOther);
+
 	qreal mHeight;
 	qreal mWidth;
 };

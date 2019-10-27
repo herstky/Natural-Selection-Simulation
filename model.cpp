@@ -12,13 +12,24 @@ Model::Model()
 	  mHeight(1),
 	  mWidth(1),
 	  mX(0),
-	  mY(0) {}
+	  mY(0),
+	  mKey(0) {}
 
 Model::Model(const QPointF& pPosition)
 	: Model()
 {
 	mX = pPosition.x() / SCALE_FACTOR;
 	mY = pPosition.y() / SCALE_FACTOR;
+}
+
+Model::~Model() {}
+
+Model::Model(const Model& pOther) 
+	: Model() {}
+
+Model& Model::operator=(const Model& pOther) 
+{
+	return *this;
 }
 
 void Model::init() {}

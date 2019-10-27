@@ -23,21 +23,30 @@ public:
 	Organism(const Simulation& pSimulation, NeuralNetwork pBrain);
 	Organism(const QPointF& pPosition, NeuralNetwork pBrain);
 	Organism(const QPointF& pPosition, NeuralNetwork pBrain, QColor pColor);
+	virtual ~Organism() override;
 
     const qreal volume() const;
     const qreal diameter() const;
     qreal deltaVelocity();
     qreal deltaTime();
     qreal acceleration();
+	qreal& score();
+	qreal& energyLevel();
+	qreal energyCapacity();
+	qreal foodReward();
 
+	virtual void die(const Simulation& pSimulation) override;
 	virtual void move(const Simulation& pSimulation) override;
 	virtual void simulate(Simulation& pSimulation) override;
 
 	arma::mat smell(Simulation& pSimulation);
 	void think(Simulation& pSimulation);
-	void eat(const Simulation& pSimulation, Entity& pOther);
+	void eat(Simulation& pSimulation, Entity& pOther);
 
+	static NeuralNetwork loadBrain();
 	static NeuralNetwork loadBrain(std::string pPath);
+
+	bool mHasEaten;
 
 protected:
 	NeuralNetwork mBrain;
@@ -58,7 +67,6 @@ protected:
 	qreal mEnergyLevel;
 	qreal mEnergyCapacity;
 	qreal mEnergySpent;
-	bool mHasEaten;
 	qreal mScore;
 	qreal mPrevScentSum;
 	static qreal mStarvationPenalty;
@@ -79,5 +87,9 @@ protected:
 	virtual void replicate(const Simulation& pSimulation);
 	virtual QRectF hitbox() override;
 	virtual void collide(Simulation& pSimulation, Entity& pOther) override;
+
+private:
+	Organism(const Organism& pOther);
+	Organism& operator=(const Organism& pOther);
 };
 

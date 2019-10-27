@@ -8,13 +8,13 @@
 #include "constants.h"
 #include "Simulation.h"
 
-unsigned int Food::mCount = 0;
 qreal Food::mCreationChance = 5;
+int Food::mCount = 0;
 const qreal Food::M_SCENT_STRENGTH = 1.0;
 const qreal Food::M_SCENT_DIFFUSIVITY = 0.007;
 
 Food::Food(Simulation& pSimulation)
-	: mContainer(pSimulation.mFoodSet)
+	: mContainer(&pSimulation.mFoodSet)
 {
 	mX = QRandomGenerator::global()->bounded(pSimulation.boardView().width() - widthP()) / SCALE_FACTOR;
 	mY = QRandomGenerator::global()->bounded(pSimulation.boardView().height() - heightP()) / SCALE_FACTOR;
@@ -22,18 +22,41 @@ Food::Food(Simulation& pSimulation)
 }
 
 Food::Food(Simulation& pSimulation, const QPointF& pPosition)
-	: Entity(pPosition), mContainer(pSimulation.mFoodSet)
+	: Entity(pPosition), mContainer(&pSimulation.mFoodSet)
 {
 	mX = pPosition.x() / SCALE_FACTOR - width() / 2.0;
 	mY = pPosition.y() / SCALE_FACTOR - height() / 2.0;
 	init(pSimulation);
 }
 
+Food& Food::operator=(const Food& pOther)
+{
+	return *this;
+}
+
+Food::~Food()
+{
+	mCount--;
+}
+
 void Food::die(const Simulation& pSimulation)
 {
-
 	Model::die(pSimulation);
-	mCount--;
+}
+
+const qreal Food::creationChance()
+{
+	return mCreationChance;
+}
+
+void Food::setCreationChance(qreal pCreationChance)
+{
+	mCreationChance = pCreationChance;
+}
+
+const int Food::count()
+{
+	return mCount;
 }
 
 void Food::detectCollisions(Simulation& pSimulation) {}
@@ -65,4 +88,5 @@ void Food::init(Simulation& pSimulation)
 	mAspectRatio = 1;
 	mDepth = 0.1;
 	mCount++;
+	mPersistent = false;
 }

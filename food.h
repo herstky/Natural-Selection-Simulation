@@ -14,6 +14,7 @@ class Food : public Entity
 public:
 	Food(Simulation& pSimulation);
 	Food(Simulation& pSimulation, const QPointF& pPosition);
+	virtual ~Food() override;
 
 	void detectCollisions(Simulation& pSimulation) override;
 	const qreal height() const override;
@@ -21,6 +22,9 @@ public:
 	const qreal volume() const;
 	virtual void simulate(Simulation& pSimulation) override;
 	virtual void die(const Simulation& pSimulation) override;
+	static const qreal creationChance();
+	static void setCreationChance(qreal pCreationChance);
+	static const int count();
 
 	static const qreal M_SCENT_STRENGTH;
 	static const qreal M_SCENT_DIFFUSIVITY;
@@ -29,8 +33,10 @@ protected:
 	virtual void init(Simulation& pSimulation);
 
 private:	
-	static unsigned int mCount;
+	Food(const Food& pOther) : mContainer(nullptr) {}
+	Food& operator=(const Food& pOther);
 	static qreal mCreationChance;
-	std::unordered_set<std::shared_ptr<Food>>& mContainer;
+	static int mCount; 
+	std::unordered_set<std::shared_ptr<Food>>* mContainer;
 };
 
