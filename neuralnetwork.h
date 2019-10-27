@@ -31,13 +31,15 @@ public:
 	
 	std::vector<arma::mat> weights();
 
-private:
-	std::vector<arma::mat> mWeights;
-	static std::default_random_engine mGenerator;
-	static std::normal_distribution<qreal> mDistribution;
 	static qreal mMutationChance;
 	static qreal mSmallVarianceMagnitude;
 	static qreal mLargeVarianceMagnitude;
 	static qreal mLargeVarianceChance;
+
+private:
+	std::vector<arma::mat> mWeights;
+	static std::default_random_engine mGenerator;
+	static std::normal_distribution<qreal> mDistribution;
+
 };
 

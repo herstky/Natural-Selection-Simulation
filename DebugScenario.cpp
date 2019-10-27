@@ -14,13 +14,12 @@ DebugScenario::DebugScenario(Simulation* pSimulation, std::pair<NeuralNetwork, q
 
 void DebugScenario::startRound()
 {
-	QPointF foodCenter = QPointF(mSimulation->board().widthP() / 2, mSimulation->board().heightP() / 2);
-	std::shared_ptr<Food> food(new Food(*mSimulation, foodCenter));
+	std::shared_ptr<Food> food(new Food(*mSimulation, QPointF(mSimulation->board().widthP() / 2.0, 
+		mSimulation->board().heightP() / 2.0)));
 	mSimulation->addFood(food);
 	
-	std::shared_ptr<Creature> creature(new Creature(QPointF(mSimulation->board().widthP() / 2 - 6,
-		mSimulation->board().heightP() / 2)));
-
+	std::shared_ptr<Creature> creature(new Creature(QPointF(mSimulation->board().widthP() / 2.0 - 6,
+		mSimulation->board().heightP() / 2.0)));
 	mSimulation->addOrganism(creature);
 }
 

@@ -13,7 +13,16 @@ CircleTrainingScenario::CircleTrainingScenario(Simulation* pSimulation, std::pai
 	  mBestNeuralNetwork(pBestNeuralNetwork),
 	  mNextNeuralNetwork(mBestNeuralNetwork.first),
 	  mGroupMap(std::unordered_map<int, NeuralNetwork>()),
-	  mGroupScores(std::vector<std::pair<int, qreal>>()) {}
+	  mGroupScores(std::vector<std::pair<int, qreal>>()) 
+{
+	Organism::mStarvationPenalty = 15; // 5
+	Organism::mOutOfBoundsPenalty = 0; // 0
+	Organism::mNoScentsPenalty = 0; // 0
+	Organism::mFoodReward = 400; // 200
+	Organism::mScentReward = 0; // 1
+	Organism::mScentIncreaseReward = 10; // 10
+	Organism::mScentDecreasePenalty = 20; // 20
+}
 
 void CircleTrainingScenario::startRound()
 {

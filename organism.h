@@ -48,6 +48,15 @@ public:
 
 	bool mHasEaten;
 
+	static qreal mStarvationPenalty;
+	static qreal mOutOfBoundsPenalty;
+	static qreal mNoScentsPenalty;
+	static qreal mEnergyExpenditurePenalty;
+	static qreal mFoodReward;
+	static qreal mScentReward;
+	static qreal mScentIncreaseReward;
+	static qreal mScentDecreasePenalty;
+
 protected:
 	NeuralNetwork mBrain;
 	qreal mMass; // [kg]
@@ -69,13 +78,6 @@ protected:
 	qreal mEnergySpent;
 	qreal mScore;
 	qreal mPrevScentSum;
-	static qreal mStarvationPenalty;
-	static qreal mOutOfBoundsPenalty;
-	static qreal mNoScentsPenalty;
-	static qreal mFoodReward;
-	static qreal mScentReward;
-	static qreal mScentIncreaseReward;
-	static qreal mScentDecreasePenalty;
 
 	virtual void init(Simulation& pSimulation);
 

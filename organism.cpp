@@ -15,11 +15,10 @@
 #include "View.h"
 #include "Food.h"
 
-// TODO: consider diminishing returns for certain rewards
-
 qreal Organism::mStarvationPenalty = 15; // 5
 qreal Organism::mOutOfBoundsPenalty = 0; // 0
 qreal Organism::mNoScentsPenalty = 0; // 0
+qreal Organism::mEnergyExpenditurePenalty = 0;
 qreal Organism::mFoodReward = 400; // 200
 qreal Organism::mScentReward = 0; // 1
 qreal Organism::mScentIncreaseReward = 10; // 10
@@ -123,9 +122,6 @@ void Organism::move(const Simulation& pSimulation)
     dy = mVelocity * sin(mDirection);
     mDeltaDistance = std::sqrt(pow(dx, 2) + pow(dy, 2));
 
-	if (!mHasEaten)
-		mScore -= mStarvationPenalty * pSimulation.M_TICK_DURATION / 1000.0;
-
     expendEnergy(pSimulation);
 
 	setX(x() + dx);
@@ -211,10 +207,12 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 	qreal force = std::max(mMass * acceleration(), 0.0) + drag;
     qreal work = force * mDeltaDistance;
 
-	qreal basalMetabolicRate = 0.004 * mMass * deltaTime();
-	
-	mEnergySpent += work + basalMetabolicRate;
-	mEnergyLevel -= work + basalMetabolicRate;
+	qreal basalMetabolicRate = 0.0001 * mMass * deltaTime();
+	qreal energyExpenditure = work + basalMetabolicRate;
+
+	mEnergySpent += energyExpenditure;
+	mEnergyLevel -= energyExpenditure;
+	mScore -= mEnergyExpenditurePenalty * energyExpenditure * pSimulation.M_TICK_DURATION / 1000.0;
 	if (mEnergyLevel <= 0)
 		pSimulation.mScenario->die(*this);
 	mInitialTime = QTime::currentTime();
@@ -251,20 +249,22 @@ arma::mat Organism::smell(Simulation& pSimulation)
 		for (auto food : pSimulation.mFoodSet)
 		{
 			qreal intensity;
-			if (sqrt(pow(x() - food->x(), 2) + pow(y() - food->y(), 2)) < mSmellRadius)
+			if (sqrt(pow(center().x() - food->center().x(), 2) + pow(center().y() - food->center().y(), 2)) < mSmellRadius)
 			{
 				intensity = Food::M_SCENT_STRENGTH;
 				scents.at(0, i) += intensity;
 			}
 			else
 			{
-				qreal scentPositionX = x() + mSmellRadius * cos(angle);
-				qreal scentPositionY = y() - mSmellRadius * sin(angle); // invert because y decreases in the up direction
-				qreal dx = scentPositionX - food->x();
-				qreal dy = scentPositionY - food->y();
-				bool validPosition = !(scentPositionX >= pSimulation.board().width()
+				qreal c = cos(0);
+				qreal d = cos(M_PI);
+				qreal scentPositionX = center().x() + mSmellRadius * cos(angle);
+				qreal scentPositionY = center().y() - mSmellRadius * sin(angle); // invert because y decreases in the up direction
+				qreal dx = scentPositionX - food->center().x();
+				qreal dy = scentPositionY - food->center().y();
+				bool validPosition = !(scentPositionX >= pSimulation.board().widthP()
 					|| scentPositionX < 0
-					|| scentPositionY >= pSimulation.board().height()
+					|| scentPositionY >= pSimulation.board().heightP()
 					|| scentPositionY < 0);
 				qreal distance = std::sqrt(pow(dx, 2) + pow(dy, 2));
 				if (distance == 0.0)
@@ -281,7 +281,6 @@ arma::mat Organism::smell(Simulation& pSimulation)
 				{
 					scents.at(0, i) += intensity;
 				}
-
 			}
 
 			sum += scents.at(0, i);
