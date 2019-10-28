@@ -16,6 +16,7 @@ The objective of this project is to explore the effectiveness of using genetic a
 <br>
 <br>
 <br>
+<h1>Training</h1>
 The training scenario shown below spawns creatures in a circle around a food entity in the center. Creatures are spawned in groups that are evenly distributed around the circle. Every member of a group receives an exact copy of the same neural network and creatures are colored based on their group. The algorithm ranks each neural network based on how its group performed and crosses over the weights of the overall top performing neural network with the top performer of the current generation. The newly generated neural network is then mutated randomly for each group in the next generation. 
 <br>
 <br>
