@@ -21,6 +21,7 @@ public:
 	virtual void die(Organism& pOrganism);
 	virtual void move(Organism& pOrganism);
 	virtual void simulate(Organism& pOrganism);
+	virtual void expendEnergy(Organism& pOrganism);
 	
 protected:
 	Simulation* mSimulation;

@@ -27,6 +27,7 @@ public:
 	virtual void updateUI() override;
 	virtual void move(Organism& pOrganism) override;
 	virtual void eat(Organism& pPredator, Entity& pPrey) override;
+	virtual void expendEnergy(Organism& pOrganism) override;
 	virtual void die(Organism& pOrganism) override;
 	
 private:

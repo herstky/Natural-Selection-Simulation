@@ -26,3 +26,8 @@ void Scenario::simulate(Organism& pOrganism)
 {
 	pOrganism.simulate(*mSimulation);
 }
+
+void Scenario::expendEnergy(Organism& pOrganism)
+{
+	pOrganism.expendEnergy(*mSimulation);
+}

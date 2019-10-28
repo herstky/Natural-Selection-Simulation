@@ -122,7 +122,7 @@ void Organism::move(const Simulation& pSimulation)
     dy = mVelocity * sin(mDirection);
     mDeltaDistance = std::sqrt(pow(dx, 2) + pow(dy, 2));
 
-    expendEnergy(pSimulation);
+    pSimulation.mScenario->expendEnergy(*this);
 
 	setX(x() + dx);
 	setY(y() + dy);
@@ -214,7 +214,7 @@ void Organism::expendEnergy(const Simulation& pSimulation)
 	mEnergyLevel -= energyExpenditure;
 	mScore -= mEnergyExpenditurePenalty * energyExpenditure * pSimulation.M_TICK_DURATION / 1000.0;
 	if (mEnergyLevel <= 0)
-		//pSimulation.mScenario->die(*this);
+		pSimulation.mScenario->die(*this);
 	mInitialTime = QTime::currentTime();
 	mInitialVelocity = mVelocity;
 }

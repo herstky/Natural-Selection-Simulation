@@ -21,8 +21,8 @@ CircleTrainingScenario::CircleTrainingScenario(Simulation* pSimulation, std::pai
 	Organism::mEnergyExpenditurePenalty = 0; // 200000000
 	Organism::mFoodReward = 300; // 200
 	Organism::mScentReward = 0; // 1
-	Organism::mScentIncreaseReward = 0; // 10
-	Organism::mScentDecreasePenalty = 0; // 20
+	Organism::mScentIncreaseReward = 10; // 10
+	Organism::mScentDecreasePenalty = 20; // 20
 
 	NeuralNetwork::mMutationChance = 20;
 	NeuralNetwork::mSmallVarianceMagnitude = 1;
@@ -190,6 +190,9 @@ void CircleTrainingScenario::eat(Organism& pPredator, Entity& pPrey)
 	pPredator.energyLevel() = std::min(pPredator.energyLevel(), pPredator.energyCapacity());
 	die(pPredator);
 }
+
+void CircleTrainingScenario::expendEnergy(Organism& pOrganism) {}
+
 
 void CircleTrainingScenario::die(Organism& pOrganism)
 {

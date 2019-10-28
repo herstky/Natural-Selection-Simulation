@@ -42,6 +42,7 @@ public:
 	arma::mat smell(Simulation& pSimulation);
 	void think(Simulation& pSimulation);
 	void eat(Simulation& pSimulation, Entity& pOther);
+	void expendEnergy(const Simulation& pSimulation);
 
 	static NeuralNetwork loadBrain();
 	static NeuralNetwork loadBrain(std::string pPath);
@@ -85,7 +86,6 @@ protected:
 	void setHeight(qreal pHeight) override;
 	const qreal width() const override;
 	void setWidth(qreal pWidth) override;
-    void expendEnergy(const Simulation& pSimulation);
 	virtual void replicate(const Simulation& pSimulation);
 	virtual QRectF hitbox() override;
 	virtual void collide(Simulation& pSimulation, Entity& pOther) override;
