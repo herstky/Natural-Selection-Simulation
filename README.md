@@ -2,9 +2,6 @@
 The objective of this project is to explore the effectiveness of using genetic algorithms to train neural networks without the need for large data sets. The simulation consists of a 2D board populated with creature entities that are each controlled by their own neural network and food entities that give off a scent that the creatures detect. I use a genetic algorithm and a variety of training scenarios to train the neural networks to seek out food based on the scents that they take as input. The simulation is designed to ease the creation of custom scenarios. This, combined with altering parameters of the ranking system that the genetic algorithm uses, allows for targeting different behaviors for the creatures. For example, they can be trained to avoid walls, reduce energy expenditure, attempt to beat other creatures to food, etc. 
 
 <h1>Demonstration</h1>
-<br>
-<br>
-<br>
 <figure>
   <img src="https://github.com/herstky/Replicator/raw/master/untrained_neural_network_sim.gif" height="350" width="300">
   <figcaption>Untrained neural networks in a simulation scenario that randomly spawns food and creatures</figcaption>
