@@ -4,7 +4,7 @@ The objective of this project is to explore the effectiveness of using genetic a
 <h1>Demonstration</h1>
 
 The first generation of an untrained network.
-![untrained_neural_network](https://github.com/herstky/Replicator/edit/master/untrained_neural_network.gif)
+![](untrained_neural_network.gif =250x250)
 
 The animation can be turned off to speed up the training process.
 
