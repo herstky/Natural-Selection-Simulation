@@ -3,14 +3,14 @@ The objective of this project is to explore the effectiveness of using genetic a
 
 <h1>Demonstration</h1>
 <figure>
-  <img src="https://github.com/herstky/Replicator/raw/master/untrained_neural_network_sim.gif" height="350" width="300">
+  <img src="https://github.com/herstky/Replicator/raw/master/demos/untrained_neural_network_sim.gif" height="350" width="300">
   <figcaption>Untrained neural networks in a simulation scenario that randomly spawns food and creatures</figcaption>
 </figure>
 <br>
 <br>
 <br>
 <figure>
-  <img src="https://github.com/herstky/Replicator/raw/master/trained_neural_network_sim.gif" height="350" width="300">
+  <img src="https://github.com/herstky/Replicator/raw/master/demos/trained_neural_network_sim.gif" height="350" width="300">
   <figcaption>Trained neural networks in the simulation scenario</figcaption>
 </figure>
 <br>
@@ -22,20 +22,20 @@ The training scenario shown below spawns creatures in a circle around a food ent
 <br>
 <br>
 <figure>
-  <img src="https://github.com/herstky/Replicator/raw/master/untrained_neural_network.gif" height="350" width="300">
+  <img src="https://github.com/herstky/Replicator/raw/master/demos/untrained_neural_network.gif" height="350" width="300">
   <figcaption>The first generation of untrained networks</figcaption>
 </figure>
 <br>
 <br>
 <br>
 <figure>
-  <img src="https://github.com/herstky/Replicator/raw/master/animation_toggle.gif" height="350" width="300">
+  <img src="https://github.com/herstky/Replicator/raw/master/demos/animation_toggle.gif" height="350" width="300">
   <figcaption>The animation can be turned off to speed up the training process</figcaption>
 </figure>
 <br>
 <br>
 <br>
 <figure>
-  <img src="https://github.com/herstky/Replicator/raw/master/trained_neural_network.gif" height="350" width="300">
+  <img src="https://github.com/herstky/Replicator/raw/master/demos/trained_neural_network.gif" height="350" width="300">
   <figcaption>The neural networks after 1000 generations of training</figcaption>
 </figure>
