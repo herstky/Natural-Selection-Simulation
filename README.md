@@ -3,8 +3,11 @@ The objective of this project is to explore the effectiveness of using genetic a
 
 <h1>Demonstration</h1>
 
-The first generation of an untrained network.
-![](untrained_neural_network.gif =250x250)
+<figure>
+  <img src="https://github.com/herstky/Replicator/raw/master/untrained_neural_network.gif" height="350" width="300">
+  <figcaption>The first generation of an untrained network.</figcaption>
+</figure>
+
 
 The animation can be turned off to speed up the training process.
 
