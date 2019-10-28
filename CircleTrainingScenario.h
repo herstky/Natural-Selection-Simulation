@@ -25,6 +25,7 @@ public:
 	virtual void simulateTick() override;
 	virtual void simulateStep() override;
 	virtual void updateUI() override;
+	virtual void move(Organism& pOrganism) override;
 	virtual void eat(Organism& pPredator, Entity& pPrey) override;
 	virtual void die(Organism& pOrganism) override;
 	

@@ -30,6 +30,7 @@ public:
 	friend class Entity;
 	friend class Food;
 	friend class Organism;
+	friend class CircleTrainingScenario;
 
 	Simulation(QQuickItem* pParent, Mode pMode = Mode::simulate);
 
