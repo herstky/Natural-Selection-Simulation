@@ -9,7 +9,7 @@ SimScenario::SimScenario(Simulation* pSimulation, std::pair<NeuralNetwork, qreal
 	  mBestNeuralNetwork(pBestNeuralNetwork),
 	  mNextNeuralNetwork(mBestNeuralNetwork.first)
 {
-	Creature::setCreationChance(20);
+	Creature::setCreationChance(5);
 	Food::setCreationChance(20);
 	mSimulation->mContainer.findChild<QQuickItem*>("progressColumn")->setVisible(false);
 }
@@ -40,7 +40,7 @@ void SimScenario::simulateStep()
 {
 	if (QRandomGenerator::global()->bounded(100) < Creature::creationChance())
 	{
-		NeuralNetwork newNeuralNetwork = NeuralNetwork::mutateWeights(mBestNeuralNetwork.first);
+		NeuralNetwork newNeuralNetwork = mBestNeuralNetwork.first;
 		mSimulation->addOrganism(std::shared_ptr<Organism>(new Creature(*mSimulation, newNeuralNetwork)));
 	}
 	if (QRandomGenerator::global()->bounded(100) < Food::creationChance())
