@@ -15,21 +15,27 @@ CircleTrainingScenario::CircleTrainingScenario(Simulation* pSimulation, std::pai
 	  mGroupMap(std::unordered_map<int, NeuralNetwork>()),
 	  mGroupScores(std::vector<std::pair<int, qreal>>()) 
 {
-	Organism::mStarvationPenalty = 15; // 5
+	Organism::mStarvationPenalty = 50; // 5
 	Organism::mOutOfBoundsPenalty = 0; // 0
 	Organism::mNoScentsPenalty = 0; // 0
-	Organism::mFoodReward = 400; // 200
+	Organism::mEnergyExpenditurePenalty = 200000000;
+	Organism::mFoodReward = 300; // 200
 	Organism::mScentReward = 0; // 1
-	Organism::mScentIncreaseReward = 10; // 10
-	Organism::mScentDecreasePenalty = 20; // 20
+	Organism::mScentIncreaseReward = 0; // 10
+	Organism::mScentDecreasePenalty = 0; // 20
+
+	NeuralNetwork::mMutationChance = 20;
+	NeuralNetwork::mSmallVarianceMagnitude = 1;
+	NeuralNetwork::mLargeVarianceMagnitude = 100;
+	NeuralNetwork::mLargeVarianceChance = 0;
 }
 
 void CircleTrainingScenario::startRound()
 {
 	QPointF center = QPointF(mSimulation->board().widthP() / 2, mSimulation->board().heightP() / 2);
 	qreal radius = 15 * mSimulation->board().cellSize() * SCALE_FACTOR;
-	int entities = 10;
-	int replicates = 3; // number of clones of each Entity
+	int entities = 20;
+	int replicates = 20; // number of clones of each Entity
 
 	std::shared_ptr<Food> food(new Food(*mSimulation, center));
 	mSimulation->addFood(food);
@@ -37,12 +43,12 @@ void CircleTrainingScenario::startRound()
 	for (int i = 0; i < entities; i++)
 	{
 		NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(mNextNeuralNetwork);
-		//neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
+		neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
 		mGroupScores.push_back(std::pair<int, qreal>(i, 0));
 		std::vector<std::shared_ptr<Organism>> group;
-
-		QColor groupColor = QColor(QRandomGenerator::global()->bounded(255), 
-			QRandomGenerator::global()->bounded(255), 
+		mGroupMap[i] = neuralNetwork;
+		QColor groupColor = QColor(QRandomGenerator::global()->bounded(255),
+			QRandomGenerator::global()->bounded(255),
 			QRandomGenerator::global()->bounded(255));
 		for (int j = 0; j < replicates; j++)
 		{

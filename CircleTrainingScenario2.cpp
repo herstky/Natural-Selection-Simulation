@@ -15,7 +15,7 @@ CircleTrainingScenario2::CircleTrainingScenario2(Simulation* pSimulation, std::p
 	  mGroupMap(std::unordered_map<int, NeuralNetwork>()),
 	  mGroupScores(std::vector<std::pair<int, qreal>>()) 
 {
-	Organism::mStarvationPenalty = 20; // 5
+	Organism::mStarvationPenalty = 50; // 5
 	Organism::mOutOfBoundsPenalty = 0; // 0
 	Organism::mNoScentsPenalty = 0; // 0
 	Organism::mEnergyExpenditurePenalty = 200000000;
