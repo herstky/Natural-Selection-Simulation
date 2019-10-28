@@ -10,7 +10,7 @@ SimScenario::SimScenario(Simulation* pSimulation, std::pair<NeuralNetwork, qreal
 	  mNextNeuralNetwork(mBestNeuralNetwork.first)
 {
 	Creature::setCreationChance(5);
-	Food::setCreationChance(20);
+	Food::setCreationChance(25);
 	mSimulation->mContainer.findChild<QQuickItem*>("progressColumn")->setVisible(false);
 }
 

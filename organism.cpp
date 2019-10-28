@@ -202,10 +202,10 @@ qreal Organism::foodReward()
 
 void Organism::expendEnergy(const Simulation& pSimulation)
 {
-    qreal drag = 1.0 / 2.0 * SPHERE_WATER_DRAG_COEFFICIENT * WATER_DENSITY * M_PI * pow((diameter() / 2), 2) * pow(mVelocity, 2);
+	qreal drag = 1.0 / 2.0 * SPHERE_WATER_DRAG_COEFFICIENT * WATER_DENSITY * M_PI * pow((diameter() / 2), 2) * pow(mVelocity, 2);
 
 	qreal force = std::max(mMass * acceleration(), 0.0) + drag;
-    qreal work = force * mDeltaDistance;
+	qreal work = force * mDeltaDistance;
 
 	qreal basalMetabolicRate = 0.0001 * mMass * deltaTime();
 	qreal energyExpenditure = work + basalMetabolicRate;

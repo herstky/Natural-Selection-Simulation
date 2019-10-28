@@ -185,4 +185,6 @@ void CircleTrainingScenario2::eat(Organism& pPredator, Entity& pPrey)
 	}
 }
 
+void CircleTrainingScenario2::expendEnergy(Organism& pOrganism) {}
+
 void CircleTrainingScenario2::die(Organism& pOrganism) {}

@@ -15,16 +15,16 @@ CircleTrainingScenario3::CircleTrainingScenario3(Simulation* pSimulation, std::p
 	mGroupMap(std::unordered_map<int, NeuralNetwork>()),
 	mGroupScores(std::vector<std::pair<int, qreal>>())
 {
-	Organism::mStarvationPenalty = 50; // 5
+	Organism::mStarvationPenalty = 100; // 5
 	Organism::mOutOfBoundsPenalty = 0; // 0
 	Organism::mNoScentsPenalty = 0; // 0
-	Organism::mEnergyExpenditurePenalty = 200000000;
-	Organism::mFoodReward = 300; // 200
+	Organism::mEnergyExpenditurePenalty = 0;
+	Organism::mFoodReward = 100; // 200
 	Organism::mScentReward = 0; // 1
 	Organism::mScentIncreaseReward = 0; // 10
 	Organism::mScentDecreasePenalty = 0; // 20
 
-	NeuralNetwork::mMutationChance = 0;
+	NeuralNetwork::mMutationChance = 10;
 	NeuralNetwork::mSmallVarianceMagnitude = 1;
 	NeuralNetwork::mLargeVarianceMagnitude = 100;
 	NeuralNetwork::mLargeVarianceChance = 0;
@@ -34,7 +34,7 @@ void CircleTrainingScenario3::startRound()
 {
 	QPointF center = QPointF(mSimulation->board().widthP() / 2, mSimulation->board().heightP() / 2);
 	qreal radius = 15 * mSimulation->board().cellSize() * SCALE_FACTOR;
-	int entities = 1;
+	int entities = 20;
 	int replicates = 20; // number of clones of each Entity
 
 	std::shared_ptr<Food> food(new Food(*mSimulation, center));
@@ -175,5 +175,7 @@ void CircleTrainingScenario3::eat(Organism& pPredator, Entity& pPrey)
 		mSimulation->scorePoint();
 	}
 }
+
+void CircleTrainingScenario3::expendEnergy(Organism& pOrganism) {}
 
 void CircleTrainingScenario3::die(Organism& pOrganism) {}
