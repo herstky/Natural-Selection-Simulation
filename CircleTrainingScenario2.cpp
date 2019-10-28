@@ -87,7 +87,7 @@ void CircleTrainingScenario2::endRound()
 	
 	std::cout << "-------------------------------------" << std::endl;
 	std::cout << "Generation: " << mSimulation->generation() << std::endl;
-	std::cout << "Current high score: " << mBestNeuralNetwork.second << std::endl;
+	std::cout << "Current top score: " << mBestNeuralNetwork.second << std::endl;
 	std::cout << "High score: " << mGroupScores[0].second << std::endl;
 	std::cout << "Low score: " << mGroupScores[mGroupScores.size() - 1].second << std::endl;
 	std::cout << "Average score: " << sum / mGroupScores.size() << std::endl;
@@ -102,7 +102,6 @@ void CircleTrainingScenario2::endRound()
 	if (mGroupScores[0].second > mBestNeuralNetwork.second)
 	{
 		std::cout << "\nNew best neural network found!" << std::endl;
-		//mBestNeuralNetwork = std::pair<NeuralNetwork, qreal>(mSimulation->organismGroups()[first][0]->mBrain, mGroupScores[0].second);
 		mBestNeuralNetwork = std::pair<NeuralNetwork, qreal>(bestNN, mGroupScores[0].second);
 		firstNN = bestNN;
 		secondNN = second == -1 ? NeuralNetwork() : mGroupMap[second];

@@ -1,4 +1,4 @@
-#include "CircleTrainingScenario.h"
+#include "CircleTrainingScenario3.h"
 
 #include <QRandomGenerator>
 #include <QPointF>
@@ -8,33 +8,33 @@
 #include "Creature.h"
 #include "NeuralNetwork.h"
 
-CircleTrainingScenario::CircleTrainingScenario(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork)
+CircleTrainingScenario3::CircleTrainingScenario3(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork)
 	: Scenario(pSimulation),
-	  mBestNeuralNetwork(pBestNeuralNetwork),
-	  mNextNeuralNetwork(mBestNeuralNetwork.first),
-	  mGroupMap(std::unordered_map<int, NeuralNetwork>()),
-	  mGroupScores(std::vector<std::pair<int, qreal>>()) 
+	mBestNeuralNetwork(pBestNeuralNetwork),
+	mNextNeuralNetwork(mBestNeuralNetwork.first),
+	mGroupMap(std::unordered_map<int, NeuralNetwork>()),
+	mGroupScores(std::vector<std::pair<int, qreal>>())
 {
-	Organism::mStarvationPenalty = 100; // 5
+	Organism::mStarvationPenalty = 50; // 5
 	Organism::mOutOfBoundsPenalty = 0; // 0
 	Organism::mNoScentsPenalty = 0; // 0
-	Organism::mEnergyExpenditurePenalty = 0; // 200000000
-	Organism::mFoodReward = 100; // 200
+	Organism::mEnergyExpenditurePenalty = 200000000;
+	Organism::mFoodReward = 300; // 200
 	Organism::mScentReward = 0; // 1
 	Organism::mScentIncreaseReward = 0; // 10
 	Organism::mScentDecreasePenalty = 0; // 20
 
-	NeuralNetwork::mMutationChance = 20;
+	NeuralNetwork::mMutationChance = 0;
 	NeuralNetwork::mSmallVarianceMagnitude = 1;
 	NeuralNetwork::mLargeVarianceMagnitude = 100;
 	NeuralNetwork::mLargeVarianceChance = 0;
 }
 
-void CircleTrainingScenario::startRound()
+void CircleTrainingScenario3::startRound()
 {
 	QPointF center = QPointF(mSimulation->board().widthP() / 2, mSimulation->board().heightP() / 2);
 	qreal radius = 15 * mSimulation->board().cellSize() * SCALE_FACTOR;
-	int entities = 20;
+	int entities = 1;
 	int replicates = 20; // number of clones of each Entity
 
 	std::shared_ptr<Food> food(new Food(*mSimulation, center));
@@ -43,7 +43,6 @@ void CircleTrainingScenario::startRound()
 	for (int i = 0; i < entities; i++)
 	{
 		NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(mNextNeuralNetwork);
-		neuralNetwork = NeuralNetwork::mutateBasisWeights(neuralNetwork);
 		mGroupScores.push_back(std::pair<int, qreal>(i, 0));
 		std::vector<std::shared_ptr<Organism>> group;
 		mGroupMap[i] = neuralNetwork;
@@ -60,11 +59,11 @@ void CircleTrainingScenario::startRound()
 		}
 		mSimulation->addOrganismGroup(group);
 	}
-	mGroupScores.resize(mSimulation->organismGroups().size());
 }
 
-void CircleTrainingScenario::endRound() 
+void CircleTrainingScenario3::endRound()
 {
+	mGroupScores.resize(mSimulation->organismGroups().size());
 	for (auto group : mSimulation->organismGroups())
 	{
 		for (auto organism : group)
@@ -95,16 +94,13 @@ void CircleTrainingScenario::endRound()
 	int first = mGroupScores[0].first;
 	int second = mGroupScores.size() > 1 ? mGroupScores[1].first : -1;
 
-	NeuralNetwork firstNN;
-	NeuralNetwork secondNN;
 	NeuralNetwork bestNN = mGroupMap[first];
 
 	if (mGroupScores[0].second > mBestNeuralNetwork.second)
 	{
 		std::cout << "\nNew best neural network found!" << std::endl;
 		mBestNeuralNetwork = std::pair<NeuralNetwork, qreal>(bestNN, mGroupScores[0].second);
-		firstNN = bestNN;
-		secondNN = second == -1 ? NeuralNetwork() : mGroupMap[second];
+		mNextNeuralNetwork = bestNN;
 		int i = 0;
 		for (auto weightMatrix : mBestNeuralNetwork.first.weights())
 		{
@@ -114,13 +110,8 @@ void CircleTrainingScenario::endRound()
 	}
 	else
 	{
-		firstNN = mBestNeuralNetwork.first;
-		secondNN = bestNN;
+		mNextNeuralNetwork = mBestNeuralNetwork.first;
 	}
-	NeuralNetwork newNN = NeuralNetwork::crossoverWeights(firstNN, secondNN);
-	newNN = NeuralNetwork::crossoverBasisWeights(newNN, secondNN);
-
-	mNextNeuralNetwork = newNN;
 
 	for (auto item : mSimulation->boardView().childItems())
 	{
@@ -130,7 +121,7 @@ void CircleTrainingScenario::endRound()
 	mGroupScores.clear();
 }
 
-void CircleTrainingScenario::simulateTick() 
+void CircleTrainingScenario3::simulateTick()
 {
 	if (mSimulation->mTicksRemaining)
 	{
@@ -142,7 +133,7 @@ void CircleTrainingScenario::simulateTick()
 	}
 }
 
-void CircleTrainingScenario::simulateStep() 
+void CircleTrainingScenario3::simulateStep()
 {
 	if (mSimulation->mStepsRemaining)
 	{
@@ -155,7 +146,7 @@ void CircleTrainingScenario::simulateStep()
 	}
 }
 
-void CircleTrainingScenario::updateUI()
+void CircleTrainingScenario3::updateUI()
 {
 	qreal progress = 1.0 - mSimulation->stepsRemaining() / static_cast<qreal>(mSimulation->M_STEPS_PER_ROUND);
 	mSimulation->mContainer.findChild<QObject*>("progressBar")->setProperty("value", progress);
@@ -168,27 +159,21 @@ void CircleTrainingScenario::updateUI()
 	scoreLabel->setProperty("text", "Score: " + QString::number(mSimulation->score()));
 }
 
-void CircleTrainingScenario::move(Organism& pOrganism)
+void CircleTrainingScenario3::move(Organism& pOrganism)
 {
 	pOrganism.move(*mSimulation);
-	pOrganism.score() -= Organism::mStarvationPenalty * mSimulation->M_TICK_DURATION / 1000.0;
+	if (!pOrganism.mHasEaten)
+		pOrganism.score() -= Organism::mStarvationPenalty * mSimulation->M_TICK_DURATION / 1000.0;
 }
 
-void CircleTrainingScenario::eat(Organism& pPredator, Entity& pPrey)
+void CircleTrainingScenario3::eat(Organism& pPredator, Entity& pPrey)
 {
-	pPredator.score() += pPredator.foodReward();
-	mSimulation->scorePoint();
-
-	pPredator.energyLevel() += pPrey.getMass() * pPrey.getEnergyContent();
-	pPredator.energyLevel() = std::min(pPredator.energyLevel(), pPredator.energyCapacity());
-	die(pPredator);
+	if (!pPredator.mHasEaten)
+	{
+		pPredator.mHasEaten = true;
+		pPredator.score() += pPredator.foodReward();
+		mSimulation->scorePoint();
+	}
 }
 
-void CircleTrainingScenario::expendEnergy(Organism& pOrganism) {}
-
-
-void CircleTrainingScenario::die(Organism& pOrganism)
-{
-	mGroupScores[pOrganism.mKey].second += pOrganism.score();
-	pOrganism.die(*mSimulation);
-}
+void CircleTrainingScenario3::die(Organism& pOrganism) {}
