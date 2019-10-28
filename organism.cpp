@@ -256,8 +256,6 @@ arma::mat Organism::smell(Simulation& pSimulation)
 			}
 			else
 			{
-				qreal c = cos(0);
-				qreal d = cos(M_PI);
 				qreal scentPositionX = center().x() + mSmellRadius * cos(angle);
 				qreal scentPositionY = center().y() - mSmellRadius * sin(angle); // invert because y decreases in the up direction
 				qreal dx = scentPositionX - food->center().x();
