@@ -15,19 +15,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        creature.cpp \
-        main.cpp \
-        simulation.cpp \
-        organism.cpp \
-        utils.cpp \
-        neuralnetwork.cpp \
-        view.cpp \
-        model.cpp \
-        entity.cpp \
-        food.cpp \
-        board.cpp
+        src/CircleTrainingScenario.cpp \
+        src/CircleTrainingScenario2.cpp \
+        src/CircleTrainingScenario3.cpp \
+        src/Creature.cpp \
+        src/DebugScenario.cpp \
+        src/Entity.cpp \
+        src/Food.cpp \
+        src/Model.cpp \
+        src/NeuralNetwork.cpp \
+        src/Organism.cpp \
+        src/Scenario.cpp \
+        src/SimScenario.cpp \
+        src/SimTrainingScenario.cpp \
+        src/Simulation.cpp \
+        src/View.cpp \
+        src/main.cpp \
+        src/utils.cpp
 
-RESOURCES += qml.qrc
+
+RESOURCES += src/qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -41,17 +48,24 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    creature.h \
-    constants.h \
-    simulation.h \
-    organism.h \
-    utils.h \
-    neuralnetwork.h \
-    view.h \
-    model.h \
-    entity.h \
-    food.h \
-    board.h 
+    src/Board.h \
+    src/CircleTrainingScenario.h \
+    src/CircleTrainingScenario2.h \
+    src/CircleTrainingScenario3.h \
+    src/Creature.h \
+    src/DebugScenario.h \
+    src/Entity.h \
+    src/Food.h \
+    src/Model.h \
+    src/NeuralNetwork.h \
+    src/Organism.h \
+    src/Scenario.h \
+    src/SimScenario.h \
+    src/SimTrainingScenario.h \
+    src/Simulation.h \
+    src/View.h \
+    src/constants.h \
+    src/utils.h \
 
 INCLUDEPATH += C:\bin\lib\armadillo\include
 LIBS += \

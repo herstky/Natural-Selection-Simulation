@@ -6,12 +6,6 @@ training neural networks with genetic algorithms.pdf
 *.stash
 *.sln
 
-blas_win64_MT.lib
-blas_win64_MT.dll
-lapack_win64_MT.lib
-lapack_win64_MT.dll
-
-
 /output
 /debug
 /release
