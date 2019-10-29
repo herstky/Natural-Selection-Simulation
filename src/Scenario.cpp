@@ -2,6 +2,7 @@
 
 #include "Simulation.h"
 #include "Organism.h"
+#include "Creature.h"
 #include "Entity.h"
 
 Scenario::Scenario(Simulation* pSimulation)

@@ -62,13 +62,13 @@ public:
 	const int score();
 	void scorePoint();
 	std::vector<std::vector<std::shared_ptr<Organism>>>& organismGroups();
+	std::shared_ptr<Scenario> mScenario;
 
 public slots:
 	void run();
 
 private:
 	Board mBoard;
-	std::shared_ptr<Scenario> mScenario;
 	QTimer* mTimer;
 	int mGeneration;
 	qreal mScore;

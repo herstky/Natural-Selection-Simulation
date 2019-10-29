@@ -40,9 +40,9 @@ public:
 	virtual void simulate(Simulation& pSimulation) override;
 
 	arma::mat smell(Simulation& pSimulation);
-	void think(Simulation& pSimulation);
-	void eat(Simulation& pSimulation, Entity& pOther);
-	void expendEnergy(const Simulation& pSimulation);
+	virtual void think(Simulation& pSimulation);
+	virtual void eat(Simulation& pSimulation, Entity& pOther);
+	virtual void expendEnergy(const Simulation& pSimulation);
 
 	static NeuralNetwork loadBrain();
 	static NeuralNetwork loadBrain(std::string pPath);

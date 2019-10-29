@@ -5,7 +5,7 @@
 
 #include "Food.h"
 #include "Simulation.h"
-#include "Creature.h"
+#include "PersistentCreature.h"
 #include "NeuralNetwork.h"
 
 CircleTrainingScenario::CircleTrainingScenario(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork)
@@ -54,7 +54,7 @@ void CircleTrainingScenario::startRound()
 		{
 			qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / replicates) + j * 2 * M_PI / replicates;
 			QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
-			std::shared_ptr<Organism> creature(new Creature(pos, neuralNetwork, groupColor));
+			std::shared_ptr<Organism> creature(new PersistentCreature(pos, neuralNetwork, groupColor));
 			creature->mKey = i;
 			group.push_back(std::shared_ptr<Organism>(creature));
 		}
@@ -71,6 +71,11 @@ void CircleTrainingScenario::endRound()
 		{
 			mGroupScores[organism->mKey].second += organism->score();
 		}
+	}
+
+	for (auto pair : mKeyScore)
+	{
+		mGroupScores[pair.first].second += pair.second;
 	}
 
 	qreal sum = 0;
@@ -163,32 +168,7 @@ void CircleTrainingScenario::updateUI()
 	QObject* generationLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
 	generationLabel->setProperty("text", "Generation: " + QString::number(mSimulation->generation()));
 	QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
-	countLabel->setProperty("text", "Creatures: " + QString::number(Creature::count()));
+	countLabel->setProperty("text", "Creatures: " + QString::number(PersistentCreature::count()));
 	QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
 	scoreLabel->setProperty("text", "Score: " + QString::number(mSimulation->score()));
-}
-
-void CircleTrainingScenario::move(Organism& pOrganism)
-{
-	pOrganism.move(*mSimulation);
-	pOrganism.score() -= Organism::mStarvationPenalty * mSimulation->M_TICK_DURATION / 1000.0;
-}
-
-void CircleTrainingScenario::eat(Organism& pPredator, Entity& pPrey)
-{
-	pPredator.score() += pPredator.foodReward();
-	mSimulation->scorePoint();
-
-	pPredator.energyLevel() += pPrey.getMass() * pPrey.getEnergyContent();
-	pPredator.energyLevel() = std::min(pPredator.energyLevel(), pPredator.energyCapacity());
-	die(pPredator);
-}
-
-void CircleTrainingScenario::expendEnergy(Organism& pOrganism) {}
-
-
-void CircleTrainingScenario::die(Organism& pOrganism)
-{
-	mGroupScores[pOrganism.mKey].second += pOrganism.score();
-	pOrganism.die(*mSimulation);
 }

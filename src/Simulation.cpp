@@ -170,7 +170,7 @@ void Simulation::run()
 		View* view = dynamic_cast<View*>(item);
 		std::shared_ptr<Organism> organism = std::dynamic_pointer_cast<Organism>(view->mModel);
 		if (organism)
-			mScenario->move(*organism);
+			organism->move(*this);
 	}
 
 	if (!mTicksRemaining)
@@ -182,7 +182,7 @@ void Simulation::run()
 		View* view = dynamic_cast<View*>(item);
 		std::shared_ptr<Organism> organism = std::dynamic_pointer_cast<Organism>(view->mModel);
 		if (organism)
-			mScenario->simulate(*organism);
+			organism->simulate(*this);
 	}
 
 	for (auto item : boardView().childItems())

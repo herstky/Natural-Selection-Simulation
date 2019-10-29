@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <vector>
+#include <utility>
 
 class Simulation; 
 class Organism;
@@ -17,7 +19,10 @@ public:
 	virtual void simulateTick() = 0;
 	virtual void updateUI() = 0;
 
-	//virtual void addOrganism() override;
+	inline void addKeyScore(std::pair<int, qreal> pPair)
+	{
+		mKeyScore.push_back(pPair);
+	}
 
 	virtual void eat(Organism& pPredator, Entity& pPrey);
 	virtual void die(Organism& pOrganism);
@@ -27,5 +32,6 @@ public:
 	
 protected:
 	Simulation* mSimulation;
+	std::vector<std::pair<int, qreal>> mKeyScore; // Multi-function vector for mapping Creature.mKey to Creature.mScore
 };
 

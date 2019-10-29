@@ -26,13 +26,6 @@ public:
 	virtual void simulateStep() override;
 	virtual void updateUI() override;
 	
-	//virtual void addOrganism() override;
-
-	virtual void move(Organism& pOrganism) override;
-	virtual void eat(Organism& pPredator, Entity& pPrey) override;
-	virtual void expendEnergy(Organism& pOrganism) override;
-	virtual void die(Organism& pOrganism) override;
-	
 private:
 	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;
 	NeuralNetwork mNextNeuralNetwork;
