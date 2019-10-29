@@ -16,7 +16,7 @@ qreal NeuralNetwork::mLargeVarianceChance = 0;
 NeuralNetwork::NeuralNetwork()
 {
 	arma::arma_rng::set_seed_random();
-	std::vector<int> layers{ 16, 20, 40, 80, 40, 20, 10, 2 };
+	std::vector<int> layers{ 16, 20, 40, 20, 10, 2 };
 	for (unsigned int i = 1; i < layers.size(); i++)
 	{
 		mWeights.push_back(arma::randn<arma::mat>(layers[i - 1] + 1, layers[i]));
