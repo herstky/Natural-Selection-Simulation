@@ -8,27 +8,7 @@
 Scenario::Scenario(Simulation* pSimulation)
 	: mSimulation(pSimulation) {}
 
-void Scenario::eat(Organism& pPredator, Entity& pPrey)
+void Scenario::addKeyScore(std::pair<int, qreal> pPair)
 {
-	pPredator.eat(*mSimulation, pPrey);
-}
-
-void Scenario::die(Organism& pOrganism)
-{
-	pOrganism.die(*mSimulation);
-}
-
-void Scenario::move(Organism& pOrganism)
-{
-	pOrganism.move(*mSimulation);
-}
-
-void Scenario::simulate(Organism& pOrganism)
-{
-	pOrganism.simulate(*mSimulation);
-}
-
-void Scenario::expendEnergy(Organism& pOrganism)
-{
-	pOrganism.expendEnergy(*mSimulation);
+	mKeyScore.push_back(pPair);
 }

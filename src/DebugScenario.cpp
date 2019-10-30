@@ -40,9 +40,3 @@ void DebugScenario::updateUI()
 	scoreLabel->setProperty("text", "Score: " + QString::number(mSimulation->score()));
 }
 
-void DebugScenario::eat(Organism& pPredator, Entity& pPrey) {}
-
-void DebugScenario::move(Organism& pOrganism) {}
-
-void DebugScenario::eat(Organism& pOrganism) {}
-

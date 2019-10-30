@@ -60,13 +60,3 @@ void SimScenario::updateUI()
 	QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
 	scoreLabel->setProperty("text", "Score: " + QString::number(mSimulation->score()));
 }
-
-void SimScenario::eat(Organism& pPredator, Entity& pPrey)
-{
-	pPredator.score() += pPredator.foodReward();
-	mSimulation->scorePoint();
-
-	pPredator.energyLevel() += pPrey.getMass() * pPrey.getEnergyContent();
-	pPredator.energyLevel() = std::min(pPredator.energyLevel(), pPredator.energyCapacity());
-	pPrey.die(*mSimulation);
-}

@@ -21,16 +21,7 @@ public:
 	virtual void simulateTick() = 0;
 	virtual void updateUI() = 0;
 
-	inline void addKeyScore(std::pair<int, qreal> pPair)
-	{
-		mKeyScore.push_back(pPair);
-	}
-
-	virtual void eat(Organism& pPredator, Entity& pPrey);
-	virtual void die(Organism& pOrganism);
-	virtual void move(Organism& pOrganism);
-	virtual void simulate(Organism& pOrganism);
-	virtual void expendEnergy(Organism& pOrganism);
+	void addKeyScore(std::pair<int, qreal> pPair);
 	
 protected:
 	Simulation* mSimulation;

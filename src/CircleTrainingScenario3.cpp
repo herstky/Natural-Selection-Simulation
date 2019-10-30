@@ -9,11 +9,7 @@
 #include "NeuralNetwork.h"
 
 CircleTrainingScenario3::CircleTrainingScenario3(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork)
-	: Scenario(pSimulation),
-	mBestNeuralNetwork(pBestNeuralNetwork),
-	mNextNeuralNetwork(mBestNeuralNetwork.first),
-	mGroupMap(std::unordered_map<int, NeuralNetwork>()),
-	mGroupScores(std::vector<std::pair<int, qreal>>())
+	: CircleTraining(pSimulation, pBestNeuralNetwork)
 {
 	Organism::mStarvationPenalty = 100; // 5
 	Organism::mOutOfBoundsPenalty = 0; // 0
@@ -28,37 +24,6 @@ CircleTrainingScenario3::CircleTrainingScenario3(Simulation* pSimulation, std::p
 	NeuralNetwork::mSmallVarianceMagnitude = 1;
 	NeuralNetwork::mLargeVarianceMagnitude = 100;
 	NeuralNetwork::mLargeVarianceChance = 0;
-}
-
-void CircleTrainingScenario3::startRound()
-{
-	QPointF center = QPointF(mSimulation->board().widthP() / 2, mSimulation->board().heightP() / 2);
-	qreal radius = 15 * mSimulation->board().cellSize() * SCALE_FACTOR;
-	int entities = 20;
-	int replicates = 20; // number of clones of each Entity
-
-	std::shared_ptr<Food> food(new Food(*mSimulation, center));
-	mSimulation->addFood(food);
-
-	for (int i = 0; i < entities; i++)
-	{
-		NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(mNextNeuralNetwork);
-		mGroupScores.push_back(std::pair<int, qreal>(i, 0));
-		std::vector<std::shared_ptr<Organism>> group;
-		mGroupMap[i] = neuralNetwork;
-		QColor groupColor = QColor(QRandomGenerator::global()->bounded(255),
-			QRandomGenerator::global()->bounded(255),
-			QRandomGenerator::global()->bounded(255));
-		for (int j = 0; j < replicates; j++)
-		{
-			qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / replicates) + j * 2 * M_PI / replicates;
-			QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
-			std::shared_ptr<Organism> creature(new StrongCreature(pos, neuralNetwork, groupColor));
-			creature->mKey = i;
-			group.push_back(std::shared_ptr<Organism>(creature));
-		}
-		mSimulation->addOrganismGroup(group);
-	}
 }
 
 void CircleTrainingScenario3::endRound()
@@ -119,42 +84,5 @@ void CircleTrainingScenario3::endRound()
 	}
 	mSimulation->timer()->stop();
 	mGroupScores.clear();
-}
-
-void CircleTrainingScenario3::simulateTick()
-{
-	if (mSimulation->mTicksRemaining)
-	{
-		mSimulation->mTicksRemaining--;
-	}
-	else
-	{
-		mSimulation->mTicksRemaining = mSimulation->M_TICKS_PER_STEP;
-	}
-}
-
-void CircleTrainingScenario3::simulateStep()
-{
-	if (mSimulation->mStepsRemaining)
-	{
-		mSimulation->mStepsRemaining--;
-	}
-	else
-	{
-		endRound();
-		mSimulation->start();
-	}
-}
-
-void CircleTrainingScenario3::updateUI()
-{
-	qreal progress = 1.0 - mSimulation->stepsRemaining() / static_cast<qreal>(mSimulation->M_STEPS_PER_ROUND);
-	mSimulation->mContainer.findChild<QObject*>("progressBar")->setProperty("value", progress);
-	QQuickItem* parent = static_cast<QQuickItem*>(mSimulation->mContainer.findChild<QObject*>("textRow"));
-	QObject* generationLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
-	generationLabel->setProperty("text", "Generation: " + QString::number(mSimulation->generation()));
-	QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
-	countLabel->setProperty("text", "Creatures: " + QString::number(StrongCreature::count()));
-	QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
-	scoreLabel->setProperty("text", "Score: " + QString::number(mSimulation->score()));
+	mKeyScore.clear();
 }

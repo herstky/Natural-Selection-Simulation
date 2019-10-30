@@ -9,6 +9,7 @@ training neural networks with genetic algorithms.pdf
 /output
 /debug
 /release
+/obj
 /win32
 /.vs
 /x64

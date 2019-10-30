@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scenario.h"
+#include "CircleTraining.h"
 
 #include <utility>
 #include <memory>
@@ -12,23 +12,18 @@
 #include <QtGlobal>
 
 #include "NeuralNetwork.h"
+#include "WeakCreature.h"
 
 class Simulation;
 
-class CircleTrainingScenario : public Scenario
+class CircleTrainingScenario : public CircleTraining
 {
 public:
+	using CreatureClass = WeakCreature;
 	CircleTrainingScenario(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork);
 
-	virtual void startRound() override;
 	virtual void endRound() override;
-	virtual void simulateTick() override;
-	virtual void simulateStep() override;
-	virtual void updateUI() override;
 	
-private:
-	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;
-	NeuralNetwork mNextNeuralNetwork;
-	std::unordered_map<int, NeuralNetwork> mGroupMap;
-	std::vector<std::pair<int, qreal>> mGroupScores;
+protected:
+	virtual NeuralNetwork generateNeuralNetwork() override;
 };

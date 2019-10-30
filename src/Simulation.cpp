@@ -14,9 +14,6 @@
 
 #include "constants.h"
 #include "Scenario.h"
-#include "CircleTrainingScenario.h"
-#include "CircleTrainingScenario2.h"
-#include "CircleTrainingScenario3.h"
 #include "SimScenario.h"
 #include "DebugScenario.h"
 #include "View.h"
@@ -31,7 +28,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mScenario(std::make_shared<CircleTrainingScenario3>(CircleTrainingScenario3(this,
+	  mScenario(std::make_shared<ScenarioType>(ScenarioType(this,
 		  nnScorePair(Organism::loadBrain("data//saved//102919/G60k"),
 		  -std::numeric_limits<qreal>::infinity())))),
 	  M_TICK_DURATION(50),

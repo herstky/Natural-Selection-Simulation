@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Scenario.h"
 
 #include "NeuralNetwork.h"
@@ -16,10 +17,6 @@ public:
 	virtual void simulateStep() override;
 	virtual void simulateTick() override;
 	virtual void updateUI() override;
-	virtual void eat(Organism& pPredator, Entity& pPrey) override;
-
-	virtual void move(Organism& pOrganism);
-	virtual void eat(Organism& pOrganism);
 
 private:
 	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;

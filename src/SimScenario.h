@@ -16,7 +16,6 @@ public:
 	virtual void simulateTick() override;
 	virtual void simulateStep() override;
 	virtual void updateUI() override;
-	virtual void eat(Organism& pPredator, Entity& pPrey) override;
 
 private:
 	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;

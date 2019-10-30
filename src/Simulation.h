@@ -15,16 +15,17 @@
 #include "Organism.h"
 #include "Board.h"
 #include "NeuralNetwork.h"
+#include "CircleTraining.h"
 
-// TODO: Need to be able to turn off animation and run sim as fast as possible.
-
-using coordPair = std::pair<int, int>;
-using nnScorePair = std::pair<NeuralNetwork, qreal>;
 
 class Simulation : public QObject
 {
 	Q_OBJECT
 public:
+	using coordPair = std::pair<int, int>;
+	using nnScorePair = std::pair<NeuralNetwork, qreal>;
+	using ScenarioType = CircleTraining;
+
 	enum class Mode { debug, train, simulate };
 
 	friend class Entity;

@@ -12,15 +12,9 @@ SimTrainingScenario::SimTrainingScenario(Simulation* pSimulation, std::pair<Neur
 	pSimulation->mMode = Simulation::Mode::train;
 }
 
-void SimTrainingScenario::startRound()
-{
+void SimTrainingScenario::startRound() {}
 
-}
-
-void SimTrainingScenario::endRound()
-{
-
-}
+void SimTrainingScenario::endRound() {}
 
 void SimTrainingScenario::simulateTick()
 {
@@ -57,14 +51,3 @@ void SimTrainingScenario::updateUI()
 	QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
 	countLabel->setProperty("text", "Creatures: " + QString::number(Creature::count()));
 }
-
-void SimTrainingScenario::eat(Organism& pPredator, Entity& pPrey)
-{
-	pPredator.score() += pPredator.foodReward();
-	mSimulation->scorePoint();
-
-	pPredator.energyLevel() += pPrey.getMass() * pPrey.getEnergyContent();
-	pPredator.energyLevel() = std::min(pPredator.energyLevel(), pPredator.energyCapacity());
-	pPrey.die(*mSimulation);
-}
-
