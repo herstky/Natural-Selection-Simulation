@@ -1,6 +1,9 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(438,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-  WeakCreature.cpp
-C:\dev\Replicator\src\WeakCreature.h(28,35): warning C4100: 'pOther': unreferenced formal parameter
-C:\dev\Replicator\src\WeakCreature.cpp(21,59): warning C4100: 'pOther': unreferenced formal parameter
-C:\dev\Replicator\src\WeakCreature.cpp(47,51): warning C4100: 'pSimulation': unreferenced formal parameter
+﻿  Generate moc_predefs.h
+  CircleTrainingScenario.cpp
+  CircleTrainingScenario3.cpp
+C:\dev\Replicator\src\Food.h(36,19): warning C4100: 'pOther': unreferenced formal parameter (compiling source file src\CircleTrainingScenario3.cpp)
+C:\dev\Replicator\src\Food.h(36,19): warning C4100: 'pOther': unreferenced formal parameter (compiling source file src\CircleTrainingScenario.cpp)
+C:\dev\Replicator\src\StrongCreature.h(23,39): warning C4100: 'pOther': unreferenced formal parameter (compiling source file src\CircleTrainingScenario3.cpp)
+C:\dev\Replicator\src\WeakCreature.h(28,35): warning C4100: 'pOther': unreferenced formal parameter (compiling source file src\CircleTrainingScenario.cpp)
+C:\dev\Replicator\src\CircleTrainingScenario3.cpp(95,6): warning C4189: 'second': local variable is initialized but not referenced
   Replicator.vcxproj -> C:\dev\Replicator\bin\Replicator.exe

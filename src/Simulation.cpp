@@ -31,7 +31,7 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),
 	  mContainer(*pParent),
 	  mBoard(Board(*mContainer.findChild<QQuickItem*>("board"))),
-	  mScenario(std::make_shared<CircleTrainingScenario>(CircleTrainingScenario(this,
+	  mScenario(std::make_shared<CircleTrainingScenario3>(CircleTrainingScenario3(this,
 		  nnScorePair(Organism::loadBrain("data//saved//102919/G60k"),
 		  -std::numeric_limits<qreal>::infinity())))),
 	  M_TICK_DURATION(50),

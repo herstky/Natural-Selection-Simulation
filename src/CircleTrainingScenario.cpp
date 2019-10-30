@@ -133,6 +133,7 @@ void CircleTrainingScenario::endRound()
 	}
 	mSimulation->timer()->stop();
 	mGroupScores.clear();
+	mKeyScore.clear();
 }
 
 void CircleTrainingScenario::simulateTick() 

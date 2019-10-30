@@ -5,7 +5,7 @@
 
 #include "Food.h"
 #include "Simulation.h"
-#include "Creature.h"
+#include "StrongCreature.h"
 #include "NeuralNetwork.h"
 
 CircleTrainingScenario3::CircleTrainingScenario3(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork)
@@ -24,7 +24,7 @@ CircleTrainingScenario3::CircleTrainingScenario3(Simulation* pSimulation, std::p
 	Organism::mScentIncreaseReward = 0; // 10
 	Organism::mScentDecreasePenalty = 0; // 20
 
-	NeuralNetwork::mMutationChance = 0;
+	NeuralNetwork::mMutationChance = 20;
 	NeuralNetwork::mSmallVarianceMagnitude = 1;
 	NeuralNetwork::mLargeVarianceMagnitude = 100;
 	NeuralNetwork::mLargeVarianceChance = 0;
@@ -34,7 +34,7 @@ void CircleTrainingScenario3::startRound()
 {
 	QPointF center = QPointF(mSimulation->board().widthP() / 2, mSimulation->board().heightP() / 2);
 	qreal radius = 15 * mSimulation->board().cellSize() * SCALE_FACTOR;
-	int entities = 1;
+	int entities = 20;
 	int replicates = 20; // number of clones of each Entity
 
 	std::shared_ptr<Food> food(new Food(*mSimulation, center));
@@ -53,7 +53,7 @@ void CircleTrainingScenario3::startRound()
 		{
 			qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / replicates) + j * 2 * M_PI / replicates;
 			QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
-			std::shared_ptr<Organism> creature(new Creature(pos, neuralNetwork, groupColor));
+			std::shared_ptr<Organism> creature(new StrongCreature(pos, neuralNetwork, groupColor));
 			creature->mKey = i;
 			group.push_back(std::shared_ptr<Organism>(creature));
 		}
@@ -154,28 +154,7 @@ void CircleTrainingScenario3::updateUI()
 	QObject* generationLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
 	generationLabel->setProperty("text", "Generation: " + QString::number(mSimulation->generation()));
 	QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
-	countLabel->setProperty("text", "Creatures: " + QString::number(Creature::count()));
+	countLabel->setProperty("text", "Creatures: " + QString::number(StrongCreature::count()));
 	QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
 	scoreLabel->setProperty("text", "Score: " + QString::number(mSimulation->score()));
 }
-
-void CircleTrainingScenario3::move(Organism& pOrganism)
-{
-	pOrganism.move(*mSimulation);
-	if (!pOrganism.mHasEaten)
-		pOrganism.score() -= Organism::mStarvationPenalty * mSimulation->M_TICK_DURATION / 1000.0;
-}
-
-void CircleTrainingScenario3::eat(Organism& pPredator, Entity& pPrey)
-{
-	if (!pPredator.mHasEaten)
-	{
-		pPredator.mHasEaten = true;
-		pPredator.score() += pPredator.foodReward();
-		mSimulation->scorePoint();
-	}
-}
-
-void CircleTrainingScenario3::expendEnergy(Organism& pOrganism) {}
-
-void CircleTrainingScenario3::die(Organism& pOrganism) {}
