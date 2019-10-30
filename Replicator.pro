@@ -19,6 +19,7 @@ SOURCES += \
         src/CircleTrainingScenario2.cpp \
         src/CircleTrainingScenario3.cpp \
         src/Creature.cpp \
+        src/Board.cpp \
         src/DebugScenario.cpp \
         src/Entity.cpp \
         src/Food.cpp \

@@ -4,6 +4,8 @@
 #include <vector>
 #include <utility>
 
+#include <QtCore>
+
 class Simulation; 
 class Organism;
 class Entity;
