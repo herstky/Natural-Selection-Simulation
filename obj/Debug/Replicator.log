@@ -1,2 +1,9 @@
 ﻿  Generate moc_predefs.h
+  CircleTrainingScenario2.cpp
+C:\dev\Replicator\src\Model\Entity\Organism\Creature.h(28,27): warning C4100: 'pOther': unreferenced formal parameter
+C:\dev\Replicator\src\Model\Entity\Organism\StrongCreature.h(23,39): warning C4100: 'pOther': unreferenced formal parameter
+C:\dev\Replicator\src\Model\Entity\Food.h(36,19): warning C4100: 'pOther': unreferenced formal parameter
+  moc_Simulation.cpp
+C:\dev\Replicator\src\Model\Entity\Organism\Creature.h(28,27): warning C4100: 'pOther': unreferenced formal parameter
+C:\dev\Replicator\src\Model\Entity\Organism\StrongCreature.h(23,39): warning C4100: 'pOther': unreferenced formal parameter
   Replicator.vcxproj -> C:\dev\Replicator\bin\Replicator.exe

@@ -13,16 +13,16 @@
 #include <limits>
 
 #include "constants.h"
-#include "Scenario.h"
-#include "SimScenario.h"
-#include "DebugScenario.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/SimScenario.h"
+#include "Scenario/DebugScenario.h"
 #include "View.h"
-#include "Model.h"
-#include "Entity.h"
-#include "Creature.h"
-#include "Food.h"
+#include "Model/Model.h"
+#include "Model/Entity/Entity.h"
+#include "Model/Entity/Organism/Creature.h"
+#include "Model/Entity/Food.h"
 #include "NeuralNetwork.h"
-#include "Organism.h"
+#include "Model/Entity/Organism/Organism.h"
 
 Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	: mMode(pMode),

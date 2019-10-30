@@ -12,10 +12,10 @@
 #include <memory>
 
 #include "utils.h"
-#include "Organism.h"
+#include "Model/Entity/Organism/Organism.h"
 #include "Board.h"
 #include "NeuralNetwork.h"
-#include "CircleTraining.h"
+#include "Scenario/Training/CircleTraining/CircleTraining.h"
 
 
 class Simulation : public QObject
