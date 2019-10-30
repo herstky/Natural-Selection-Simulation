@@ -16,6 +16,8 @@
 #include "Board.h"
 #include "NeuralNetwork.h"
 #include "Scenario/Training/CircleTraining/CircleTraining.h"
+#include "Scenario/Training/CircleTraining/QuickWeak.h"
+#include "Scenario/Training/CircleTraining/NoCrossOver.h"
 
 
 class Simulation : public QObject
@@ -24,14 +26,14 @@ class Simulation : public QObject
 public:
 	using coordPair = std::pair<int, int>;
 	using nnScorePair = std::pair<NeuralNetwork, qreal>;
-	using ScenarioType = CircleTraining;
+	using ScenarioType = QuickWeak;
 
 	enum class Mode { debug, train, simulate };
 
 	friend class Entity;
 	friend class Food;
 	friend class Organism;
-	friend class CircleTrainingScenario;
+	friend class QuickWeak;
 
 	Simulation(QQuickItem* pParent, Mode pMode = Mode::simulate);
 

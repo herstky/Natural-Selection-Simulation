@@ -8,6 +8,8 @@
 class Simulation;
 class Entity;
 
+// This variant of the Creature class is meant for training. WeakCreature does not expend any 
+// energy and will die once it reaches food, without destroying the food object.
 class WeakCreature : public Organism
 {
 public:

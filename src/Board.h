@@ -7,7 +7,7 @@
 #include "View.h"
 
 class Simulation;
-class CircleTrainingScenario;
+class QuickWeak;
 
 class Board
 {

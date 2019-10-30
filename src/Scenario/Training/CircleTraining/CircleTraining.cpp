@@ -3,11 +3,12 @@
 #include <utility>
 
 #include <QRandomGenerator>
-#include <QPointF>
 
 #include "Model/Entity/Food.h"
 #include "Simulation.h"
 #include "NeuralNetwork.h"
+#include "Model/Entity//Organism/Organism.h"
+#include "Model/Entity/Organism/Creature.h"
 
 CircleTraining::CircleTraining(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork)
 	: Training(pSimulation, pBestNeuralNetwork),
@@ -17,14 +18,14 @@ CircleTraining::CircleTraining(Simulation* pSimulation, std::pair<NeuralNetwork,
 	  mGroupMap(std::unordered_map<int, NeuralNetwork>()),
 	  mGroupScores(std::vector<std::pair<int, qreal>>())
 {
-	Organism::mStarvationPenalty = 100; // 5
-	Organism::mOutOfBoundsPenalty = 0; // 0
-	Organism::mNoScentsPenalty = 0; // 0
-	Organism::mEnergyExpenditurePenalty = 0; // 200000000
-	Organism::mFoodReward = 100; // 200
-	Organism::mScentReward = 0; // 1
-	Organism::mScentIncreaseReward = 0; // 10
-	Organism::mScentDecreasePenalty = 0; // 20
+	Organism::mStarvationPenalty = 100; 
+	Organism::mOutOfBoundsPenalty = 0; 
+	Organism::mNoScentsPenalty = 0; 
+	Organism::mEnergyExpenditurePenalty = 0; 
+	Organism::mFoodReward = 100; 
+	Organism::mScentReward = 0; 
+	Organism::mScentIncreaseReward = 0;
+	Organism::mScentDecreasePenalty = 0; 
 
 	NeuralNetwork::mMutationChance = 20;
 	NeuralNetwork::mSmallVarianceMagnitude = 1;
@@ -53,7 +54,7 @@ void CircleTraining::startRound()
 		{
 			qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / mNumReplicates) + j * 2 * M_PI / mNumReplicates;
 			QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
-			std::shared_ptr<Organism> creature(new CreatureClass(pos, neuralNetwork, groupColor));
+			std::shared_ptr<Organism> creature = addCreature(pos, neuralNetwork, groupColor);
 			creature->mKey = i;
 			group.push_back(std::shared_ptr<Organism>(creature));
 		}
@@ -165,4 +166,9 @@ void CircleTraining::updateUI()
 	countLabel->setProperty("text", "Creatures: " + QString::number(CreatureClass::count()));
 	QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
 	scoreLabel->setProperty("text", "Score: " + QString::number(mSimulation->score()));
+}
+
+std::shared_ptr<Organism> CircleTraining::addCreature(QPointF pPos, NeuralNetwork pNeuralNetwork, QColor pGroupColor)
+{
+	return std::make_shared<Organism>(Creature(pPos, pNeuralNetwork, pGroupColor));
 }

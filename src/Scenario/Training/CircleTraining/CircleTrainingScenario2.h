@@ -21,11 +21,5 @@ class CircleTrainingScenario2 : public CircleTraining
 public:
 	using CreatureClass = StrongCreature;
 	CircleTrainingScenario2(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork);
-
-private:
-	std::pair<NeuralNetwork, qreal> mBestNeuralNetwork;
-	NeuralNetwork mNextNeuralNetwork;
-	std::unordered_map<int, NeuralNetwork> mGroupMap;
-	std::vector<std::pair<int, qreal>> mGroupScores;
 };
 

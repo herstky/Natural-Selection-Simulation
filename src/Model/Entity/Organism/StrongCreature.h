@@ -4,6 +4,8 @@
 
 class Simulation;
 
+// This variant of the Creature class is meant for training. StrongCreature does not expend any 
+// energy and cannot die. StrongCreature does not destroy food objects upon colliding with them.
 class StrongCreature : public Organism
 {
 public:
@@ -24,7 +26,5 @@ private:
 	StrongCreature& operator=(const StrongCreature& pOther);
 	static qreal mCreationChance;
 	static int mCount;
-
-
 };
 

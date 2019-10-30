@@ -7,5 +7,6 @@ Training::Training(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBes
 
 NeuralNetwork Training::generateNeuralNetwork()
 {
-	return NeuralNetwork::mutateWeights(mNextNeuralNetwork);
+	NeuralNetwork neuralNetwork = NeuralNetwork::mutateWeights(mNextNeuralNetwork);
+	return NeuralNetwork::mutateBasisWeights(neuralNetwork);
 }

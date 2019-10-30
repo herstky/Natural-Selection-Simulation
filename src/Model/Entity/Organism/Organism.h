@@ -16,7 +16,7 @@ class Simulation;
 class Organism : public Entity 
 {
 	friend class Simulation;
-	friend class CircleTrainingScenario;
+	friend class QuickWeak;
 public:
 	Organism();
     Organism(const QPointF& pPosition);
