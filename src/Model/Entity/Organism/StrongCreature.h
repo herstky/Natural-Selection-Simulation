@@ -24,6 +24,7 @@ protected:
 private:
 	StrongCreature(const StrongCreature& pOther) {}
 	StrongCreature& operator=(const StrongCreature& pOther);
+
 	static qreal mCreationChance;
 	static int mCount;
 };

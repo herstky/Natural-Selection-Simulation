@@ -14,7 +14,7 @@ QuickWeak::QuickWeak(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pB
 {
 	Organism::mStarvationPenalty = 100;
 	Organism::mOutOfBoundsPenalty = 0; 
-	Organism::mNoScentsPenalty = 0; // 0
+	Organism::mNoScentsPenalty = 0; 
 	Organism::mEnergyExpenditurePenalty = 0;
 	Organism::mFoodReward = 100; 
 	Organism::mScentReward = 0; 
@@ -25,6 +25,35 @@ QuickWeak::QuickWeak(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pB
 	NeuralNetwork::mSmallVarianceMagnitude = 1;
 	NeuralNetwork::mLargeVarianceMagnitude = 100;
 	NeuralNetwork::mLargeVarianceChance = 0;
+}
+
+void QuickWeak::startRound()
+{
+	QPointF center = QPointF(mSimulation->board().widthP() / 2, mSimulation->board().heightP() / 2);
+	qreal radius = mSpawnRadius * mSimulation->board().cellSize() * SCALE_FACTOR;
+
+	std::shared_ptr<Food> food(new Food(*mSimulation, center));
+	mSimulation->addFood(food);
+
+	for (int i = 0; i < mNumGroups; i++)
+	{
+		NeuralNetwork neuralNetwork = generateNeuralNetwork();
+		mGroupScores.push_back(std::pair<int, qreal>(i, 0));
+		std::vector<std::shared_ptr<Organism>> group;
+		mGroupMap[i] = neuralNetwork;
+		QColor groupColor = QColor(QRandomGenerator::global()->bounded(255),
+			QRandomGenerator::global()->bounded(255),
+			QRandomGenerator::global()->bounded(255));
+		for (int j = 0; j < mNumReplicates; j++)
+		{
+			qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / mNumReplicates) + j * 2 * M_PI / mNumReplicates;
+			QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
+			std::shared_ptr<Organism> creature(new WeakCreature(pos, neuralNetwork, groupColor));
+			creature->mKey = i;
+			group.push_back(std::shared_ptr<Organism>(creature));
+		}
+		mSimulation->addOrganismGroup(group);
+	}
 }
 
 void QuickWeak::endRound()
@@ -100,7 +129,15 @@ void QuickWeak::endRound()
 	mKeyScore.clear();
 }
 
-std::shared_ptr<Organism> QuickWeak::addCreature(QPointF pPos, NeuralNetwork pNeuralNetwork, QColor pGroupColor)
+void QuickWeak::updateUI()
 {
-	return std::make_shared<Organism>(WeakCreature(pPos, pNeuralNetwork, pGroupColor));
+	qreal progress = 1.0 - mSimulation->stepsRemaining() / static_cast<qreal>(mSimulation->M_STEPS_PER_ROUND);
+	mSimulation->mContainer.findChild<QObject*>("progressBar")->setProperty("value", progress);
+	QQuickItem* parent = static_cast<QQuickItem*>(mSimulation->mContainer.findChild<QObject*>("textRow"));
+	QObject* generationLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
+	generationLabel->setProperty("text", "Generation: " + QString::number(mSimulation->generation()));
+	QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
+	countLabel->setProperty("text", "Creatures: " + QString::number(WeakCreature::count()));
+	QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
+	scoreLabel->setProperty("text", "Score: " + QString::number(mSimulation->score()));
 }

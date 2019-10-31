@@ -8,7 +8,7 @@
 #include "Simulation.h"
 #include "NeuralNetwork.h"
 #include "Model/Entity//Organism/Organism.h"
-#include "Model/Entity/Organism/Creature.h"
+#include "Model/Entity/Organism/StrongCreature.h"
 
 CircleTraining::CircleTraining(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork)
 	: Training(pSimulation, pBestNeuralNetwork),
@@ -54,7 +54,7 @@ void CircleTraining::startRound()
 		{
 			qreal angle = QRandomGenerator::global()->bounded(2 * M_PI / mNumReplicates) + j * 2 * M_PI / mNumReplicates;
 			QPointF pos = QPointF(center.x() + radius * cos(angle), center.y() - radius * sin(angle));
-			std::shared_ptr<Organism> creature = addCreature(pos, neuralNetwork, groupColor);
+			std::shared_ptr<Organism> creature(new StrongCreature(pos, neuralNetwork, groupColor));
 			creature->mKey = i;
 			group.push_back(std::shared_ptr<Organism>(creature));
 		}
@@ -163,12 +163,7 @@ void CircleTraining::updateUI()
 	QObject* generationLabel = static_cast<QObject*>(parent->findChild<QObject*>("label1"));
 	generationLabel->setProperty("text", "Generation: " + QString::number(mSimulation->generation()));
 	QObject* countLabel = static_cast<QObject*>(parent->findChild<QObject*>("label2"));
-	countLabel->setProperty("text", "Creatures: " + QString::number(CreatureClass::count()));
+	countLabel->setProperty("text", "Creatures: " + QString::number(StrongCreature::count()));
 	QObject* scoreLabel = static_cast<QObject*>(parent->findChild<QObject*>("label3"));
 	scoreLabel->setProperty("text", "Score: " + QString::number(mSimulation->score()));
-}
-
-std::shared_ptr<Organism> CircleTraining::addCreature(QPointF pPos, NeuralNetwork pNeuralNetwork, QColor pGroupColor)
-{
-	return std::make_shared<Organism>(Creature(pPos, pNeuralNetwork, pGroupColor));
 }

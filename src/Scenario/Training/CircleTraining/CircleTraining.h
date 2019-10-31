@@ -29,8 +29,6 @@ public:
 	virtual void updateUI() override;
 
 protected:
-	virtual std::shared_ptr<Organism> addCreature(QPointF pPos, NeuralNetwork pNeuralNetwork, QColor pGroupColor);
-
 	qreal mSpawnRadius;
 	int mNumGroups;
 	int mNumReplicates;

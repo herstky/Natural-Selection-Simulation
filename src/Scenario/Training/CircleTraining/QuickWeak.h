@@ -24,6 +24,7 @@ class QuickWeak : public CircleTraining
 public:
 	QuickWeak(Simulation* pSimulation, std::pair<NeuralNetwork, qreal> pBestNeuralNetwork);
 	
-	virtual std::shared_ptr<Organism> addCreature(QPointF pPos, NeuralNetwork pNeuralNetwork, QColor pGroupColor) override;
+	virtual void startRound() override;
 	virtual void endRound() override;
+	virtual void updateUI() override;
 };

@@ -26,7 +26,7 @@ class Simulation : public QObject
 public:
 	using coordPair = std::pair<int, int>;
 	using nnScorePair = std::pair<NeuralNetwork, qreal>;
-	using ScenarioType = QuickWeak;
+	using ScenarioType = CircleTraining;
 
 	enum class Mode { debug, train, simulate };
 
