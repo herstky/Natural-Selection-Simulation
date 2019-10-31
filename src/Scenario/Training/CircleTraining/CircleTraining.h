@@ -24,8 +24,6 @@ public:
 
 	virtual void startRound() override;
 	virtual void endRound() override;
-	virtual void simulateTick() override;
-	virtual void simulateStep() override;
 	virtual void updateUI() override;
 
 protected:

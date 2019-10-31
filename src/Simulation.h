@@ -18,7 +18,7 @@
 #include "Scenario/Training/CircleTraining/CircleTraining.h"
 #include "Scenario/Training/CircleTraining/QuickWeak.h"
 #include "Scenario/Training/CircleTraining/NoCrossOver.h"
-
+#include "Scenario/SimScenario.h"
 
 class Simulation : public QObject
 {
@@ -26,7 +26,7 @@ class Simulation : public QObject
 public:
 	using coordPair = std::pair<int, int>;
 	using nnScorePair = std::pair<NeuralNetwork, qreal>;
-	using ScenarioType = CircleTraining;
+	using ScenarioType = SimScenario;
 
 	enum class Mode { debug, train, simulate };
 

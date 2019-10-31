@@ -12,3 +12,28 @@ void Scenario::addKeyScore(std::pair<int, qreal> pPair)
 {
 	mKeyScore.push_back(pPair);
 }
+
+void Scenario::simulateTick()
+{
+	if (mSimulation->mTicksRemaining)
+	{
+		mSimulation->mTicksRemaining--;
+	}
+	else
+	{
+		mSimulation->mTicksRemaining = mSimulation->M_TICKS_PER_STEP;
+	}
+}
+
+void Scenario::simulateStep()
+{
+	if (mSimulation->mStepsRemaining)
+	{
+		mSimulation->mStepsRemaining--;
+	}
+	else
+	{
+		endRound();
+		mSimulation->start();
+	}
+}

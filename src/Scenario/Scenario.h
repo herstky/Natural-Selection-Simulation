@@ -17,8 +17,8 @@ public:
 
 	virtual void startRound() = 0;
 	virtual void endRound() = 0;
-	virtual void simulateStep() = 0;
-	virtual void simulateTick() = 0;
+	virtual void simulateTick();
+	virtual void simulateStep();
 	virtual void updateUI() = 0;
 
 	void addKeyScore(std::pair<int, qreal> pPair);

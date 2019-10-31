@@ -14,27 +14,9 @@ SimScenario::SimScenario(Simulation* pSimulation, std::pair<NeuralNetwork, qreal
 	mSimulation->mContainer.findChild<QQuickItem*>("progressColumn")->setVisible(false);
 }
 
-void SimScenario::startRound()
-{
+void SimScenario::startRound() {}
 
-}
-
-void SimScenario::endRound()
-{
-
-}
-
-void SimScenario::simulateTick()
-{
-	if (mSimulation->mTicksRemaining)
-	{
-		mSimulation->mTicksRemaining--;
-	}
-	else
-	{
-		mSimulation->mTicksRemaining = mSimulation->M_TICKS_PER_STEP;
-	}
-}
+void SimScenario::endRound() {}
 
 void SimScenario::simulateStep()
 {
@@ -48,7 +30,6 @@ void SimScenario::simulateStep()
 		mSimulation->addFood(std::shared_ptr<Food>(new Food(*mSimulation)));
 	}
 }
-
 
 void SimScenario::updateUI()
 {

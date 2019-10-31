@@ -130,31 +130,6 @@ void CircleTraining::endRound()
 	mKeyScore.clear();
 }
 
-void CircleTraining::simulateTick()
-{
-	if (mSimulation->mTicksRemaining)
-	{
-		mSimulation->mTicksRemaining--;
-	}
-	else
-	{
-		mSimulation->mTicksRemaining = mSimulation->M_TICKS_PER_STEP;
-	}
-}
-
-void CircleTraining::simulateStep()
-{
-	if (mSimulation->mStepsRemaining)
-	{
-		mSimulation->mStepsRemaining--;
-	}
-	else
-	{
-		endRound();
-		mSimulation->start();
-	}
-}
-
 void CircleTraining::updateUI()
 {
 	qreal progress = 1.0 - mSimulation->stepsRemaining() / static_cast<qreal>(mSimulation->M_STEPS_PER_ROUND);
