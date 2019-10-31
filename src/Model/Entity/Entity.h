@@ -20,6 +20,8 @@ public:
 	virtual void move(const Simulation& pSimulation);
 	virtual void detectCollisions(Simulation& pSimulation);
 	virtual void collide(Simulation& pSimulation, Entity& pOther);
+	virtual void emanateScent();
+	virtual qreal scent(const qreal& distance);
 
 	Type getType();
 	void setPersistent(bool pPersistent);
@@ -29,6 +31,11 @@ public:
 	qreal getDensity();
 	qreal getAspectRatio();
 	qreal getDepth();
+
+	const qreal M_SCENT_STRENGTH;
+	const qreal M_SCENT_DIFFUSIVITY;
+	const qreal M_SCENT_RETENTION; // What portion of the entity's scent strength remains
+
 
 protected:
 	Type mType;
@@ -42,5 +49,6 @@ protected:
 private:
 	Entity(const Entity& pOther);
 	Entity& operator=(const Entity& pOther);
+
 };
 

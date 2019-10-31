@@ -15,14 +15,14 @@
 #include "View.h"
 #include "Model/Entity/Food.h"
 
-qreal Organism::mStarvationPenalty = 15; // 5
-qreal Organism::mOutOfBoundsPenalty = 0; // 0
-qreal Organism::mNoScentsPenalty = 0; // 0
+qreal Organism::mStarvationPenalty = 15;
+qreal Organism::mOutOfBoundsPenalty = 0;
+qreal Organism::mNoScentsPenalty = 0;
 qreal Organism::mEnergyExpenditurePenalty = 0;
-qreal Organism::mFoodReward = 400; // 200
-qreal Organism::mScentReward = 0; // 1
-qreal Organism::mScentIncreaseReward = 10; // 10
-qreal Organism::mScentDecreasePenalty = 20; // 20
+qreal Organism::mFoodReward = 400; 
+qreal Organism::mScentReward = 0; 
+qreal Organism::mScentIncreaseReward = 10;
+qreal Organism::mScentDecreasePenalty = 20; 
 
 Organism::Organism()
 	: mBrain(NeuralNetwork()),
@@ -45,7 +45,8 @@ Organism::Organism()
 	  mEnergySpent(0),
 	  mHasEaten(false),
 	  mScore(0),
-	  mPrevScentSum(0) {}
+	  mPrevScentSum(0),
+	  mScentTrail(std::list<std::pair<QPointF, qreal>>()) {}
 
 Organism::Organism(const QPointF& pPosition)
     : Organism()
@@ -133,6 +134,7 @@ void Organism::simulate(Simulation& pSimulation)
 	if (mStatus == Model::Status::dead)
 		return;
 
+	emanateScent();
 	think(pSimulation);
 }
 
@@ -163,7 +165,15 @@ qreal Organism::acceleration()
     return deltaVelocity() / deltaTime();
 }
 
-void Organism::init(Simulation& pSimulation) {}
+void Organism::init() 
+{
+	qreal scentStrength = M_SCENT_STRENGTH;
+	while (scentStrength > mScentThreshhold)
+	{
+		scentStrength *= M_SCENT_RETENTION * M_SCENT_STRENGTH;
+		mScentTrail.push_back(std::pair<QPointF, qreal>(center(), scentStrength));
+	}
+}
 
 const qreal Organism::height() const
 {
@@ -198,7 +208,6 @@ qreal Organism::foodReward()
 {
 	return mFoodReward;
 }
-
 
 void Organism::expendEnergy(const Simulation& pSimulation)
 {
@@ -249,9 +258,9 @@ arma::mat Organism::smell(Simulation& pSimulation)
 		for (auto food : pSimulation.mFoodSet)
 		{
 			qreal intensity;
-			if (sqrt(pow(center().x() - food->center().x(), 2) + pow(center().y() - food->center().y(), 2)) < mSmellRadius)
+			if (sqrt(pow(center().x() - food->center().x(), 2) + pow(center().y() - food->center().y(), 2)) <= mSmellRadius)
 			{
-				intensity = Food::M_SCENT_STRENGTH;
+				intensity = food->M_SCENT_STRENGTH;
 				scents.at(0, i) += intensity;
 			}
 			else
@@ -265,10 +274,8 @@ arma::mat Organism::smell(Simulation& pSimulation)
 					|| scentPositionY >= pSimulation.board().heightP()
 					|| scentPositionY < 0);
 				qreal distance = std::sqrt(pow(dx, 2) + pow(dy, 2));
-				if (distance == 0.0)
-					intensity = Food::M_SCENT_STRENGTH;
-				else
-					intensity = std::min(Food::M_SCENT_DIFFUSIVITY * Food::M_SCENT_STRENGTH / distance, Food::M_SCENT_STRENGTH);
+				
+				intensity = std::min(food->scent(distance), food->M_SCENT_STRENGTH);
 
 				if (!validPosition)
 				{
@@ -351,4 +358,30 @@ NeuralNetwork Organism::loadBrain(std::string pPath)
 		weights.push_back(matrix);
 	}
 	return weights;
+}
+
+void Organism::emanateScent()
+{
+	auto cur = mScentTrail.begin();
+	while (cur != mScentTrail.end())
+	{
+		cur->second *= M_SCENT_RETENTION;
+		cur++;
+	}
+	mScentTrail.push_front(std::pair<QPointF, qreal>(center(), M_SCENT_STRENGTH / 2.0));
+	mScentTrail.pop_back();
+}
+
+qreal Organism::scent(const qreal& distance)
+{
+	qreal distanceToScentPos = distance;
+	auto cur = mScentTrail.begin();
+	do
+	{
+
+		cur++;
+	} 
+	while (cur != mScentTrail.end());
+
+	return M_SCENT_DIFFUSIVITY * M_SCENT_STRENGTH / distance;
 }

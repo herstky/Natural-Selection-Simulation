@@ -10,8 +10,6 @@
 
 qreal Food::mCreationChance = 5;
 int Food::mCount = 0;
-const qreal Food::M_SCENT_STRENGTH = 1.0;
-const qreal Food::M_SCENT_DIFFUSIVITY = 0.001;
 
 Food::Food(Simulation& pSimulation)
 	: mContainer(&pSimulation.mFoodSet)
@@ -89,4 +87,9 @@ void Food::init(Simulation& pSimulation)
 	mDepth = 0.1;
 	mCount++;
 	mPersistent = false;
+}
+
+qreal Food::scent(const qreal& distance)
+{
+	return M_SCENT_DIFFUSIVITY * M_SCENT_STRENGTH / distance;
 }

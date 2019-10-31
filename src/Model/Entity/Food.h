@@ -22,12 +22,11 @@ public:
 	const qreal volume() const;
 	virtual void simulate(Simulation& pSimulation) override;
 	virtual void die(const Simulation& pSimulation) override;
+	virtual qreal scent(const qreal& distance) override;
+	
 	static const qreal creationChance();
 	static void setCreationChance(qreal pCreationChance);
 	static const int count();
-
-	static const qreal M_SCENT_STRENGTH;
-	static const qreal M_SCENT_DIFFUSIVITY;
 
 protected:
 	virtual void init(Simulation& pSimulation);
@@ -35,6 +34,7 @@ protected:
 private:	
 	Food(const Food& pOther) : mContainer(nullptr) {}
 	Food& operator=(const Food& pOther);
+
 	static qreal mCreationChance;
 	static int mCount; 
 	std::unordered_set<std::shared_ptr<Food>>* mContainer;

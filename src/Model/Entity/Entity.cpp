@@ -9,7 +9,10 @@
 #include "Model/Entity/Food.h"
 
 Entity::Entity()
-    : mType(Entity::Type::none),
+    : M_SCENT_STRENGTH(1.0),
+	  M_SCENT_DIFFUSIVITY(0.001),
+	  M_SCENT_RETENTION(0.75),
+	  mType(Entity::Type::none),
 	  mPersistent(false),
 	  mEnergyContent(100),
 	  mMass(0.005),
@@ -65,6 +68,13 @@ void Entity::detectCollisions(Simulation& pSimulation)
 }
 
 void Entity::collide(Simulation& pSimulation, Entity& pOther) {}
+
+void Entity::emanateScent() {}
+
+qreal Entity::scent(const qreal& distance) 
+{
+	return 0;
+}
 
 Entity::Type Entity::getType()
 {

@@ -3,6 +3,7 @@
 #include "Model/Entity/Entity.h"
 
 #include <string>
+#include <list>
 
 #include <QPainter>
 #include <QTime>
@@ -30,6 +31,8 @@ public:
     qreal deltaVelocity();
     qreal deltaTime();
     qreal acceleration();
+	virtual qreal scent(const qreal& distance) override;
+
 	qreal& score();
 	qreal& energyLevel();
 	qreal energyCapacity();
@@ -78,9 +81,10 @@ protected:
 	qreal mEnergyCapacity;
 	qreal mEnergySpent;
 	qreal mScore;
-	qreal mPrevScentSum;
+	qreal mPrevScentSum; // used to keep track of the change in scent between ticks
+	std::list<std::pair<QPointF, qreal>> mScentTrail;
 
-	virtual void init(Simulation& pSimulation);
+	virtual void init() override;
 
 	const qreal height() const override;
 	void setHeight(qreal pHeight) override;
@@ -89,9 +93,13 @@ protected:
 	virtual void replicate(const Simulation& pSimulation);
 	virtual QRectF hitbox() override;
 	virtual void collide(Simulation& pSimulation, Entity& pOther) override;
+	virtual void emanateScent() override;
 
 private:
 	Organism(const Organism& pOther);
 	Organism& operator=(const Organism& pOther);
+
+	static const qreal M_SCENT_STRENGTH;
+	static const qreal M_SCENT_DIFFUSIVITY;
 };
 
