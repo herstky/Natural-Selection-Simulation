@@ -40,12 +40,22 @@ Simulation::Simulation(QQuickItem* pParent, Mode pMode)
 	  mScore(0),
 	  mInitialTime(QTime::currentTime()),
 	  mAnimateCheckBox(mContainer.findChild<QObject*>("animateCheckBox")),
-      mAnimated(true),
+	  mAnimated(true),
 	  mFoodSet(std::unordered_set<std::shared_ptr<Food>>()),
 	  mOrganismGroups(std::vector<std::vector<std::shared_ptr<Organism>>>()),
 	  mInitViewQueue(std::vector<std::shared_ptr<Entity>>())
 {
 	init();
+}
+
+void Simulation::init()
+{
+	mAnimateCheckBox->setProperty("checked", Qt::Checked);
+	mAnimated = true;
+	mTimer = new QTimer();
+	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
+
+	start();
 }
 
 void Simulation::addOrganism(std::shared_ptr<Organism> pOrganism)
@@ -248,12 +258,4 @@ void Simulation::start()
 	}
 }
 
-void Simulation::init()
-{
-	mAnimateCheckBox->setProperty("checked", Qt::Checked);
-	mAnimated = true;
-	mTimer = new QTimer();
-	connect(mTimer, SIGNAL(timeout()), this, SLOT(run()));
 
-	start();
-}
