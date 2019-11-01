@@ -98,8 +98,5 @@ protected:
 private:
 	Organism(const Organism& pOther);
 	Organism& operator=(const Organism& pOther);
-
-	static const qreal M_SCENT_STRENGTH;
-	static const qreal M_SCENT_DIFFUSIVITY;
 };
 
